@@ -1,0 +1,23 @@
+# vsim -c -do "run.do" work.riscv_msi_testbench 
+# Start time: 01:12:44 on Sep 23,2019
+# Loading sv_std.std
+# Loading work.riscv_msi_testbench
+# Loading work.riscv_mpram
+# Loading work.riscv_spram
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading ieee.math_real(body)
+# Loading work.riscv_mpsoc_pkg
+# Loading work.riscv_msi_pkg
+# Loading work.riscv_interconnect(rtl)
+# Loading work.riscv_master_port(rtl)
+# Loading work.riscv_slave_port(rtl)
+# Loading work.riscv_bridge(rtl)
+# Loading work.riscv_gpio(rtl)
+# Loading work.riscv_ram_1r1w(rtl)
+# Loading work.riscv_ram_1r1w_generic(rtl)
+# do run.do
+# End time: 01:12:44 on Sep 23,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

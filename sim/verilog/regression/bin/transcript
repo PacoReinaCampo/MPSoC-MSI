@@ -1,0 +1,16 @@
+# vsim -c -do "run.do" work.riscv_msi_testbench 
+# Start time: 01:12:58 on Sep 23,2019
+# Loading sv_std.std
+# Loading work.riscv_msi_testbench
+# Loading work.riscv_interconnect
+# Loading work.riscv_bridge
+# Loading work.riscv_gpio
+# Loading work.riscv_mpram
+# Loading work.riscv_spram
+# Loading work.riscv_ram_1r1w
+# Loading work.riscv_master_port
+# Loading work.riscv_slave_port
+# Loading work.riscv_ram_1r1w_generic
+# do run.do
+# End time: 01:12:58 on Sep 23,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

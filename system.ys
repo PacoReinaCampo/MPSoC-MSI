@@ -1,0 +1,5 @@
+#read_verilog -sv rtl/verilog/modules/riscv_interconnect.sv
+#read_verilog -sv rtl/verilog/modules/riscv_master_port.sv
+#read_verilog -sv rtl/verilog/modules/riscv_slave_port.sv
+
+#read_verilog -sv bench/verilog/regression/riscv_msi_testbench.sv
