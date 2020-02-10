@@ -1,9 +1,10 @@
 **Implementation in VHDL & (System)Verilog of a Master Slave Interface and simulation in GHDL & Icarus Verilog**
 
-Master Slave Interface (MSI) is a model of communication where one device has unidirectional control over other devices. A master is selected from a group of eligible devices, with the other devices acting in the role of slaves. The ARM Advanced Microcontroller Bus Architecture (AMBA) is an open-standard, on-chip interconnect specification for the connection and management of functional blocks.
+A Master Slave Interface (MSI) is a model of communication where one device has unidirectional control over other devices. A master is selected from a group of eligible devices, with the other devices acting in the role of slaves. The ARM Advanced Microcontroller Bus Architecture (AMBA) and Wishbone Bus are an open-standard, on-chip interconnect specification for the connection and management of functional blocks.
 
 
 **MIT License**
+
 Copyright (c) 2018-2019 by the author(s)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

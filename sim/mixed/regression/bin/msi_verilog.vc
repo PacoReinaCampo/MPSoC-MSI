@@ -9,9 +9,9 @@
 //                  |_|                                                       //
 //                                                                            //
 //                                                                            //
-//              MPSoC-RV64 CPU                                                //
-//              Network on Chip Makefile                                      //
-//              Mesh Topology                                                 //
+//              MPSoC-RISCV CPU                                               //
+//              Master Slave Interface Slave Port                             //
+//              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +40,7 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/verilog/ram/riscv_mpram.sv
-../../../../rtl/verilog/ram/riscv_spram.sv
+../../../../rtl/verilog/ram/mpsoc_mpram.sv
+../../../../rtl/verilog/ram/mpsoc_spram.sv
 
-../../../../bench/verilog/regression/riscv_msi_testbench.sv
+../../../../bench/verilog/regression/mpsoc_msi_testbench.sv

@@ -10,12 +10,12 @@
 //                                                                            //
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
-//              Master Slave Interface Slave Port                             //
+//              Memory - Technology Independent (Inferrable) Memory Wrapper   //
 //              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-/* Copyright (c) 2019-2020 by the author(s)
+/* Copyright (c) 2018-2019 by the author(s)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,34 +40,60 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/vhdl/pkg/mpsoc_pkg.vhd
-../../../../rtl/vhdl/pkg/mpsoc_msi_pkg.vhd
+module mpsoc_ram_1r1w_generic #(
+  parameter ABITS = 10,
+  parameter DBITS = 32
+)
+  (
+    input                        rst_ni,
+    input                        clk_i,
 
-../../../../rtl/vhdl/gpio/mpsoc_peripheral_bridge.vhd
-../../../../rtl/vhdl/gpio/mpsoc_gpio.vhd
+    //Write side
+    input      [ ABITS     -1:0] waddr_i,
+    input      [ DBITS     -1:0] din_i,
+    input                        we_i,
+    input      [(DBITS+7)/8-1:0] be_i,
 
-../../../../rtl/vhdl/uart/mpsoc_uart.vhd
-../../../../rtl/vhdl/uart/mpsoc_uart_fifo.vhd
-../../../../rtl/vhdl/uart/mpsoc_uart_interrupt.vhd
-../../../../rtl/vhdl/uart/mpsoc_uart_rx.vhd
-../../../../rtl/vhdl/uart/mpsoc_uart_tx.vhd
+    //Read side
+    input      [ ABITS     -1:0] raddr_i,
+    output reg [ DBITS     -1:0] dout_o
+  );
 
-../../../../rtl/vhdl/core/generic/mpsoc_msi_interface.vhd
-../../../../rtl/vhdl/core/generic/mpsoc_msi_master_port.vhd
-../../../../rtl/vhdl/core/generic/mpsoc_msi_slave_port.vhd
+  //////////////////////////////////////////////////////////////////
+  //
+  // Variables
+  //
+  genvar i;
 
-../../../../rtl/vhdl/core/misd/mpsoc_misd_memory_interface.vhd
-../../../../rtl/vhdl/core/misd/mpsoc_misd_memory_master_port.vhd
-../../../../rtl/vhdl/core/misd/mpsoc_misd_memory_slave_port.vhd
+  logic [DBITS-1:0] mem_array [2**ABITS -1:0];  //memory array
 
-../../../../rtl/vhdl/core/simd/mpsoc_simd_memory_interface.vhd
-../../../../rtl/vhdl/core/simd/mpsoc_simd_memory_master_port.vhd
-../../../../rtl/vhdl/core/simd/mpsoc_simd_memory_slave_port.vhd
+  //////////////////////////////////////////////////////////////////
+  //
+  // Module Body
+  //
 
-../../../../rtl/vhdl/ram/mpsoc_misd_mpram.vhd
-../../../../rtl/vhdl/ram/mpsoc_simd_mpram.vhd
-../../../../rtl/vhdl/ram/mpsoc_spram.vhd
-../../../../rtl/vhdl/ram/mpsoc_ram_1r1w.vhd
-../../../../rtl/vhdl/ram/mpsoc_ram_1r1w_generic.vhd
+  //write side
+  generate
+    for (i=0; i<(DBITS+7)/8; i=i+1) begin: write
+      if (i*8 +8 > DBITS) begin
+        always @(posedge clk_i) begin
+          if (we_i && be_i[i])
+            mem_array[ waddr_i ] [DBITS-1:i*8] <= din_i[DBITS-1:i*8];
+        end
+      end
+      else begin
+        always @(posedge clk_i) begin
+          if (we_i && be_i[i])
+            mem_array[ waddr_i ][i*8+:8] <= din_i[i*8+:8];
+        end
+      end
+    end
+  endgenerate
 
-../../../../bench/vhdl/regression/mpsoc_msi_testbench.vhd
+  //read side
+
+  //per Altera's recommendations. Prevents bypass logic
+  always @(posedge clk_i) begin
+    dout_o <= mem_array[ raddr_i ];
+  end
+endmodule

@@ -9,9 +9,9 @@
 //                  |_|                                                       //
 //                                                                            //
 //                                                                            //
-//              MPSoC-RV64 CPU                                                //
-//              Network on Chip Makefile                                      //
-//              Mesh Topology                                                 //
+//              MPSoC-RISCV CPU                                               //
+//              Master Slave Interface Slave Port                             //
+//              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -40,17 +40,22 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/verilog/gpio/riscv_bridge.sv
-../../../../rtl/verilog/gpio/riscv_gpio.sv
+../../../../rtl/verilog/gpio/mpsoc_peripheral_bridge.sv
+../../../../rtl/verilog/gpio/mpsoc_gpio.sv
 
-../../../../rtl/verilog/memory/riscv_ram_1r1w.sv
-../../../../rtl/verilog/memory/riscv_ram_1r1w_generic.sv
+../../../../rtl/verilog/uart/mpsoc_uart.sv
+../../../../rtl/verilog/uart/mpsoc_uart_fifo.sv
+../../../../rtl/verilog/uart/mpsoc_uart_interrupt.sv
+../../../../rtl/verilog/uart/mpsoc_uart_rx.sv
+../../../../rtl/verilog/uart/mpsoc_uart_tx.sv
 
-../../../../rtl/verilog/modules/riscv_interconnect.sv
-../../../../rtl/verilog/modules/riscv_master_port.sv
-../../../../rtl/verilog/modules/riscv_slave_port.sv
+../../../../rtl/verilog/core/mpsoc_msi_interface.sv
+../../../../rtl/verilog/core/mpsoc_msi_master_port.sv
+../../../../rtl/verilog/core/mpsoc_msi_slave_port.sv
 
-../../../../rtl/verilog/ram/riscv_mpram.sv
-../../../../rtl/verilog/ram/riscv_spram.sv
+../../../../rtl/verilog/ram/mpsoc_mpram.sv
+../../../../rtl/verilog/ram/mpsoc_spram.sv
+../../../../rtl/verilog/ram/mpsoc_ram_1r1w.sv
+../../../../rtl/verilog/ram/mpsoc_ram_1r1w_generic.sv
 
-../../../../bench/verilog/regression/riscv_msi_testbench.sv
+../../../../bench/verilog/regression/mpsoc_msi_testbench.sv

@@ -1,5 +1,19 @@
-#read_verilog -sv rtl/verilog/modules/riscv_interconnect.sv
-#read_verilog -sv rtl/verilog/modules/riscv_master_port.sv
-#read_verilog -sv rtl/verilog/modules/riscv_slave_port.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/gpio/mpsoc_peripheral_bridge.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/gpio/mpsoc_gpio.sv
 
-#read_verilog -sv bench/verilog/regression/riscv_msi_testbench.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/uart/mpsoc_uart.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/uart/mpsoc_uart_fifo.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/uart/mpsoc_uart_interrupt.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/uart/mpsoc_uart_rx.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/uart/mpsoc_uart_tx.sv
+
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/core/mpsoc_msi_interface.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/core/mpsoc_msi_master_port.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/core/mpsoc_msi_slave_port.sv
+
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/ram/mpsoc_mpram.sv
+#read_verilog -I rtl/verilog/pkg -sv rtl/verilog/ram/mpsoc_spram.sv
+read_verilog -I rtl/verilog/pkg -sv rtl/verilog/ram/mpsoc_ram_1r1w.sv
+read_verilog -I rtl/verilog/pkg -sv rtl/verilog/ram/mpsoc_ram_1r1w_generic.sv
+
+#read_verilog -I rtl/verilog/pkg -sv bench/verilog/regression/mpsoc_msi_testbench.sv

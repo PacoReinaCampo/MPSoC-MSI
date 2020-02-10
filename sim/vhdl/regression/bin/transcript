@@ -1,23 +1,27 @@
-# vsim -c -do "run.do" work.riscv_msi_testbench 
-# Start time: 01:12:51 on Sep 23,2019
+# vsim -c -do "run.do" work.mpsoc_msi_testbench 
+# Start time: 00:11:35 on Feb 11,2020
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
 # Loading ieee.numeric_std(body)
 # Loading ieee.math_real(body)
-# Loading work.riscv_mpsoc_pkg
-# Loading work.riscv_msi_pkg
-# Loading work.riscv_msi_testbench(rtl)
-# Loading work.riscv_interconnect(rtl)
-# Loading work.riscv_master_port(rtl)
-# Loading work.riscv_slave_port(rtl)
-# Loading work.riscv_bridge(rtl)
-# Loading work.riscv_gpio(rtl)
-# Loading work.riscv_misd_mpram(rtl)
-# Loading work.riscv_ram_1r1w(rtl)
-# Loading work.riscv_ram_1r1w_generic(rtl)
-# Loading work.riscv_simd_mpram(rtl)
-# Loading work.riscv_spram(rtl)
-# do run.do
-# End time: 01:12:52 on Sep 23,2019, Elapsed time: 0:00:01
-# Errors: 0, Warnings: 0
+# Loading work.mpsoc_pkg
+# Loading work.mpsoc_msi_pkg
+# Loading work.mpsoc_msi_testbench(rtl)
+# Loading work.mpsoc_msi_interface(rtl)
+# Loading work.mpsoc_msi_master_port(rtl)
+# Loading work.mpsoc_msi_slave_port(rtl)
+# Loading work.mpsoc_misd_memory_interface(rtl)
+# Loading work.mpsoc_misd_memory_master_port(rtl)
+# Loading work.mpsoc_misd_memory_slave_port(rtl)
+# Loading work.mpsoc_simd_memory_interface(rtl)
+# Loading work.mpsoc_simd_memory_master_port(rtl)
+# Loading work.mpsoc_simd_memory_slave_port(rtl)
+# Loading work.mpsoc_peripheral_bridge(rtl)
+# Loading work.mpsoc_gpio(rtl)
+# ** Fatal: (vsim-3348) Port length (64) does not match actual length (12) for port "/mpsoc_msi_testbench/uart_bridge/PADDR".
+#    Time: 0 ps  Iteration: 0  Instance: /mpsoc_msi_testbench/uart_bridge File: ../../../../rtl/vhdl/gpio/mpsoc_peripheral_bridge.vhd Line: 87
+# FATAL ERROR while loading design
+# Error loading design
+# End time: 00:11:35 on Feb 11,2020, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
