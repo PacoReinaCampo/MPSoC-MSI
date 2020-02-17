@@ -186,7 +186,7 @@ module mpsoc_msi_testbench;
   //
 
   //DUT
-  mpsoc_msi_interface #(
+  mpsoc_msi_ahb3_interface #(
     .PLEN    ( PLEN    ),
     .XLEN    ( XLEN    ),
     .MASTERS ( MASTERS ),
@@ -236,7 +236,7 @@ module mpsoc_msi_testbench;
   );
 
   //Instantiate RISC-V GPIO
-  mpsoc_peripheral_bridge #(
+  mpsoc_ahb3_peripheral_bridge #(
     .HADDR_SIZE ( PLEN ),
     .HDATA_SIZE ( XLEN ),
     .PADDR_SIZE ( PLEN ),
@@ -278,7 +278,7 @@ module mpsoc_msi_testbench;
     .PSLVERR ( gpio_PSLVERR )
   );
 
-  mpsoc_gpio #(
+  mpsoc_apb_gpio #(
     .PADDR_SIZE ( PLEN ),
     .PDATA_SIZE ( XLEN )
   )
@@ -302,7 +302,7 @@ module mpsoc_msi_testbench;
   );
 
   //Instantiate RISC-V UART
-  mpsoc_peripheral_bridge #(
+  mpsoc_ahb3_peripheral_bridge #(
     .HADDR_SIZE ( PLEN ),
     .HDATA_SIZE ( XLEN ),
     .PADDR_SIZE ( PLEN ),
@@ -344,7 +344,7 @@ module mpsoc_msi_testbench;
     .PSLVERR ( uart_PSLVERR )
   );
 
-  mpsoc_uart #(
+  mpsoc_ahb3_uart #(
     .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
     .APB_DATA_WIDTH ( APB_DATA_WIDTH )
   )
@@ -368,7 +368,7 @@ module mpsoc_msi_testbench;
   );
 
   //Instantiate RISC-V RAM
-  mpsoc_mpram #(
+  mpsoc_ahb3_mpram #(
     .MEM_SIZE          ( 0 ),
     .MEM_DEPTH         ( 256 ),
     .HADDR_SIZE        ( PLEN ),
@@ -397,7 +397,7 @@ module mpsoc_msi_testbench;
     .HRESP     ( mst_mram_HRESP     )
   );
 
-  mpsoc_spram #(
+  mpsoc_ahb3_spram #(
     .MEM_SIZE          ( 0 ),
     .MEM_DEPTH         ( 256 ),
     .HADDR_SIZE        ( PLEN ),

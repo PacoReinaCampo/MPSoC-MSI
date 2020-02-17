@@ -54,7 +54,7 @@ entity mpsoc_msi_testbench is
 end mpsoc_msi_testbench;
 
 architecture RTL of mpsoc_msi_testbench is
-  component mpsoc_msi_interface
+  component mpsoc_msi_ahb3_interface
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -105,7 +105,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_misd_memory_interface
+  component mpsoc_misd_memory_ahb3_interface
     generic (
       PLEN           : integer := 64;
       XLEN           : integer := 64;
@@ -155,7 +155,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_simd_memory_interface
+  component mpsoc_simd_memory_ahb3_interface
     generic (
       PLEN           : integer := 64;
       XLEN           : integer := 64;
@@ -205,7 +205,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_peripheral_bridge
+  component mpsoc_ahb3_peripheral_bridge
     generic (
       HADDR_SIZE : integer := 32;
       HDATA_SIZE : integer := 32;
@@ -247,7 +247,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_gpio
+  component mpsoc_apb_gpio
     generic (
       PADDR_SIZE : integer := 64;
       PDATA_SIZE : integer := 64
@@ -272,7 +272,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_uart
+  component mpsoc_ahb3_uart
     generic (
       APB_ADDR_WIDTH : integer := 12;   --APB slaves are 4KB by default
       APB_DATA_WIDTH : integer := 32    --APB slaves are 4KB by default
@@ -296,7 +296,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_misd_mpram
+  component mpsoc_misd_ahb3_mpram
     generic (
       MEM_SIZE          : integer := 256;  --Memory in Bytes
       MEM_DEPTH         : integer := 256;  --Memory depth
@@ -327,7 +327,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_simd_mpram
+  component mpsoc_simd_ahb3_mpram
     generic (
       MEM_SIZE          : integer := 256;  --Memory in Bytes
       MEM_DEPTH         : integer := 256;  --Memory depth
@@ -358,7 +358,7 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
-  component mpsoc_spram
+  component mpsoc_ahb3_spram
     generic (
       MEM_SIZE          : integer := 256;  --Memory in Bytes
       MEM_DEPTH         : integer := 256;  --Memory depth
@@ -598,7 +598,7 @@ begin
   --
 
   --DUT
-  peripheral_interface : mpsoc_msi_interface
+  peripheral_interface : mpsoc_msi_ahb3_interface
     generic map (
       PLEN    => PLEN,
       XLEN    => XLEN,
@@ -648,7 +648,7 @@ begin
       slv_HRESP     => slv_HRESP
       );
 
-  misd_memory_interface : mpsoc_misd_memory_interface
+  misd_memory_interface : mpsoc_misd_memory_ahb3_interface
     generic map (
       PLEN           => PLEN,
       XLEN           => XLEN,
@@ -697,7 +697,7 @@ begin
       slv_HRESP     => slv_misd_memory_HRESP
       );
 
-  simd_memory_interface : mpsoc_simd_memory_interface
+  simd_memory_interface : mpsoc_simd_memory_ahb3_interface
     generic map (
       PLEN           => PLEN,
       XLEN           => XLEN,
@@ -747,7 +747,7 @@ begin
       );
 
   --Instantiate RISC-V GPIO
-  gpio_bridge : mpsoc_peripheral_bridge
+  gpio_bridge : mpsoc_ahb3_peripheral_bridge
     generic map (
       HADDR_SIZE => PLEN,
       HDATA_SIZE => XLEN,
@@ -790,7 +790,7 @@ begin
       PSLVERR => gpio_PSLVERR
       );
 
-  gpio : mpsoc_gpio
+  gpio : mpsoc_apb_gpio
     generic map (
       PADDR_SIZE => PLEN,
       PDATA_SIZE => XLEN
@@ -815,12 +815,12 @@ begin
       );
 
   --Instantiate RISC-V UART
-  uart_bridge : mpsoc_peripheral_bridge
+  uart_bridge : mpsoc_ahb3_peripheral_bridge
     generic map (
       HADDR_SIZE => PLEN,
       HDATA_SIZE => XLEN,
-      PADDR_SIZE => PADDR_SIZE,
-      PDATA_SIZE => PDATA_SIZE,
+      PADDR_SIZE => APB_ADDR_WIDTH,
+      PDATA_SIZE => APB_DATA_WIDTH,
       SYNC_DEPTH => SYNC_DEPTH
       )
     port map (
@@ -858,7 +858,7 @@ begin
       PSLVERR => uart_PSLVERR
       );
 
-  uart : mpsoc_uart
+  uart : mpsoc_ahb3_uart
     generic map (
       APB_ADDR_WIDTH => APB_ADDR_WIDTH,
       APB_DATA_WIDTH => APB_DATA_WIDTH
@@ -882,7 +882,7 @@ begin
       );
 
   --Instantiate RISC-V RAM
-  misd_mpram : mpsoc_misd_mpram
+  misd_mpram : mpsoc_misd_ahb3_mpram
     generic map (
       MEM_SIZE          => 256,
       MEM_DEPTH         => 256,
@@ -911,7 +911,7 @@ begin
       HRESP     => mst_misd_mram_HRESP
       );
 
-  simd_mpram : mpsoc_simd_mpram
+  simd_mpram : mpsoc_simd_ahb3_mpram
     generic map (
       MEM_SIZE          => 256,
       MEM_DEPTH         => 256,
@@ -940,7 +940,7 @@ begin
       HRESP     => mst_simd_mram_HRESP
       );
 
-  spram : mpsoc_spram
+  spram : mpsoc_ahb3_spram
     generic map (
       MEM_SIZE          => 256,
       MEM_DEPTH         => 256,
