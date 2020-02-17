@@ -192,7 +192,7 @@ module mpsoc_msi_testbench;
     .MASTERS ( MASTERS ),
     .SLAVES  ( SLAVES  )
   )
-  peripheral_interface (
+  peripheral_ahb3_interface (
     //Common signals
     .HRESETn       ( HRESETn ),
     .HCLK          ( HCLK    ),
@@ -235,6 +235,55 @@ module mpsoc_msi_testbench;
     .slv_HRESP     ( slv_HRESP     )
   );
 
+  mpsoc_msi_wb_interface #(
+    .PLEN    ( PLEN    ),
+    .XLEN    ( XLEN    ),
+    .MASTERS ( MASTERS ),
+    .SLAVES  ( SLAVES  )
+  )
+  peripheral_wb_interface (
+    //Common signals
+    .HRESETn       ( HRESETn ),
+    .HCLK          ( HCLK    ),
+
+    //Master Ports; AHB masters connect to these
+    //thus these are actually AHB Slave Interfaces
+    .mst_priority  (               ),
+
+    .mst_HSEL      (       ),
+    .mst_HADDR     (      ),
+    .mst_HWDATA    (     ),
+    .mst_HRDATA    (     ),
+    .mst_HWRITE    (     ),
+    .mst_HSIZE     (      ),
+    .mst_HBURST    (     ),
+    .mst_HPROT     (      ),
+    .mst_HTRANS    (     ),
+    .mst_HMASTLOCK (  ),
+    .mst_HREADYOUT (  ),
+    .mst_HREADY    (     ),
+    .mst_HRESP     (      ),
+
+    //Slave Ports; AHB Slaves connect to these
+    //thus these are actually AHB Master Interfaces
+    .slv_addr_mask (               ),
+    .slv_addr_base (               ),
+
+    .slv_HSEL      (       ),
+    .slv_HADDR     (      ),
+    .slv_HWDATA    (     ),
+    .slv_HRDATA    (     ),
+    .slv_HWRITE    (     ),
+    .slv_HSIZE     (      ),
+    .slv_HBURST    (     ),
+    .slv_HPROT     (      ),
+    .slv_HTRANS    (     ),
+    .slv_HMASTLOCK (  ),
+    .slv_HREADYOUT (               ),
+    .slv_HREADY    (     ),
+    .slv_HRESP     (      )
+  );
+
   //Instantiate RISC-V GPIO
   mpsoc_ahb3_peripheral_bridge #(
     .HADDR_SIZE ( PLEN ),
@@ -243,7 +292,7 @@ module mpsoc_msi_testbench;
     .PDATA_SIZE ( XLEN ),
     .SYNC_DEPTH ( SYNC_DEPTH )
   )
-  gpio_bridge (
+  gpio_ahb3_bridge (
     //AHB Slave Interface
     .HRESETn   ( HRESETn ),
     .HCLK      ( HCLK    ),
@@ -278,6 +327,48 @@ module mpsoc_msi_testbench;
     .PSLVERR ( gpio_PSLVERR )
   );
 
+  mpsoc_wb_peripheral_bridge #(
+    .HADDR_SIZE ( PLEN ),
+    .HDATA_SIZE ( XLEN ),
+    .PADDR_SIZE ( PLEN ),
+    .PDATA_SIZE ( XLEN ),
+    .SYNC_DEPTH ( SYNC_DEPTH )
+  )
+  gpio_wb_bridge (
+    //AHB Slave Interface
+    .HRESETn   ( HRESETn ),
+    .HCLK      ( HCLK    ),
+
+    .HSEL      (       ),
+    .HADDR     (      ),
+    .HWDATA    (     ),
+    .HRDATA    (     ),
+    .HWRITE    (     ),
+    .HSIZE     (      ),
+    .HBURST    (     ),
+    .HPROT     (      ),
+    .HTRANS    (     ),
+    .HMASTLOCK (  ),
+    .HREADYOUT (  ),
+    .HREADY    (     ),
+    .HRESP     (      ),
+
+    //APB Master Interface
+    .PRESETn (  ),
+    .PCLK    (     ),
+
+    .PSEL    (     ),
+    .PENABLE (  ),
+    .PPROT   (              ),
+    .PWRITE  (   ),
+    .PSTRB   (    ),
+    .PADDR   (    ),
+    .PWDATA  (   ),
+    .PRDATA  (   ),
+    .PREADY  (   ),
+    .PSLVERR (  )
+  );
+
   mpsoc_apb_gpio #(
     .PADDR_SIZE ( PLEN ),
     .PDATA_SIZE ( XLEN )
@@ -309,7 +400,7 @@ module mpsoc_msi_testbench;
     .PDATA_SIZE ( XLEN ),
     .SYNC_DEPTH ( SYNC_DEPTH )
   )
-  uart_bridge (
+  uart_ahb3_bridge (
     //AHB Slave Interface
     .HRESETn   ( HRESETn ),
     .HCLK      ( HCLK    ),
@@ -344,11 +435,53 @@ module mpsoc_msi_testbench;
     .PSLVERR ( uart_PSLVERR )
   );
 
+  mpsoc_wb_peripheral_bridge #(
+    .HADDR_SIZE ( PLEN ),
+    .HDATA_SIZE ( XLEN ),
+    .PADDR_SIZE ( PLEN ),
+    .PDATA_SIZE ( XLEN ),
+    .SYNC_DEPTH ( SYNC_DEPTH )
+  )
+  uart_wb_bridge (
+    //AHB Slave Interface
+    .HRESETn   ( HRESETn ),
+    .HCLK      ( HCLK    ),
+
+    .HSEL      (       ),
+    .HADDR     (      ),
+    .HWDATA    (     ),
+    .HRDATA    (     ),
+    .HWRITE    (     ),
+    .HSIZE     (      ),
+    .HBURST    (     ),
+    .HPROT     (      ),
+    .HTRANS    (     ),
+    .HMASTLOCK (  ),
+    .HREADYOUT (  ),
+    .HREADY    (     ),
+    .HRESP     (      ),
+
+    //APB Master Interface
+    .PRESETn ( HRESETn ),
+    .PCLK    ( HCLK    ),
+
+    .PSEL    (     ),
+    .PENABLE (  ),
+    .PPROT   (              ),
+    .PWRITE  (   ),
+    .PSTRB   (              ),
+    .PADDR   (    ),
+    .PWDATA  (   ),
+    .PRDATA  (   ),
+    .PREADY  (   ),
+    .PSLVERR (  )
+  );
+
   mpsoc_ahb3_uart #(
     .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
     .APB_DATA_WIDTH ( APB_DATA_WIDTH )
   )
-  uart (
+  ahb3_uart (
     .RSTN ( HRESETn ),
     .CLK  ( HCLK    ),
 
@@ -367,6 +500,29 @@ module mpsoc_msi_testbench;
     .event_o ( uart_event_o )
   );
 
+  mpsoc_wb_uart #(
+    .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
+    .APB_DATA_WIDTH ( APB_DATA_WIDTH )
+  )
+  wb_uart (
+    .RSTN ( HRESETn ),
+    .CLK  ( HCLK    ),
+
+    .PADDR   (    ),
+    .PWDATA  (   ),
+    .PWRITE  (   ),
+    .PSEL    (     ),
+    .PENABLE (  ),
+    .PRDATA  (   ),
+    .PREADY  (   ),
+    .PSLVERR (  ),
+
+    .rx_i (  ),
+    .tx_o (  ),
+
+    .event_o (  )
+  );
+
   //Instantiate RISC-V RAM
   mpsoc_ahb3_mpram #(
     .MEM_SIZE          ( 0 ),
@@ -377,7 +533,7 @@ module mpsoc_msi_testbench;
     .TECHNOLOGY        ( TECHNOLOGY ),
     .REGISTERED_OUTPUT ( "NO" )
   )
-  mpram (
+  ahb3_mpram (
     //AHB Slave Interface
     .HRESETn   ( HRESETn ),
     .HCLK      ( HCLK    ),
@@ -397,6 +553,35 @@ module mpsoc_msi_testbench;
     .HRESP     ( mst_mram_HRESP     )
   );
 
+  mpsoc_wb_mpram #(
+    .MEM_SIZE          ( 0 ),
+    .MEM_DEPTH         ( 256 ),
+    .HADDR_SIZE        ( PLEN ),
+    .HDATA_SIZE        ( XLEN ),
+    .CORES_PER_TILE    ( MASTERS ),
+    .TECHNOLOGY        ( TECHNOLOGY ),
+    .REGISTERED_OUTPUT ( "NO" )
+  )
+  wb_mpram (
+    //AHB Slave Interface
+    .HRESETn   ( HRESETn ),
+    .HCLK      ( HCLK    ),
+
+    .HSEL      (       ),
+    .HADDR     (      ),
+    .HWDATA    (     ),
+    .HRDATA    (     ),
+    .HWRITE    (     ),
+    .HSIZE     (      ),
+    .HBURST    (     ),
+    .HPROT     (      ),
+    .HTRANS    (     ),
+    .HMASTLOCK (  ),
+    .HREADYOUT (  ),
+    .HREADY    (     ),
+    .HRESP     (      )
+  );
+
   mpsoc_ahb3_spram #(
     .MEM_SIZE          ( 0 ),
     .MEM_DEPTH         ( 256 ),
@@ -405,7 +590,7 @@ module mpsoc_msi_testbench;
     .TECHNOLOGY        ( TECHNOLOGY ),
     .REGISTERED_OUTPUT ( "NO" )
   )
-  spram (
+  ahb3_spram (
     //AHB Slave Interface
     .HRESETn   ( HRESETn ),
     .HCLK      ( HCLK    ),
@@ -423,5 +608,33 @@ module mpsoc_msi_testbench;
     .HREADYOUT ( mst_sram_HREADYOUT ),
     .HREADY    ( mst_sram_HREADY    ),
     .HRESP     ( mst_sram_HRESP     )
+  );
+
+  mpsoc_wb_spram #(
+    .MEM_SIZE          ( 0 ),
+    .MEM_DEPTH         ( 256 ),
+    .HADDR_SIZE        ( PLEN ),
+    .HDATA_SIZE        ( XLEN ),
+    .TECHNOLOGY        ( TECHNOLOGY ),
+    .REGISTERED_OUTPUT ( "NO" )
+  )
+  wb_spram (
+    //AHB Slave Interface
+    .HRESETn   ( HRESETn ),
+    .HCLK      ( HCLK    ),
+
+    .HSEL      (       ),
+    .HADDR     (      ),
+    .HWDATA    (     ),
+    .HRDATA    (     ),
+    .HWRITE    (     ),
+    .HSIZE     (      ),
+    .HBURST    (     ),
+    .HPROT     (      ),
+    .HTRANS    (     ),
+    .HMASTLOCK (  ),
+    .HREADYOUT (  ),
+    .HREADY    (     ),
+    .HRESP     (      )
   );
 endmodule
