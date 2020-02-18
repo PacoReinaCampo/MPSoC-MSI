@@ -101,7 +101,7 @@ entity mpsoc_msi_wb_interface is
 end mpsoc_msi_wb_interface;
 
 architecture RTL of mpsoc_msi_wb_interface is
-  component mpsoc_msi_master_port
+  component mpsoc_msi_wb_master_port
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -155,7 +155,7 @@ architecture RTL of mpsoc_msi_wb_interface is
     );
   end component;
 
-  component mpsoc_msi_slave_port
+  component mpsoc_msi_wb_slave_port
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -255,7 +255,7 @@ begin
 
   --Hookup Master Interfaces
   generating_0 : for m in 0 to MASTERS - 1 generate
-    master_port : mpsoc_msi_master_port
+    wb_master_port : mpsoc_msi_wb_master_port
       generic map (
         PLEN    => PLEN,
         XLEN    => XLEN,
@@ -341,7 +341,7 @@ begin
 
   --Hookup Slave Interfaces
   generating_5 : for s in 0 to SLAVES - 1 generate
-    slave_port : mpsoc_msi_slave_port
+    wb_slave_port : mpsoc_msi_wb_slave_port
       generic map (
         PLEN    => PLEN,
         XLEN    => XLEN,

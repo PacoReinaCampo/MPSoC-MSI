@@ -105,7 +105,108 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
+  component mpsoc_msi_wb_interface
+    generic (
+      PLEN    : integer := 64;
+      XLEN    : integer := 64;
+      MASTERS : integer := 5;
+      SLAVES  : integer := 5
+      );
+    port (
+      --Common signals
+      HRESETn : in std_logic;
+      HCLK    : in std_logic;
+
+      --Master Ports; AHB masters connect to these
+      -- thus these are actually AHB Slave Interfaces
+      mst_priority : in M_MASTERS_2;
+
+      mst_HSEL      : in  std_logic_vector(MASTERS-1 downto 0);
+      mst_HADDR     : in  M_MASTERS_PLEN;
+      mst_HWDATA    : in  M_MASTERS_XLEN;
+      mst_HRDATA    : out M_MASTERS_XLEN;
+      mst_HWRITE    : in  std_logic_vector(MASTERS-1 downto 0);
+      mst_HSIZE     : in  M_MASTERS_2;
+      mst_HBURST    : in  M_MASTERS_2;
+      mst_HPROT     : in  M_MASTERS_3;
+      mst_HTRANS    : in  M_MASTERS_1;
+      mst_HMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
+      mst_HREADYOUT : out std_logic_vector(MASTERS-1 downto 0);
+      mst_HREADY    : in  std_logic_vector(MASTERS-1 downto 0);
+      mst_HRESP     : out std_logic_vector(MASTERS-1 downto 0);
+
+      --Slave Ports; AHB Slaves connect to these
+      --  thus these are actually AHB Master Interfaces
+      slv_addr_mask : in M_SLAVES_PLEN;
+      slv_addr_base : in M_SLAVES_PLEN;
+
+      slv_HSEL      : out std_logic_vector(SLAVES-1 downto 0);
+      slv_HADDR     : out M_SLAVES_PLEN;
+      slv_HWDATA    : out M_SLAVES_XLEN;
+      slv_HRDATA    : in  M_SLAVES_XLEN;
+      slv_HWRITE    : out std_logic_vector(SLAVES-1 downto 0);
+      slv_HSIZE     : out M_SLAVES_2;
+      slv_HBURST    : out M_SLAVES_2;
+      slv_HPROT     : out M_SLAVES_3;
+      slv_HTRANS    : out M_SLAVES_1;
+      slv_HMASTLOCK : out std_logic_vector(SLAVES-1 downto 0);
+      slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+      slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  --combinatorial HREADY from all connected slaves
+      slv_HRESP     : in  std_logic_vector(SLAVES-1 downto 0)
+      );
+  end component;
+
   component mpsoc_misd_memory_ahb3_interface
+    generic (
+      PLEN           : integer := 64;
+      XLEN           : integer := 64;
+      CORES_PER_MISD : integer := 8
+      );
+    port (
+      --Common signals
+      HRESETn : in std_logic;
+      HCLK    : in std_logic;
+
+      --Master Ports; AHB masters connect to these
+      -- thus these are actually AHB Slave Interfaces
+      mst_priority : in M_CORES_PER_MISD_2;
+
+      mst_HSEL      : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      mst_HADDR     : in  M_CORES_PER_MISD_PLEN;
+      mst_HWDATA    : in  M_CORES_PER_MISD_XLEN;
+      mst_HRDATA    : out M_CORES_PER_MISD_XLEN;
+      mst_HWRITE    : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      mst_HSIZE     : in  M_CORES_PER_MISD_2;
+      mst_HBURST    : in  M_CORES_PER_MISD_2;
+      mst_HPROT     : in  M_CORES_PER_MISD_3;
+      mst_HTRANS    : in  M_CORES_PER_MISD_1;
+      mst_HMASTLOCK : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      mst_HREADYOUT : out std_logic_vector(CORES_PER_MISD-1 downto 0);
+      mst_HREADY    : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      mst_HRESP     : out std_logic_vector(CORES_PER_MISD-1 downto 0);
+
+      --Slave Ports; AHB Slaves connect to these
+      --  thus these are actually AHB Master Interfaces
+      slv_addr_mask : in M_CORES_PER_MISD_PLEN;
+      slv_addr_base : in M_CORES_PER_MISD_PLEN;
+
+      slv_HSEL      : out std_logic_vector(CORES_PER_MISD-1 downto 0);
+      slv_HADDR     : out M_CORES_PER_MISD_PLEN;
+      slv_HWDATA    : out M_CORES_PER_MISD_XLEN;
+      slv_HRDATA    : in  M_CORES_PER_MISD_XLEN;
+      slv_HWRITE    : out std_logic_vector(CORES_PER_MISD-1 downto 0);
+      slv_HSIZE     : out M_CORES_PER_MISD_2;
+      slv_HBURST    : out M_CORES_PER_MISD_2;
+      slv_HPROT     : out M_CORES_PER_MISD_3;
+      slv_HTRANS    : out M_CORES_PER_MISD_1;
+      slv_HMASTLOCK : out std_logic_vector(CORES_PER_MISD-1 downto 0);
+      slv_HREADYOUT : out std_logic_vector(CORES_PER_MISD-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+      slv_HREADY    : in  std_logic_vector(CORES_PER_MISD-1 downto 0);  --combinatorial HREADY from all connected slaves
+      slv_HRESP     : in  std_logic_vector(CORES_PER_MISD-1 downto 0)
+      );
+  end component;
+
+  component mpsoc_misd_memory_wb_interface
     generic (
       PLEN           : integer := 64;
       XLEN           : integer := 64;
@@ -205,7 +306,99 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
+  component mpsoc_simd_memory_wb_interface
+    generic (
+      PLEN           : integer := 64;
+      XLEN           : integer := 64;
+      CORES_PER_SIMD : integer := 8
+      );
+    port (
+      --Common signals
+      HRESETn : in std_logic;
+      HCLK    : in std_logic;
+
+      --Master Ports; AHB masters connect to these
+      -- thus these are actually AHB Slave Interfaces
+      mst_priority : in M_CORES_PER_SIMD_2;
+
+      mst_HSEL      : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      mst_HADDR     : in  M_CORES_PER_SIMD_PLEN;
+      mst_HWDATA    : in  M_CORES_PER_SIMD_XLEN;
+      mst_HRDATA    : out M_CORES_PER_SIMD_XLEN;
+      mst_HWRITE    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      mst_HSIZE     : in  M_CORES_PER_SIMD_2;
+      mst_HBURST    : in  M_CORES_PER_SIMD_2;
+      mst_HPROT     : in  M_CORES_PER_SIMD_3;
+      mst_HTRANS    : in  M_CORES_PER_SIMD_1;
+      mst_HMASTLOCK : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      mst_HREADYOUT : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      mst_HREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      mst_HRESP     : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+
+      --Slave Ports; AHB Slaves connect to these
+      --  thus these are actually AHB Master Interfaces
+      slv_addr_mask : in M_CORES_PER_SIMD_PLEN;
+      slv_addr_base : in M_CORES_PER_SIMD_PLEN;
+
+      slv_HSEL      : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      slv_HADDR     : out M_CORES_PER_SIMD_PLEN;
+      slv_HWDATA    : out M_CORES_PER_SIMD_XLEN;
+      slv_HRDATA    : in  M_CORES_PER_SIMD_XLEN;
+      slv_HWRITE    : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      slv_HSIZE     : out M_CORES_PER_SIMD_2;
+      slv_HBURST    : out M_CORES_PER_SIMD_2;
+      slv_HPROT     : out M_CORES_PER_SIMD_3;
+      slv_HTRANS    : out M_CORES_PER_SIMD_1;
+      slv_HMASTLOCK : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      slv_HREADYOUT : out std_logic_vector(CORES_PER_SIMD-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+      slv_HREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);  --combinatorial HREADY from all connected slaves
+      slv_HRESP     : in  std_logic_vector(CORES_PER_SIMD-1 downto 0)
+      );
+  end component;
+
   component mpsoc_ahb3_peripheral_bridge
+    generic (
+      HADDR_SIZE : integer := 32;
+      HDATA_SIZE : integer := 32;
+      PADDR_SIZE : integer := 10;
+      PDATA_SIZE : integer := 8;
+      SYNC_DEPTH : integer := 3
+      );
+    port (
+      --AHB Slave Interface
+      HRESETn   : in  std_logic;
+      HCLK      : in  std_logic;
+      HSEL      : in  std_logic;
+      HADDR     : in  std_logic_vector(HADDR_SIZE-1 downto 0);
+      HWDATA    : in  std_logic_vector(HDATA_SIZE-1 downto 0);
+      HRDATA    : out std_logic_vector(HDATA_SIZE-1 downto 0);
+      HWRITE    : in  std_logic;
+      HSIZE     : in  std_logic_vector(2 downto 0);
+      HBURST    : in  std_logic_vector(2 downto 0);
+      HPROT     : in  std_logic_vector(3 downto 0);
+      HTRANS    : in  std_logic_vector(1 downto 0);
+      HMASTLOCK : in  std_logic;
+      HREADYOUT : out std_logic;
+      HREADY    : in  std_logic;
+      HRESP     : out std_logic;
+
+      --APB Master Interface
+      PRESETn : in  std_logic;
+      PCLK    : in  std_logic;
+      PSEL    : out std_logic;
+      PENABLE : out std_logic;
+      PPROT   : out std_logic_vector(2 downto 0);
+      PWRITE  : out std_logic;
+      PSTRB   : out std_logic;
+      PADDR   : out std_logic_vector(PADDR_SIZE-1 downto 0);
+      PWDATA  : out std_logic_vector(PDATA_SIZE-1 downto 0);
+      PRDATA  : in  std_logic_vector(PDATA_SIZE-1 downto 0);
+      PREADY  : in  std_logic;
+      PSLVERR : in  std_logic
+      );
+  end component;
+
+  component mpsoc_wb_peripheral_bridge
     generic (
       HADDR_SIZE : integer := 32;
       HDATA_SIZE : integer := 32;
@@ -296,7 +489,62 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
+  component mpsoc_wb_uart
+    generic (
+      APB_ADDR_WIDTH : integer := 12;   --APB slaves are 4KB by default
+      APB_DATA_WIDTH : integer := 32    --APB slaves are 4KB by default
+      );
+    port (
+      CLK     : in  std_logic;
+      RSTN    : in  std_logic;
+      PADDR   : in  std_logic_vector(APB_ADDR_WIDTH-1 downto 0);
+      PWDATA  : in  std_logic_vector(APB_DATA_WIDTH-1 downto 0);
+      PWRITE  : in  std_logic;
+      PSEL    : in  std_logic;
+      PENABLE : in  std_logic;
+      PRDATA  : out std_logic_vector(APB_DATA_WIDTH-1 downto 0);
+      PREADY  : out std_logic;
+      PSLVERR : out std_logic;
+
+      rx_i : in  std_logic;             -- Receiver input
+      tx_o : out std_logic;             -- Transmitter output
+
+      event_o : out std_logic           -- interrupt/event output
+      );
+  end component;
+
   component mpsoc_misd_ahb3_mpram
+    generic (
+      MEM_SIZE          : integer := 256;  --Memory in Bytes
+      MEM_DEPTH         : integer := 256;  --Memory depth
+      PLEN              : integer := 64;
+      XLEN              : integer := 64;
+      TECHNOLOGY        : string  := "GENERIC";
+      REGISTERED_OUTPUT : string  := "NO"
+      );
+    port (
+      HRESETn : in std_logic;
+      HCLK    : in std_logic;
+
+      --AHB Slave Interfaces (receive data from AHB Masters)
+      --AHB Masters connect to these ports
+      HSEL      : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      HADDR     : in  M_CORES_PER_MISD_PLEN;
+      HWDATA    : in  M_CORES_PER_MISD_XLEN;
+      HRDATA    : out M_CORES_PER_MISD_XLEN;
+      HWRITE    : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      HSIZE     : in  M_CORES_PER_MISD_2;
+      HBURST    : in  M_CORES_PER_MISD_2;
+      HPROT     : in  M_CORES_PER_MISD_3;
+      HTRANS    : in  M_CORES_PER_MISD_1;
+      HMASTLOCK : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      HREADYOUT : out std_logic_vector(CORES_PER_MISD-1 downto 0);
+      HREADY    : in  std_logic_vector(CORES_PER_MISD-1 downto 0);
+      HRESP     : out std_logic_vector(CORES_PER_MISD-1 downto 0)
+      );
+  end component;
+
+  component mpsoc_misd_wb_mpram
     generic (
       MEM_SIZE          : integer := 256;  --Memory in Bytes
       MEM_DEPTH         : integer := 256;  --Memory depth
@@ -358,7 +606,69 @@ architecture RTL of mpsoc_msi_testbench is
       );
   end component;
 
+  component mpsoc_simd_wb_mpram
+    generic (
+      MEM_SIZE          : integer := 256;  --Memory in Bytes
+      MEM_DEPTH         : integer := 256;  --Memory depth
+      PLEN              : integer := 64;
+      XLEN              : integer := 64;
+      TECHNOLOGY        : string  := "GENERIC";
+      REGISTERED_OUTPUT : string  := "NO"
+      );
+    port (
+      HRESETn : in std_logic;
+      HCLK    : in std_logic;
+
+      --AHB Slave Interfaces (receive data from AHB Masters)
+      --AHB Masters connect to these ports
+      HSEL      : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      HADDR     : in  M_CORES_PER_SIMD_PLEN;
+      HWDATA    : in  M_CORES_PER_SIMD_XLEN;
+      HRDATA    : out M_CORES_PER_SIMD_XLEN;
+      HWRITE    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      HSIZE     : in  M_CORES_PER_SIMD_2;
+      HBURST    : in  M_CORES_PER_SIMD_2;
+      HPROT     : in  M_CORES_PER_SIMD_3;
+      HTRANS    : in  M_CORES_PER_SIMD_1;
+      HMASTLOCK : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      HREADYOUT : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      HREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      HRESP     : out std_logic_vector(CORES_PER_SIMD-1 downto 0)
+      );
+  end component;
+
   component mpsoc_ahb3_spram
+    generic (
+      MEM_SIZE          : integer := 256;  --Memory in Bytes
+      MEM_DEPTH         : integer := 256;  --Memory depth
+      PLEN              : integer := 64;
+      XLEN              : integer := 64;
+      TECHNOLOGY        : string  := "GENERIC";
+      REGISTERED_OUTPUT : string  := "NO"
+      );
+    port (
+      HRESETn : in std_logic;
+      HCLK    : in std_logic;
+
+      --AHB Slave Interfaces (receive data from AHB Masters)
+      --AHB Masters connect to these ports
+      HSEL      : in  std_logic;
+      HADDR     : in  std_logic_vector(PLEN-1 downto 0);
+      HWDATA    : in  std_logic_vector(XLEN-1 downto 0);
+      HRDATA    : out std_logic_vector(XLEN-1 downto 0);
+      HWRITE    : in  std_logic;
+      HSIZE     : in  std_logic_vector(2 downto 0);
+      HBURST    : in  std_logic_vector(2 downto 0);
+      HPROT     : in  std_logic_vector(3 downto 0);
+      HTRANS    : in  std_logic_vector(1 downto 0);
+      HMASTLOCK : in  std_logic;
+      HREADYOUT : out std_logic;
+      HREADY    : in  std_logic;
+      HRESP     : out std_logic
+      );
+  end component;
+
+  component mpsoc_wb_spram
     generic (
       MEM_SIZE          : integer := 256;  --Memory in Bytes
       MEM_DEPTH         : integer := 256;  --Memory depth
@@ -598,7 +908,7 @@ begin
   --
 
   --DUT
-  peripheral_interface : mpsoc_msi_ahb3_interface
+  peripheral_ahb3_interface : mpsoc_msi_ahb3_interface
     generic map (
       PLEN    => PLEN,
       XLEN    => XLEN,
@@ -648,7 +958,58 @@ begin
       slv_HRESP     => slv_HRESP
       );
 
-  misd_memory_interface : mpsoc_misd_memory_ahb3_interface
+  peripheral_wb_interface : mpsoc_msi_wb_interface
+    generic map (
+      PLEN    => PLEN,
+      XLEN    => XLEN,
+      MASTERS => MASTERS,
+      SLAVES  => SLAVES
+      )
+    port map (
+      --Common signals
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      --Master Ports; AHB masters connect to these
+      --thus these are actually AHB Slave Interfaces
+      mst_priority => mst_priority,
+
+      mst_HSEL      => mst_HSEL,
+      mst_HADDR     => mst_HADDR,
+      mst_HWDATA    => mst_HWDATA,
+      mst_HRDATA    => open,
+      mst_HWRITE    => mst_HWRITE,
+      mst_HSIZE     => mst_HSIZE,
+      mst_HBURST    => mst_HBURST,
+      mst_HPROT     => mst_HPROT,
+      mst_HTRANS    => mst_HTRANS,
+      mst_HMASTLOCK => mst_HMASTLOCK,
+      mst_HREADYOUT => open,
+      mst_HREADY    => mst_HREADY,
+      mst_HRESP     => open,
+
+      --Slave Ports; AHB Slaves connect to these
+      --thus these are actually AHB Master Interfaces
+      slv_addr_mask => slv_addr_mask,
+      slv_addr_base => slv_addr_base,
+
+      slv_HSEL      => open,
+      slv_HADDR     => open,
+      slv_HWDATA    => open,
+      slv_HRDATA    => slv_HRDATA,
+      slv_HWRITE    => open,
+      slv_HSIZE     => open,
+      slv_HBURST    => open,
+      slv_HPROT     => open,
+      slv_HTRANS    => open,
+      slv_HMASTLOCK => open,
+      slv_HREADYOUT => open,
+      slv_HREADY    => slv_HREADY,
+      slv_HRESP     => slv_HRESP
+      );
+
+
+  misd_memory_ahb3_interface : mpsoc_misd_memory_ahb3_interface
     generic map (
       PLEN           => PLEN,
       XLEN           => XLEN,
@@ -696,8 +1057,56 @@ begin
       slv_HREADY    => slv_misd_memory_HREADY,
       slv_HRESP     => slv_misd_memory_HRESP
       );
+  misd_memory_wb_interface : mpsoc_misd_memory_wb_interface
+    generic map (
+      PLEN           => PLEN,
+      XLEN           => XLEN,
+      CORES_PER_MISD => CORES_PER_MISD
+      )
+    port map (
+      --Common signals
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
 
-  simd_memory_interface : mpsoc_simd_memory_ahb3_interface
+      --Master Ports; AHB masters connect to these
+      --thus these are actually AHB Slave Interfaces
+      mst_priority => mst_misd_memory_priority,
+
+      mst_HSEL      => mst_misd_memory_HSEL,
+      mst_HADDR     => mst_misd_memory_HADDR,
+      mst_HWDATA    => mst_misd_memory_HWDATA,
+      mst_HRDATA    => open,
+      mst_HWRITE    => mst_misd_memory_HWRITE,
+      mst_HSIZE     => mst_misd_memory_HSIZE,
+      mst_HBURST    => mst_misd_memory_HBURST,
+      mst_HPROT     => mst_misd_memory_HPROT,
+      mst_HTRANS    => mst_misd_memory_HTRANS,
+      mst_HMASTLOCK => mst_misd_memory_HMASTLOCK,
+      mst_HREADYOUT => open,
+      mst_HREADY    => mst_misd_memory_HREADY,
+      mst_HRESP     => open,
+
+      --Slave Ports; AHB Slaves connect to these
+      --thus these are actually AHB Master Interfaces
+      slv_addr_mask => slv_misd_memory_addr_mask,
+      slv_addr_base => slv_misd_memory_addr_base,
+
+      slv_HSEL      => open,
+      slv_HADDR     => open,
+      slv_HWDATA    => open,
+      slv_HRDATA    => slv_misd_memory_HRDATA,
+      slv_HWRITE    => open,
+      slv_HSIZE     => open,
+      slv_HBURST    => open,
+      slv_HPROT     => open,
+      slv_HTRANS    => open,
+      slv_HMASTLOCK => open,
+      slv_HREADYOUT => open,
+      slv_HREADY    => slv_misd_memory_HREADY,
+      slv_HRESP     => slv_misd_memory_HRESP
+      );
+
+  simd_memory_ahb3_interface : mpsoc_simd_memory_ahb3_interface
     generic map (
       PLEN           => PLEN,
       XLEN           => XLEN,
@@ -746,8 +1155,57 @@ begin
       slv_HRESP     => slv_simd_memory_HRESP
       );
 
+  simd_memory_wb_interface : mpsoc_simd_memory_wb_interface
+    generic map (
+      PLEN           => PLEN,
+      XLEN           => XLEN,
+      CORES_PER_SIMD => CORES_PER_SIMD
+      )
+    port map (
+      --Common signals
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      --Master Ports; AHB masters connect to these
+      --thus these are actually AHB Slave Interfaces
+      mst_priority => mst_simd_memory_priority,
+
+      mst_HSEL      => mst_simd_memory_HSEL,
+      mst_HADDR     => mst_simd_memory_HADDR,
+      mst_HWDATA    => mst_simd_memory_HWDATA,
+      mst_HRDATA    => open,
+      mst_HWRITE    => mst_simd_memory_HWRITE,
+      mst_HSIZE     => mst_simd_memory_HSIZE,
+      mst_HBURST    => mst_simd_memory_HBURST,
+      mst_HPROT     => mst_simd_memory_HPROT,
+      mst_HTRANS    => mst_simd_memory_HTRANS,
+      mst_HMASTLOCK => mst_simd_memory_HMASTLOCK,
+      mst_HREADYOUT => open,
+      mst_HREADY    => mst_simd_memory_HREADY,
+      mst_HRESP     => open,
+
+      --Slave Ports; AHB Slaves connect to these
+      --thus these are actually AHB Master Interfaces
+      slv_addr_mask => slv_simd_memory_addr_mask,
+      slv_addr_base => slv_simd_memory_addr_base,
+
+      slv_HSEL      => open,
+      slv_HADDR     => open,
+      slv_HWDATA    => open,
+      slv_HRDATA    => slv_simd_memory_HRDATA,
+      slv_HWRITE    => open,
+      slv_HSIZE     => open,
+      slv_HBURST    => open,
+      slv_HPROT     => open,
+      slv_HTRANS    => open,
+      slv_HMASTLOCK => open,
+      slv_HREADYOUT => open,
+      slv_HREADY    => slv_simd_memory_HREADY,
+      slv_HRESP     => slv_simd_memory_HRESP
+      );
+
   --Instantiate RISC-V GPIO
-  gpio_bridge : mpsoc_ahb3_peripheral_bridge
+  gpio_ahb3_bridge : mpsoc_ahb3_peripheral_bridge
     generic map (
       HADDR_SIZE => PLEN,
       HDATA_SIZE => XLEN,
@@ -790,6 +1248,49 @@ begin
       PSLVERR => gpio_PSLVERR
       );
 
+  gpio_wb_bridge : mpsoc_wb_peripheral_bridge
+    generic map (
+      HADDR_SIZE => PLEN,
+      HDATA_SIZE => XLEN,
+      PADDR_SIZE => PADDR_SIZE,
+      PDATA_SIZE => PDATA_SIZE,
+      SYNC_DEPTH => SYNC_DEPTH
+      )
+    port map (
+      --AHB Slave Interface
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      HSEL      => mst_gpio_HSEL,
+      HADDR     => mst_gpio_HADDR,
+      HWDATA    => mst_gpio_HWDATA,
+      HRDATA    => open,
+      HWRITE    => mst_gpio_HWRITE,
+      HSIZE     => mst_gpio_HSIZE,
+      HBURST    => mst_gpio_HBURST,
+      HPROT     => mst_gpio_HPROT,
+      HTRANS    => mst_gpio_HTRANS,
+      HMASTLOCK => mst_gpio_HMASTLOCK,
+      HREADYOUT => open,
+      HREADY    => mst_gpio_HREADY,
+      HRESP     => open,
+
+      --APB Master Interface
+      PRESETn => HRESETn,
+      PCLK    => HCLK,
+
+      PSEL    => open,
+      PENABLE => open,
+      PPROT   => open,
+      PWRITE  => open,
+      PSTRB   => open,
+      PADDR   => open,
+      PWDATA  => open,
+      PRDATA  => gpio_PRDATA,
+      PREADY  => gpio_PREADY,
+      PSLVERR => gpio_PSLVERR
+      );
+
   gpio : mpsoc_apb_gpio
     generic map (
       PADDR_SIZE => PLEN,
@@ -815,7 +1316,7 @@ begin
       );
 
   --Instantiate RISC-V UART
-  uart_bridge : mpsoc_ahb3_peripheral_bridge
+  uart_ahb3_bridge : mpsoc_ahb3_peripheral_bridge
     generic map (
       HADDR_SIZE => PLEN,
       HDATA_SIZE => XLEN,
@@ -858,7 +1359,50 @@ begin
       PSLVERR => uart_PSLVERR
       );
 
-  uart : mpsoc_ahb3_uart
+  uart_wb_bridge : mpsoc_wb_peripheral_bridge
+    generic map (
+      HADDR_SIZE => PLEN,
+      HDATA_SIZE => XLEN,
+      PADDR_SIZE => APB_ADDR_WIDTH,
+      PDATA_SIZE => APB_DATA_WIDTH,
+      SYNC_DEPTH => SYNC_DEPTH
+      )
+    port map (
+      --AHB Slave Interface
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      HSEL      => mst_uart_HSEL,
+      HADDR     => mst_uart_HADDR,
+      HWDATA    => mst_uart_HWDATA,
+      HRDATA    => open,
+      HWRITE    => mst_uart_HWRITE,
+      HSIZE     => mst_uart_HSIZE,
+      HBURST    => mst_uart_HBURST,
+      HPROT     => mst_uart_HPROT,
+      HTRANS    => mst_uart_HTRANS,
+      HMASTLOCK => mst_uart_HMASTLOCK,
+      HREADYOUT => open,
+      HREADY    => mst_uart_HREADY,
+      HRESP     => open,
+
+      --APB Master Interface
+      PRESETn => HRESETn,
+      PCLK    => HCLK,
+
+      PSEL    => open,
+      PENABLE => open,
+      PPROT   => open,
+      PWRITE  => open,
+      PSTRB   => open,
+      PADDR   => open,
+      PWDATA  => open,
+      PRDATA  => uart_PRDATA,
+      PREADY  => uart_PREADY,
+      PSLVERR => uart_PSLVERR
+      );
+
+  ahb3_uart : mpsoc_ahb3_uart
     generic map (
       APB_ADDR_WIDTH => APB_ADDR_WIDTH,
       APB_DATA_WIDTH => APB_DATA_WIDTH
@@ -881,8 +1425,31 @@ begin
       event_o => uart_event_o
       );
 
+  wb_uart : mpsoc_wb_uart
+    generic map (
+      APB_ADDR_WIDTH => APB_ADDR_WIDTH,
+      APB_DATA_WIDTH => APB_DATA_WIDTH
+      )
+    port map (
+      CLK     => HCLK,
+      RSTN    => HRESETn,
+      PADDR   => uart_PADDR,
+      PWDATA  => uart_PWDATA,
+      PWRITE  => uart_PWRITE,
+      PSEL    => uart_PSEL,
+      PENABLE => uart_PENABLE,
+      PRDATA  => open,
+      PREADY  => open,
+      PSLVERR => open,
+
+      rx_i => uart_rx_i,
+      tx_o => open,
+
+      event_o => open
+      );
+
   --Instantiate RISC-V RAM
-  misd_mpram : mpsoc_misd_ahb3_mpram
+  misd_ahb3_mpram : mpsoc_misd_ahb3_mpram
     generic map (
       MEM_SIZE          => 256,
       MEM_DEPTH         => 256,
@@ -911,7 +1478,36 @@ begin
       HRESP     => mst_misd_mram_HRESP
       );
 
-  simd_mpram : mpsoc_simd_ahb3_mpram
+  misd_wb_mpram : mpsoc_misd_wb_mpram
+    generic map (
+      MEM_SIZE          => 256,
+      MEM_DEPTH         => 256,
+      PLEN              => PLEN,
+      XLEN              => XLEN,
+      TECHNOLOGY        => TECHNOLOGY,
+      REGISTERED_OUTPUT => "NO"
+      )
+    port map (
+      --AHB Slave Interface
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      HSEL      => mst_misd_mram_HSEL,
+      HADDR     => mst_misd_mram_HADDR,
+      HWDATA    => mst_misd_mram_HWDATA,
+      HRDATA    => open,
+      HWRITE    => mst_misd_mram_HWRITE,
+      HSIZE     => mst_misd_mram_HSIZE,
+      HBURST    => mst_misd_mram_HBURST,
+      HPROT     => mst_misd_mram_HPROT,
+      HTRANS    => mst_misd_mram_HTRANS,
+      HMASTLOCK => mst_misd_mram_HMASTLOCK,
+      HREADYOUT => open,
+      HREADY    => mst_misd_mram_HREADY,
+      HRESP     => open
+      );
+
+  simd_ahb3_mpram : mpsoc_simd_ahb3_mpram
     generic map (
       MEM_SIZE          => 256,
       MEM_DEPTH         => 256,
@@ -940,7 +1536,36 @@ begin
       HRESP     => mst_simd_mram_HRESP
       );
 
-  spram : mpsoc_ahb3_spram
+  simd_wb_mpram : mpsoc_simd_wb_mpram
+    generic map (
+      MEM_SIZE          => 256,
+      MEM_DEPTH         => 256,
+      PLEN              => PLEN,
+      XLEN              => XLEN,
+      TECHNOLOGY        => TECHNOLOGY,
+      REGISTERED_OUTPUT => "NO"
+      )
+    port map (
+      --AHB Slave Interface
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      HSEL      => mst_simd_mram_HSEL,
+      HADDR     => mst_simd_mram_HADDR,
+      HWDATA    => mst_simd_mram_HWDATA,
+      HRDATA    => open,
+      HWRITE    => mst_simd_mram_HWRITE,
+      HSIZE     => mst_simd_mram_HSIZE,
+      HBURST    => mst_simd_mram_HBURST,
+      HPROT     => mst_simd_mram_HPROT,
+      HTRANS    => mst_simd_mram_HTRANS,
+      HMASTLOCK => mst_simd_mram_HMASTLOCK,
+      HREADYOUT => open,
+      HREADY    => mst_simd_mram_HREADY,
+      HRESP     => open
+      );
+
+  ahb3_spram : mpsoc_ahb3_spram
     generic map (
       MEM_SIZE          => 256,
       MEM_DEPTH         => 256,
@@ -967,5 +1592,34 @@ begin
       HREADYOUT => mst_sram_HREADYOUT,
       HREADY    => mst_sram_HREADY,
       HRESP     => mst_sram_HRESP
+      );
+
+  wb_spram : mpsoc_wb_spram
+    generic map (
+      MEM_SIZE          => 256,
+      MEM_DEPTH         => 256,
+      PLEN              => PLEN,
+      XLEN              => XLEN,
+      TECHNOLOGY        => TECHNOLOGY,
+      REGISTERED_OUTPUT => "NO"
+      )
+    port map (
+      --AHB Slave Interface
+      HRESETn => HRESETn,
+      HCLK    => HCLK,
+
+      HSEL      => mst_sram_HSEL,
+      HADDR     => mst_sram_HADDR,
+      HWDATA    => mst_sram_HWDATA,
+      HRDATA    => open,
+      HWRITE    => mst_sram_HWRITE,
+      HSIZE     => mst_sram_HSIZE,
+      HBURST    => mst_sram_HBURST,
+      HPROT     => mst_sram_HPROT,
+      HTRANS    => mst_sram_HTRANS,
+      HMASTLOCK => mst_sram_HMASTLOCK,
+      HREADYOUT => open,
+      HREADY    => mst_sram_HREADY,
+      HRESP     => open
       );
 end RTL;

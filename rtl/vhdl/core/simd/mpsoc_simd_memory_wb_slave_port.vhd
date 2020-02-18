@@ -1,4 +1,4 @@
--- Converted from rtl/vhdl/mpsoc_simd_memory_ahb3_wb_port.sv
+-- Converted from rtl/vhdl/mpsoc_simd_memory_wb_slave_port.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ use ieee.math_real.all;
 
 use work.mpsoc_pkg.all;
 
-entity mpsoc_simd_memory_ahb3_wb_port is
+entity mpsoc_simd_memory_wb_slave_port is
   generic (
     PLEN           : integer := 64;
     XLEN           : integer := 64;
@@ -96,9 +96,9 @@ entity mpsoc_simd_memory_ahb3_wb_port is
     can_switch     : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
     granted_master : out std_logic_vector(CORES_PER_SIMD-1 downto 0)
   );
-end mpsoc_simd_memory_ahb3_wb_port;
+end mpsoc_simd_memory_wb_slave_port;
 
-architecture RTL of mpsoc_simd_memory_ahb3_wb_port is
+architecture RTL of mpsoc_simd_memory_wb_slave_port is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

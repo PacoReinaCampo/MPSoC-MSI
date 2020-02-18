@@ -100,7 +100,7 @@ entity mpsoc_simd_memory_wb_interface is
 end mpsoc_simd_memory_wb_interface;
 
 architecture RTL of mpsoc_simd_memory_wb_interface is
-  component mpsoc_simd_memory_master_port
+  component mpsoc_simd_memory_wb_master_port
     generic (
       PLEN           : integer := 64;
       XLEN           : integer := 64;
@@ -153,7 +153,7 @@ architecture RTL of mpsoc_simd_memory_wb_interface is
     );
   end component;
 
-  component mpsoc_simd_memory_slave_port
+  component mpsoc_simd_memory_wb_slave_port
     generic (
       PLEN           : integer := 64;
       XLEN           : integer := 64;
@@ -252,7 +252,7 @@ begin
 
   --Hookup Master Interfaces
   generating_0 : for m in 0 to CORES_PER_SIMD - 1 generate
-    master_port : mpsoc_simd_memory_master_port
+    master_port : mpsoc_simd_memory_wb_master_port
       generic map (
         PLEN           => XLEN,
         XLEN           => XLEN,
@@ -337,7 +337,7 @@ begin
 
   --Hookup Slave Interfaces
   generating_5 : for s in 0 to CORES_PER_SIMD - 1 generate
-    slave_port : mpsoc_simd_memory_slave_port
+    slave_port : mpsoc_simd_memory_wb_slave_port
       generic map (
         PLEN           => XLEN,
         XLEN           => XLEN,
