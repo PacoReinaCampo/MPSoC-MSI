@@ -10,12 +10,12 @@
 //                                                                            //
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
-//              Master Slave Interface Slave Port                             //
-//              AMBA3 AHB-Lite Bus Interface                                  //
+//              Master Slave Interface                                        //
+//              Wishbone Bus Interface                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-/* Copyright (c) 2019-2020 by the author(s)
+/* Copyright (c) 2018-2019 by the author(s)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,21 +40,67 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_interface.sv
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_master_port.sv
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_slave_port.sv
+module mpsoc_msi_wb_data_resize #(
+  parameter AW  = 32,  //Address width
+  parameter MDW = 32,  //Master Data Width
+  parameter SDW = 8    //Slave Data Width
+)
+  (
+    //Wishbone Master interface
+    input  [AW- 1:0] wbm_adr_i,
+    input  [MDW-1:0] wbm_dat_i,
+    input  [    3:0] wbm_sel_i,
+    input            wbm_we_i,
+    input            wbm_cyc_i,
+    input            wbm_stb_i,
+    input  [    2:0] wbm_cti_i,
+    input  [    1:0] wbm_bte_i,
+    output [MDW-1:0] wbm_dat_o,
+    output           wbm_ack_o,
+    output           wbm_err_o,
+    output           wbm_rty_o,
 
-../../../../rtl/verilog/wb/arbiter/mpsoc_msi_arbiter.v
-../../../../rtl/verilog/wb/cdc_utils/mpsoc_msi_wb_cc561.v
-../../../../rtl/verilog/wb/cdc_utils/mpsoc_msi_wb_sync2_pgen.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_arbiter.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_master.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_memory.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_slave.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_transactor.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_cdc.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_data_resize.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_mux.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_interface.v
+    // Wishbone Slave interface
+    output [ AW-1:0] wbs_adr_o,
+    output [SDW-1:0] wbs_dat_o,
+    output           wbs_we_o,
+    output           wbs_cyc_o,
+    output           wbs_stb_o,
+    output [    2:0] wbs_cti_o,
+    output [    1:0] wbs_bte_o,
+    input  [SDW-1:0] wbs_dat_i,
+    input            wbs_ack_i,
+    input            wbs_err_i,
+    input            wbs_rty_i
+  );
 
-../../../../bench/verilog/regression/mpsoc_msi_testbench.sv
+  //////////////////////////////////////////////////////////////////
+  //
+  // Module Body
+  //
+  assign wbs_adr_o[AW-1:2] = wbm_adr_i[AW-1:2];
+  assign wbs_adr_o[1:0] = wbm_sel_i[3] ? 2'd0 :
+                          wbm_sel_i[2] ? 2'd1 :
+                          wbm_sel_i[1] ? 2'd2 : 2'd3;
+
+  assign wbs_dat_o = wbm_sel_i[3] ? wbm_dat_i[31:24] :
+                     wbm_sel_i[2] ? wbm_dat_i[23:16] :
+                     wbm_sel_i[1] ? wbm_dat_i[15:8]  :
+                     wbm_sel_i[0] ? wbm_dat_i[7:0]   : 8'b0;
+
+  assign wbs_we_o  = wbm_we_i;
+
+  assign wbs_cyc_o = wbm_cyc_i;
+  assign wbs_stb_o = wbm_stb_i;
+
+  assign wbs_cti_o = wbm_cti_i;
+  assign wbs_bte_o = wbm_bte_i;
+
+  assign wbm_dat_o = (wbm_sel_i[3]) ? {wbs_dat_i, 24'd0} :
+                     (wbm_sel_i[2]) ? {8'd0 , wbs_dat_i, 16'd0} :
+                     (wbm_sel_i[1]) ? {16'd0, wbs_dat_i, 8'd0} : {24'd0, wbs_dat_i};
+
+  assign wbm_ack_o = wbs_ack_i;
+  assign wbm_err_o = wbs_err_i;
+  assign wbm_rty_o = wbs_rty_i;
+endmodule

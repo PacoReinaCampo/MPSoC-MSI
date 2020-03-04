@@ -1,13 +1,15 @@
 # vsim -c -do "run.do" work.mpsoc_msi_testbench 
-# Start time: 19:59:33 on Feb 23,2020
+# Start time: 21:23:16 on Mar 04,2020
 # Loading sv_std.std
 # Loading work.mpsoc_msi_testbench
 # Loading work.mpsoc_msi_ahb3_interface
 # Loading work.mpsoc_msi_wb_interface
+# Loading work.mpsoc_msi_wb_mux
+# Loading work.mpsoc_msi_wb_arbiter
+# Loading work.mpsoc_msi_arbiter
+# Loading work.mpsoc_msi_wb_data_resize
 # Loading work.mpsoc_msi_ahb3_master_port
 # Loading work.mpsoc_msi_ahb3_slave_port
-# Loading work.mpsoc_msi_wb_master_port
-# Loading work.mpsoc_msi_wb_slave_port
 # do run.do
-# End time: 19:59:34 on Feb 23,2020, Elapsed time: 0:00:01
+# End time: 21:23:17 on Mar 04,2020, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0

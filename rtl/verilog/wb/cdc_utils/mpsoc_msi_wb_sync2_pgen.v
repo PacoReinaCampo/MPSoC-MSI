@@ -10,12 +10,12 @@
 //                                                                            //
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
-//              Master Slave Interface Slave Port                             //
-//              AMBA3 AHB-Lite Bus Interface                                  //
+//              Master Slave Interface                                        //
+//              Wishbone Bus Interface                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-/* Copyright (c) 2019-2020 by the author(s)
+/* Copyright (c) 2018-2019 by the author(s)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,21 +40,29 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_interface.sv
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_master_port.sv
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_slave_port.sv
+module sync2_pgen (
+  input  c,
+  input  d,
+  output p,
+  output q
+);
 
-../../../../rtl/verilog/wb/arbiter/mpsoc_msi_arbiter.v
-../../../../rtl/verilog/wb/cdc_utils/mpsoc_msi_wb_cc561.v
-../../../../rtl/verilog/wb/cdc_utils/mpsoc_msi_wb_sync2_pgen.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_arbiter.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_master.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_memory.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_slave.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_transactor.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_cdc.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_data_resize.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_mux.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_interface.v
+  //////////////////////////////////////////////////////////////////
+  //
+  // Variables
+  //
+  reg q1, q2, q3;
 
-../../../../bench/verilog/regression/mpsoc_msi_testbench.sv
+  //////////////////////////////////////////////////////////////////
+  //
+  // Module Body
+  //
+  always @(posedge c) begin
+    q1 <= d;
+    q2 <= q1;
+    q3 <= q2;
+  end
+
+  assign p = q2 ^ q3;
+  assign q = q3;
+endmodule

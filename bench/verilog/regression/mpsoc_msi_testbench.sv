@@ -67,6 +67,7 @@ module mpsoc_msi_testbench;
   wire                                     HRESETn;
   wire                                     HCLK;
 
+  //AHB3 signals
   wire  [MASTERS-1:0]                      mst_HSEL;
   wire  [MASTERS-1:0][PLEN           -1:0] mst_HADDR;
   wire  [MASTERS-1:0][XLEN           -1:0] mst_HWDATA;
@@ -94,12 +95,74 @@ module mpsoc_msi_testbench;
   wire  [SLAVES-1:0]                       slv_HREADY;
   wire  [SLAVES-1:0]                       slv_HRESP;
 
+  //WB signals
+  wire [31:0] wb_or1k_d_adr_i;
+  wire [31:0] wb_or1k_d_dat_i;
+  wire  [3:0] wb_or1k_d_sel_i;
+  wire        wb_or1k_d_we_i;
+  wire        wb_or1k_d_cyc_i;
+  wire        wb_or1k_d_stb_i;
+  wire  [2:0] wb_or1k_d_cti_i;
+  wire  [1:0] wb_or1k_d_bte_i;
+  wire [31:0] wb_or1k_d_dat_o;
+  wire        wb_or1k_d_ack_o;
+  wire        wb_or1k_d_err_o;
+  wire        wb_or1k_d_rty_o;
+  wire [31:0] wb_or1k_i_adr_i;
+  wire [31:0] wb_or1k_i_dat_i;
+  wire  [3:0] wb_or1k_i_sel_i;
+  wire        wb_or1k_i_we_i;
+  wire        wb_or1k_i_cyc_i;
+  wire        wb_or1k_i_stb_i;
+  wire  [2:0] wb_or1k_i_cti_i;
+  wire  [1:0] wb_or1k_i_bte_i;
+  wire [31:0] wb_or1k_i_dat_o;
+  wire        wb_or1k_i_ack_o;
+  wire        wb_or1k_i_err_o;
+  wire        wb_or1k_i_rty_o;
+  wire [31:0] wb_dbg_adr_i;
+  wire [31:0] wb_dbg_dat_i;
+  wire  [3:0] wb_dbg_sel_i;
+  wire        wb_dbg_we_i;
+  wire        wb_dbg_cyc_i;
+  wire        wb_dbg_stb_i;
+  wire  [2:0] wb_dbg_cti_i;
+  wire  [1:0] wb_dbg_bte_i;
+  wire [31:0] wb_dbg_dat_o;
+  wire        wb_dbg_ack_o;
+  wire        wb_dbg_err_o;
+  wire        wb_dbg_rty_o;
+  wire [31:0] wb_mem_adr_o;
+  wire [31:0] wb_mem_dat_o;
+  wire  [3:0] wb_mem_sel_o;
+  wire        wb_mem_we_o;
+  wire        wb_mem_cyc_o;
+  wire        wb_mem_stb_o;
+  wire  [2:0] wb_mem_cti_o;
+  wire  [1:0] wb_mem_bte_o;
+  wire [31:0] wb_mem_dat_i;
+  wire        wb_mem_ack_i;
+  wire        wb_mem_err_i;
+  wire        wb_mem_rty_i;
+  wire [31:0] wb_uart_adr_o;
+  wire  [7:0] wb_uart_dat_o;
+  wire  [3:0] wb_uart_sel_o;
+  wire        wb_uart_we_o;
+  wire        wb_uart_cyc_o;
+  wire        wb_uart_stb_o;
+  wire  [2:0] wb_uart_cti_o;
+  wire  [1:0] wb_uart_bte_o;
+  wire  [7:0] wb_uart_dat_i;
+  wire        wb_uart_ack_i;
+  wire        wb_uart_err_i;
+  wire        wb_uart_rty_i;
+
   //////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
 
-  //DUT
+  //DUT AHB3
   mpsoc_msi_ahb3_interface #(
     .PLEN    ( PLEN    ),
     .XLEN    ( XLEN    ),
@@ -149,52 +212,70 @@ module mpsoc_msi_testbench;
     .slv_HRESP     ( slv_HRESP     )
   );
 
-  mpsoc_msi_wb_interface #(
-    .PLEN    ( PLEN    ),
-    .XLEN    ( XLEN    ),
-    .MASTERS ( MASTERS ),
-    .SLAVES  ( SLAVES  )
-  )
-  peripheral_wb_interface (
-    //Common signals
-    .HRESETn       ( HRESETn ),
-    .HCLK          ( HCLK    ),
+  //DUT WB
+  mpsoc_msi_wb_interface wb_interface0 (
+    .wb_clk_i        (HRESETn),
+    .wb_rst_i        (HCLK),
 
-    //Master Ports; AHB masters connect to these
-    //thus these are actually AHB Slave Interfaces
-    .mst_priority  (               ),
-
-    .mst_HSEL      (       ),
-    .mst_HADDR     (      ),
-    .mst_HWDATA    (     ),
-    .mst_HRDATA    (     ),
-    .mst_HWRITE    (     ),
-    .mst_HSIZE     (      ),
-    .mst_HBURST    (     ),
-    .mst_HPROT     (      ),
-    .mst_HTRANS    (     ),
-    .mst_HMASTLOCK (  ),
-    .mst_HREADYOUT (  ),
-    .mst_HREADY    (     ),
-    .mst_HRESP     (      ),
-
-    //Slave Ports; AHB Slaves connect to these
-    //thus these are actually AHB Master Interfaces
-    .slv_addr_mask (               ),
-    .slv_addr_base (               ),
-
-    .slv_HSEL      (       ),
-    .slv_HADDR     (      ),
-    .slv_HWDATA    (     ),
-    .slv_HRDATA    (     ),
-    .slv_HWRITE    (     ),
-    .slv_HSIZE     (      ),
-    .slv_HBURST    (     ),
-    .slv_HPROT     (      ),
-    .slv_HTRANS    (     ),
-    .slv_HMASTLOCK (  ),
-    .slv_HREADYOUT (               ),
-    .slv_HREADY    (     ),
-    .slv_HRESP     (      )
+    .wb_or1k_d_adr_i (wb_or1k_d_adr_i),
+    .wb_or1k_d_dat_i (wb_or1k_d_dat_i),
+    .wb_or1k_d_sel_i (wb_or1k_d_sel_i),
+    .wb_or1k_d_we_i  (wb_or1k_d_we_i),
+    .wb_or1k_d_cyc_i (wb_or1k_d_cyc_i),
+    .wb_or1k_d_stb_i (wb_or1k_d_stb_i),
+    .wb_or1k_d_cti_i (wb_or1k_d_cti_i),
+    .wb_or1k_d_bte_i (wb_or1k_d_bte_i),
+    .wb_or1k_d_dat_o (wb_or1k_d_dat_o),
+    .wb_or1k_d_ack_o (wb_or1k_d_ack_o),
+    .wb_or1k_d_err_o (wb_or1k_d_err_o),
+    .wb_or1k_d_rty_o (wb_or1k_d_rty_o),
+    .wb_or1k_i_adr_i (wb_or1k_i_adr_i),
+    .wb_or1k_i_dat_i (wb_or1k_i_dat_i),
+    .wb_or1k_i_sel_i (wb_or1k_i_sel_i),
+    .wb_or1k_i_we_i  (wb_or1k_i_we_i),
+    .wb_or1k_i_cyc_i (wb_or1k_i_cyc_i),
+    .wb_or1k_i_stb_i (wb_or1k_i_stb_i),
+    .wb_or1k_i_cti_i (wb_or1k_i_cti_i),
+    .wb_or1k_i_bte_i (wb_or1k_i_bte_i),
+    .wb_or1k_i_dat_o (wb_or1k_i_dat_o),
+    .wb_or1k_i_ack_o (wb_or1k_i_ack_o),
+    .wb_or1k_i_err_o (wb_or1k_i_err_o),
+    .wb_or1k_i_rty_o (wb_or1k_i_rty_o),
+    .wb_dbg_adr_i    (wb_dbg_adr_i),
+    .wb_dbg_dat_i    (wb_dbg_dat_i),
+    .wb_dbg_sel_i    (wb_dbg_sel_i),
+    .wb_dbg_we_i     (wb_dbg_we_i),
+    .wb_dbg_cyc_i    (wb_dbg_cyc_i),
+    .wb_dbg_stb_i    (wb_dbg_stb_i),
+    .wb_dbg_cti_i    (wb_dbg_cti_i),
+    .wb_dbg_bte_i    (wb_dbg_bte_i),
+    .wb_dbg_dat_o    (wb_dbg_dat_o),
+    .wb_dbg_ack_o    (wb_dbg_ack_o),
+    .wb_dbg_err_o    (wb_dbg_err_o),
+    .wb_dbg_rty_o    (wb_dbg_rty_o),
+    .wb_mem_adr_o    (wb_mem_adr_o),
+    .wb_mem_dat_o    (wb_mem_dat_o),
+    .wb_mem_sel_o    (wb_mem_sel_o),
+    .wb_mem_we_o     (wb_mem_we_o),
+    .wb_mem_cyc_o    (wb_mem_cyc_o),
+    .wb_mem_stb_o    (wb_mem_stb_o),
+    .wb_mem_cti_o    (wb_mem_cti_o),
+    .wb_mem_bte_o    (wb_mem_bte_o),
+    .wb_mem_dat_i    (wb_mem_dat_i),
+    .wb_mem_ack_i    (wb_mem_ack_i),
+    .wb_mem_err_i    (wb_mem_err_i),
+    .wb_mem_rty_i    (wb_mem_rty_i),
+    .wb_uart_adr_o   (wb_uart_adr_o),
+    .wb_uart_dat_o   (wb_uart_dat_o),
+    .wb_uart_sel_o   (wb_uart_sel_o),
+    .wb_uart_we_o    (wb_uart_we_o),
+    .wb_uart_cyc_o   (wb_uart_cyc_o),
+    .wb_uart_stb_o   (wb_uart_stb_o),
+    .wb_uart_cti_o   (wb_uart_cti_o),
+    .wb_uart_bte_o   (wb_uart_bte_o),
+    .wb_uart_dat_i   (wb_uart_dat_i),
+    .wb_uart_ack_i   (wb_uart_ack_i),
+    .wb_uart_err_i   (wb_uart_err_i),
+    .wb_uart_rty_i   (wb_uart_rty_i)
   );
 endmodule

@@ -10,12 +10,12 @@
 //                                                                            //
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
-//              Master Slave Interface Slave Port                             //
-//              AMBA3 AHB-Lite Bus Interface                                  //
+//              Master Slave Interface                                        //
+//              Wishbone Bus Interface                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-/* Copyright (c) 2019-2020 by the author(s)
+/* Copyright (c) 2018-2019 by the author(s)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,21 +40,77 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_interface.sv
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_master_port.sv
-../../../../rtl/verilog/ahb3/mpsoc_msi_ahb3_slave_port.sv
+//////////////////////////////////////////////////////////////////
+//
+// Constants
+//
 
-../../../../rtl/verilog/wb/arbiter/mpsoc_msi_arbiter.v
-../../../../rtl/verilog/wb/cdc_utils/mpsoc_msi_wb_cc561.v
-../../../../rtl/verilog/wb/cdc_utils/mpsoc_msi_wb_sync2_pgen.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_arbiter.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_master.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_memory.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_slave.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_transactor.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_cdc.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_data_resize.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_mux.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_interface.v
+localparam CLASSIC_CYCLE = 1'b0;
+localparam BURST_CYCLE   = 1'b1;
 
-../../../../bench/verilog/regression/mpsoc_msi_testbench.sv
+localparam READ  = 1'b0;
+localparam WRITE = 1'b1;
+
+localparam [2:0] CTI_CLASSIC      = 3'b000;
+localparam [2:0] CTI_CONST_BURST  = 3'b001;
+localparam [2:0] CTI_INC_BURST    = 3'b010;
+localparam [2:0] CTI_END_OF_BURST = 3'b111;
+
+
+localparam [1:0] BTE_LINEAR  = 2'd0;
+localparam [1:0] BTE_WRAP_4  = 2'd1;
+localparam [1:0] BTE_WRAP_8  = 2'd2;
+localparam [1:0] BTE_WRAP_16 = 2'd3;
+
+//////////////////////////////////////////////////////////////////
+//
+// Functions
+//
+
+function get_cycle_type;
+  input [2:0] cti;
+  begin
+    get_cycle_type = (cti === CTI_CLASSIC) ? CLASSIC_CYCLE : BURST_CYCLE;
+  end
+endfunction
+
+function wb_is_last;
+  input [2:0] cti;
+  begin
+    case (cti)
+      CTI_CLASSIC      : wb_is_last = 1'b1;
+      CTI_CONST_BURST  : wb_is_last = 1'b0;
+      CTI_INC_BURST    : wb_is_last = 1'b0;
+      CTI_END_OF_BURST : wb_is_last = 1'b1;
+      default          : $display("%d : Illegal Wishbone B3 cycle type (%b)", $time, cti);
+    endcase
+  end
+endfunction
+
+function [31:0] wb_next_adr;
+  input [31:0] adr_i;
+  input [ 2:0] cti_i;
+  input [ 2:0] bte_i;
+
+  input integer dw;
+
+  reg [31:0] adr;
+
+  integer shift;
+
+  begin
+    if (dw == 64) shift = 3;
+    else if (dw == 32) shift = 2;
+    else if (dw == 16) shift = 1;
+    else shift = 0;
+    adr = adr_i >> shift;
+    if (cti_i == CTI_INC_BURST)
+      case (bte_i)
+        BTE_LINEAR   : adr = adr + 1;
+        BTE_WRAP_4   : adr = {adr[31:2], adr[1:0]+2'd1};
+        BTE_WRAP_8   : adr = {adr[31:3], adr[2:0]+3'd1};
+        BTE_WRAP_16  : adr = {adr[31:4], adr[3:0]+4'd1};
+      endcase // case (burst_type_i)
+    wb_next_adr = adr << shift;
+  end
+endfunction
