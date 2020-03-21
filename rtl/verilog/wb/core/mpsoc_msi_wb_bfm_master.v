@@ -232,7 +232,8 @@ module mpsoc_msi_wb_bfm_master #(
       if (VERBOSE>2) begin
         $display("    %t: Comparing Read Data for iteration %0d at address: %h", $time, iteration, addr);
         $display("    %t: Read Data: %h, buffer data: %h, buffer address: %h", $time, read_data, buffer_data[buffer_addr], buffer_addr);
-      end else if (VERBOSE>1) begin
+      end
+      else if (VERBOSE>1) begin
         $display("    Comparing Read Data for iteration %0d at address: %h", iteration, addr);
       end
 
@@ -241,7 +242,8 @@ module mpsoc_msi_wb_bfm_master #(
         $display("Expected %h", buffer_data[buffer_addr]);
         $display("Got      %h", read_data);
         #3 $finish;
-      end else begin
+      end
+      else begin
         if (VERBOSE>1) $display("    Data Matched");
       end
     end
@@ -297,18 +299,21 @@ module mpsoc_msi_wb_bfm_master #(
         if (VERBOSE > 1) $display("INIT: Classic Cycle");
         wb_cti_o             <= #TP 3'b000;
         wb_bte_o             <= #TP 2'b00;
-      end else if(index == burst_length-1) begin
+      end
+      else if(index == burst_length-1) begin
         if (VERBOSE > 1) $display("INIT: Burst - last cycle");
         wb_cti_o             <= #TP 3'b111;
         wb_bte_o             <= #TP 2'b00;
-      end else if(cycle_type == CTI_CONST_BURST) begin
+      end
+      else if(cycle_type == CTI_CONST_BURST) begin
         if (VERBOSE > 1) $display("INIT: Const Burst cycle");
         wb_cti_o             <= #TP 3'b001;
         wb_bte_o             <= #TP 2'b00;
-      end else begin
+      end
+      else begin
         if (VERBOSE > 1) $display("INIT: Incr Burst cycle");
-        wb_cti_o             <=# TP 3'b010;
-        wb_bte_o             <=# TP burst_type[1:0];
+        wb_cti_o             <= #TP 3'b010;
+        wb_bte_o             <= #TP burst_type[1:0];
       end
     end
   endtask

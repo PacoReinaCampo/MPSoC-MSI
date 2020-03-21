@@ -43,9 +43,12 @@
 ../../../../rtl/vhdl/pkg/mpsoc_pkg.vhd
 ../../../../rtl/vhdl/pkg/mpsoc_msi_pkg.vhd
 
-../../../../rtl/vhdl/generic/ahb3/mpsoc_msi_ahb3_interface.vhd
-../../../../rtl/vhdl/generic/ahb3/mpsoc_msi_ahb3_master_port.vhd
-../../../../rtl/vhdl/generic/ahb3/mpsoc_msi_ahb3_slave_port.vhd
-../../../../rtl/vhdl/generic/wb/mpsoc_msi_wb_interface.vhd
-../../../../rtl/vhdl/generic/wb/mpsoc_msi_wb_master_port.vhd
-../../../../rtl/vhdl/generic/wb/mpsoc_msi_wb_slave_port.vhd
+../../../../rtl/vhdl/ahb3/generic/mpsoc_msi_ahb3_interface.vhd
+../../../../rtl/vhdl/ahb3/generic/mpsoc_msi_ahb3_master_port.vhd
+../../../../rtl/vhdl/ahb3/generic/mpsoc_msi_ahb3_slave_port.vhd
+
+../../../../rtl/vhdl/wb/arbiter/mpsoc_msi_arbiter.vhd
+../../../../rtl/vhdl/wb/cdc_utils/mpsoc_msi_wb_cc561.vhd
+../../../../rtl/vhdl/wb/cdc_utils/mpsoc_msi_wb_sync2_pgen.vhd
+../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
+

@@ -186,9 +186,11 @@ module mpsoc_msi_wb_bfm_transactor #(
     begin
       if (cycle_type_prob <= CLASSIC_PROB) begin
         gen_cycle_type                = 3'b000;
-      end else if (cycle_type_prob <= (CLASSIC_PROB + CONST_BURST_PROB)) begin
+      end
+      else if (cycle_type_prob <= (CLASSIC_PROB + CONST_BURST_PROB)) begin
         gen_cycle_type                = CTI_CONST_BURST;
-      end else begin
+      end
+      else begin
         gen_cycle_type                = CTI_INC_BURST;
       end
     end
@@ -401,7 +403,8 @@ module mpsoc_msi_wb_bfm_transactor #(
         $display("  Segment size          : %h", SEGMENT_SIZE);
         $display("  Memory High Address   : %h", MEM_LOW+NUM_SEGMENTS*SEGMENT_SIZE-1);
         $display("  Memory Low Address    : %h", MEM_LOW);
-      end else begin
+      end
+      else begin
         $display("  Memory High Address   : %h", MEM_HIGH);
         $display("  Memory Low Address    : %h", MEM_LOW);
       end
@@ -449,7 +452,8 @@ module mpsoc_msi_wb_bfm_transactor #(
           segment = {$random(SEED)} % NUM_SEGMENTS;
           mem_lo =  MEM_LOW + segment    * SEGMENT_SIZE;
           mem_hi =  MEM_LOW + (segment+1) * SEGMENT_SIZE - 1;
-        end else begin
+        end
+        else begin
           mem_lo = MEM_LOW;
           mem_hi = MEM_HIGH;
         end

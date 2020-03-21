@@ -40,7 +40,7 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-module sync2_pgen (
+module mpsoc_msi_wb_sync2_pgen (
   input  c,
   input  d,
   output p,

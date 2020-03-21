@@ -1,0 +1,13 @@
+verilog2vhdl wb_intercon.vh
+verilog2vhdl mpsoc_msi_wb_cdc.v
+verilog2vhdl mpsoc_msi_wb_mux.v
+verilog2vhdl mpsoc_msi_arbiter.v
+verilog2vhdl mpsoc_msi_wb_cc561.v
+verilog2vhdl mpsoc_msi_wb_arbiter.v
+verilog2vhdl mpsoc_msi_wb_bfm_slave.v
+verilog2vhdl mpsoc_msi_wb_interface.v
+verilog2vhdl mpsoc_msi_wb_sync2_pgen.v
+verilog2vhdl mpsoc_msi_wb_bfm_master.v
+verilog2vhdl mpsoc_msi_wb_bfm_memory.v
+verilog2vhdl mpsoc_msi_wb_data_resize.v
+verilog2vhdl mpsoc_msi_wb_bfm_transactor.v

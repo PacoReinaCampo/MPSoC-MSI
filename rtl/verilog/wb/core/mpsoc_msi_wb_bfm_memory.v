@@ -148,7 +148,8 @@ module mpsoc_msi_wb_bfm_memory #(
           for(i=0;i < DW/8; i=i+1)
             if(bfm0.mask[i])
               mem[address[31:ADR_LSB]][i*8+:8] = data[i*8+:8];
-        end else begin
+        end
+        else begin
           data = {AW{1'b0}};
           for(i=0;i < DW/8; i=i+1)
             if(bfm0.mask[i])

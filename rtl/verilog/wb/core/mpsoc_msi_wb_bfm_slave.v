@@ -163,7 +163,8 @@ module mpsoc_msi_wb_bfm_slave #(
         if(DEBUG) $display("%0d, Error", $time);
         wb_err_o <= #TP 1'b1;
         has_next = 1'b0;
-      end else begin
+      end
+      else begin
         if(op === READ)
           wb_dat_o <= #TP data;
         wb_ack_o <= #TP 1'b1;

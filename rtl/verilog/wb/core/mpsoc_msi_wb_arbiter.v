@@ -120,12 +120,12 @@ module mpsoc_msi_wb_arbiter #(
     .NUM_PORTS (NUM_MASTERS)
   )
   arbiter0 (
-    .clk     (wb_clk_i),
-    .rst     (wb_rst_i),
-    .request (wbm_cyc_i),
-    .grant   (grant),
-    .select  (master_sel),
-    .active  (active)
+    .clk       (wb_clk_i),
+    .rst       (wb_rst_i),
+    .request   (wbm_cyc_i),
+    .grant     (grant),
+    .selection (master_sel),
+    .active    (active)
   );
 
   //Mux active master

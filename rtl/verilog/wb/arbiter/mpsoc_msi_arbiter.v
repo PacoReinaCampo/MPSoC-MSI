@@ -50,7 +50,7 @@ module mpsoc_msi_arbiter #(
     input                               rst,
     input      [NUM_PORTS        -1:0]  request,
     output reg [NUM_PORTS        -1:0]  grant,
-    output reg [$clog2(NUM_PORTS)-1:0]  select,
+    output reg [$clog2(NUM_PORTS)-1:0]  selection,
     output reg                          active
   );
 
@@ -108,7 +108,7 @@ module mpsoc_msi_arbiter #(
     grant <= token & request;
 
   always @(posedge clk)
-    select <= ff1(token & request);
+    selection <= ff1(token & request);
 
   always @(posedge clk)
     active <= |(token & request);
