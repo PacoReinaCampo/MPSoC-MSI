@@ -142,14 +142,14 @@ begin
   master_selection <= to_integer(unsigned(selection));
 
   --Mux active master
-  wbs_adr_o <= wbm_adr_i(master_selection*AW+AW-1 downto AW);
-  wbs_dat_o <= wbm_dat_i(master_selection*DW+DW-1 downto DW);
-  wbs_sel_o <= wbm_sel_i(master_selection*4+3 downto 4);
+  wbs_adr_o <= wbm_adr_i((master_selection+1)*AW-1 downto master_selection*AW);
+  wbs_dat_o <= wbm_dat_i((master_selection+1)*DW-1 downto master_selection*DW);
+  wbs_sel_o <= wbm_sel_i((master_selection+1)*4-1 downto master_selection*4);
   wbs_we_o  <= wbm_we_i(master_selection);
   wbs_cyc_o <= wbm_cyc_i(master_selection) and active;
   wbs_stb_o <= wbm_stb_i(master_selection);
-  wbs_cti_o <= wbm_cti_i(master_selection*3+2 downto 3);
-  wbs_bte_o <= wbm_bte_i(master_selection*2+1 downto 2);
+  wbs_cti_o <= wbm_cti_i((master_selection+1)*3-1 downto master_selection*3);
+  wbs_bte_o <= wbm_bte_i((master_selection+1)*2-1 downto master_selection*2);
 
   generating_0 : for i in 0 to NUM_MASTERS - 1 generate
     wbm_dat_o((i+1)*DW-1 downto i*DW) <= wbs_dat_i;

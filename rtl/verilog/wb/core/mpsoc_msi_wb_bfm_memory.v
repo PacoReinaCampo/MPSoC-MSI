@@ -92,7 +92,7 @@ module mpsoc_msi_wb_bfm_memory #(
   integer        writes = 0;
 
   // synthesis attribute ram_style of mem is block
-  reg [DW-1:0]   mem [ 0 : mem_words-1 ]   /* verilator public */ /* synthesis ram_style = no_rw_check */;
+  reg [DW-1:0] mem [ 0 : mem_words-1 ];
 
   reg [AW-1:0]   address;
   reg [DW-1:0]   data;

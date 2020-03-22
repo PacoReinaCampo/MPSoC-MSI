@@ -43,7 +43,6 @@
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_arbiter.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_master.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_memory.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_slave.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_transactor.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_interface.v
 

@@ -48,39 +48,47 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity mpsoc_msi_wb_bfm_slave is
+  generic (
+    DW : integer := 32;
+    AW : integer := 32;
+
+    DEBUG : std_logic := '0'
+    );
   port (
-    wb_clk : in std_logic;
-    wb_rst : in std_logic;
-    wb_adr_i : in std_logic_vector(AW-1 downto 0);
-    wb_dat_i : in std_logic_vector(DW-1 downto 0);
-    wb_sel_i : in std_logic_vector(DW/8-1 downto 0);
-    wb_we_i : in std_logic;
-    wb_cyc_i : in std_logic;
-    wb_stb_i : in std_logic;
-    wb_cti_i : in std_logic_vector(2 downto 0);
-    wb_bte_i : in std_logic_vector(1 downto 0);
+    wb_clk   : in  std_logic;
+    wb_rst   : in  std_logic;
+    wb_adr_i : in  std_logic_vector(AW-1 downto 0);
+    wb_dat_i : in  std_logic_vector(DW-1 downto 0);
+    wb_sel_i : in  std_logic_vector(DW/8-1 downto 0);
+    wb_we_i  : in  std_logic;
+    wb_cyc_i : in  std_logic;
+    wb_stb_i : in  std_logic;
+    wb_cti_i : in  std_logic_vector(2 downto 0);
+    wb_bte_i : in  std_logic_vector(1 downto 0);
     wb_dat_o : out std_logic_vector(DW-1 downto 0);
     wb_ack_o : out std_logic;
-    wb_err_o : out std_logic 
+    wb_err_o : out std_logic;
     wb_rty_o : out std_logic
-  );
-  constant DW : integer := 32;
-  constant AW : integer := 32;
-  constant DEBUG : integer := 0;
+    );
 end mpsoc_msi_wb_bfm_slave;
 
 architecture RTL of mpsoc_msi_wb_bfm_slave is
-
-
   --////////////////////////////////////////////////////////////////
   --
   -- Constants
   --
+  constant TP : time := 1 ns;
 
-  use work."mpsoc_msi_wb_pkg.v".all;
+  constant CLASSIC_CYCLE : std_logic := '0';
+  constant BURST_CYCLE   : std_logic := '1';
 
+  constant READ  : std_logic := '0';
+  constant WRITE : std_logic := '1';
 
-  constant TP : integer := 1;
+  constant CTI_CLASSIC      : std_logic_vector(2 downto 0) := "000";
+  constant CTI_CONST_BURST  : std_logic_vector(2 downto 0) := "001";
+  constant CTI_INC_BURST    : std_logic_vector(2 downto 0) := "010";
+  constant CTI_END_OF_BURST : std_logic_vector(2 downto 0) := "111";
 
   --////////////////////////////////////////////////////////////////
   --
@@ -88,10 +96,10 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
   --
   signal has_next : std_logic;
 
-  signal op : std_logic;
-  signal address : std_logic_vector(AW-1 downto 0);
-  signal data : std_logic_vector(DW-1 downto 0);
-  signal mask : std_logic_vector(DW/8-1 downto 0);
+  signal op         : std_logic;
+  signal address    : std_logic_vector(AW-1 downto 0);
+  signal data       : std_logic_vector(DW-1 downto 0);
+  signal mask       : std_logic_vector(DW/8-1 downto 0);
   signal cycle_type : std_logic;
   signal burst_type : std_logic_vector(2 downto 0);
 
@@ -99,30 +107,90 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
 
   --////////////////////////////////////////////////////////////////
   --
+  -- Functions
+  --
+  function get_cycle_type (
+    cti : std_logic_vector(2 downto 0)
+    ) return std_logic is
+    variable get_cycle_type_return : std_logic;
+  begin
+    if (cti = CTI_CLASSIC) then
+      get_cycle_type_return := CLASSIC_CYCLE;
+    else
+      get_cycle_type_return := BURST_CYCLE;
+    end if;
+
+    return get_cycle_type_return;
+  end get_cycle_type;
+
+  function wb_is_last (
+    cti : std_logic_vector(2 downto 0)
+    ) return std_logic is
+    variable wb_is_last_return : std_logic;
+  begin
+    case (cti) is
+      when CTI_CLASSIC =>
+        wb_is_last_return := '1';
+      when CTI_CONST_BURST =>
+        wb_is_last_return := '0';
+      when CTI_INC_BURST =>
+        wb_is_last_return := '0';
+      when CTI_END_OF_BURST =>
+        wb_is_last_return := '1';
+      when others =>
+        null;
+    end case;
+
+    return wb_is_last_return;
+  end wb_is_last;
+
+  --////////////////////////////////////////////////////////////////
+  --
   -- Tasks
   --
-  procedure init (
-  ) is
+  procedure init_p (
+    signal wb_clk : in std_logic;
+    signal wb_rst : in std_logic;
+
+    signal wb_cyc_i : in std_logic;
+    signal wb_we_i  : in std_logic;
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_adr_i : in std_logic_vector(AW-1 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+    signal wb_sel_i : in std_logic_vector(DW/8-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal has_next   : out std_logic;
+    signal cycle_type : out std_logic;
+
+    signal op      : out std_logic;
+    signal address : out std_logic_vector(AW-1 downto 0);
+    signal mask    : out std_logic_vector(DW/8-1 downto 0)
+    ) is
   begin
-    wb_ack_o <= '0' after TP ns;
-    wb_dat_o <= concatenate(DW, '0') after TP ns;
-    wb_err_o <= '0' after TP ns;
-    wb_rty_o <= '0' after TP ns;
+    wb_ack_o <= '0' after TP;
+    wb_err_o <= '0' after TP;
+    wb_rty_o <= '0' after TP;
+
+    wb_dat_o <= (others => '0') after TP;
 
     if (wb_rst /= '0') then
-      if (DEBUG) then
-        (null)("%0d : waiting for reset release", timing());
+      if (DEBUG = '1') then
+        report "Waiting for reset release";
       end if;
       wait until falling_edge(wb_rst);
       wait until rising_edge(wb_clk);
-      if (DEBUG) then
-        (null)("%0d : Reset was released", timing());
+      if (DEBUG = '1') then
+        report "Reset was released";
       end if;
     end if;
 
-
     --Catch start of next cycle
-    if (not wb_cyc_i) then
+    if (wb_cyc_i = '1') then
       wait until rising_edge(wb_cyc_i);
     end if;
     wait until rising_edge(wb_clk);
@@ -131,98 +199,218 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     while (wb_cyc_i /= '1') loop
       wait until rising_edge(wb_clk);
     end loop;
-    if (DEBUG) then
-
-      (null)("%0d : Got wb_cyc_i", timing());
+    if (DEBUG = '1') then
+      report "Got wb_cyc_i";
     end if;
-    cycle_type <= (null)(wb_cti_i);
+    cycle_type <= get_cycle_type(wb_cti_i);
 
-    op <= wb_we_i;
+    op      <= wb_we_i;
     address <= wb_adr_i;
-    mask <= wb_sel_i;
+    mask    <= wb_sel_i;
 
     has_next <= '1';
-  end init;
+  end init_p;
 
+  procedure next_p (
+    signal wb_clk : in std_logic;
 
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
 
-  procedure error_response (
-  ) is
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : in std_logic;
+    signal op  : in std_logic;
+
+    signal has_next : out std_logic;
+    signal address  : out std_logic_vector(AW-1 downto 0);
+    signal data     : out std_logic_vector(DW-1 downto 0);
+    signal mask     : out std_logic_vector(DW/8-1 downto 0)
+    ) is
   begin
-    err <= '1';
-    (null)();
-    err <= '0';
-  end error_response;
-
-
-
-  procedure read_ack (
-    data_i : in std_logic_vector(DW-1 downto 0)
-  ) is
-  begin
-
-
-    data <= data_i;
-    (null)();
-  end read_ack;
-
-
-
-  procedure write_ack (
-    data_o : out std_logic_vector(DW-1 downto 0)
-  ) is
-  begin
-    if (DEBUG) then
-      (null)("%0d : Write ack", timing());
+    if (DEBUG = '1') then
+    ----report "next address = " & address & "data = " & data & "op = " & op;
     end if;
-    (null)();
-    data_o <= data;
-  end write_ack;
+    wb_dat_o <= (others => '0') after TP;
 
+    wb_ack_o <= '0' after TP;
+    wb_err_o <= '0' after TP;
+    wb_rty_o <= '0' after TP;  --TODO : rty not supported
 
-
-  procedure next (
-  ) is
-  begin
-    if (DEBUG) then
-
-      (null)("%0d : next address=0x%h, data=0x%h, op=%b", timing(), address, data, op);
-    end if;
-    wb_dat_o <= concatenate(DW, '0') after TP ns;
-    wb_ack_o <= '0' after TP ns;
-    wb_err_o <= '0' after TP ns;
-    wb_rty_o <= '0' after TP ns;    --TODO : rty not supported
-
-    if (err) then
-      if (DEBUG) then
-        (null)("%0d, Error", timing());
+    if (err = '1') then
+      if (DEBUG = '1') then
+        report "Error";
       end if;
-      wb_err_o <= '1' after TP ns;
+      wb_err_o <= '1' after TP;
       has_next <= '0';
     elsif (op = READ) then
-      wb_dat_o <= data after TP ns;
-    wb_ack_o <= '1' after TP ns;
+      wb_dat_o <= data after TP;
+    else
+      wb_ack_o <= '1' after TP;
     end if;
-
 
     wait until rising_edge(wb_clk);
 
-    wb_ack_o <= '0' after TP ns;
-    wb_err_o <= '0' after TP ns;
+    wb_ack_o <= '0' after TP;
+    wb_err_o <= '0' after TP;
 
-    has_next <= not ((null)(wb_cti_i) = '1') and not err;
+    has_next <= not wb_is_last(wb_cti_i) and not err;
 
     if (op = WRITE) then
       data <= wb_dat_i;
       mask <= wb_sel_i;
     end if;
 
-
     address <= wb_adr_i;
-  end next;
+  end next_p;
+
+  procedure error_response (
+    signal wb_clk : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : inout std_logic;
+
+    signal op  : in std_logic;
+
+    signal has_next : out std_logic;
+    signal address  : out std_logic_vector(AW-1 downto 0);
+    signal data     : out std_logic_vector(DW-1 downto 0);
+    signal mask     : out std_logic_vector(DW/8-1 downto 0)
+    ) is
+  begin
+    err <= '1';
+
+    next_p (
+      wb_clk => wb_clk,
+
+      wb_cti_i => wb_cti_i,
+      wb_dat_i => wb_dat_i,
+
+      wb_ack_o => wb_ack_o,
+      wb_err_o => wb_err_o,
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o,
+
+      err => err,
+      op  => op,
+
+      has_next => has_next,
+      address  => address,
+      data     => data,
+      mask     => mask
+      );
+
+    err <= '0';
+  end error_response;
+
+  procedure read_ack (
+    signal wb_clk : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : inout std_logic;
+
+    signal op  : in std_logic;
+
+    signal has_next : out std_logic;
+    signal address  : out std_logic_vector(AW-1 downto 0);
+    signal data     : out std_logic_vector(DW-1 downto 0);
+    signal mask     : out std_logic_vector(DW/8-1 downto 0);
+
+    signal data_i : in std_logic_vector(DW-1 downto 0)
+    ) is
+  begin
+    data <= data_i;
+
+    next_p (
+      wb_clk => wb_clk,
+
+      wb_cti_i => wb_cti_i,
+      wb_dat_i => wb_dat_i,
+
+      wb_ack_o => wb_ack_o,
+      wb_err_o => wb_err_o,
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o,
+
+      err => err,
+      op  => op,
+
+      has_next => has_next,
+      address  => address,
+      data     => data,
+      mask     => mask
+      );
+  end read_ack;
+
+  procedure write_ack (
+    signal wb_clk : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : inout std_logic;
+
+    signal op  : in std_logic;
+
+    signal has_next : out std_logic;
+    signal address  : out std_logic_vector(AW-1 downto 0);
+    signal data     : out std_logic_vector(DW-1 downto 0);
+    signal mask     : out std_logic_vector(DW/8-1 downto 0);
+
+    signal data_o : out std_logic_vector(DW-1 downto 0)
+    ) is
+  begin
+    if (DEBUG = '1') then
+      report "Write ack";
+    end if;
+
+    next_p (
+      wb_clk => wb_clk,
+
+      wb_cti_i => wb_cti_i,
+      wb_dat_i => wb_dat_i,
+
+      wb_ack_o => wb_ack_o,
+      wb_err_o => wb_err_o,
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o,
+
+      err => err,
+      op  => op,
+
+      has_next => has_next,
+      address  => address,
+      data     => data,
+      mask     => mask
+      );
+
+    data_o <= data;
+  end write_ack;
 
 begin
   has_next <= '0';
-  op <= READ;
-  err <= 0;
+  err      <= '0';
+  op       <= READ;
 end RTL;
