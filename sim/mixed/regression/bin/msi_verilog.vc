@@ -45,9 +45,6 @@
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_memory.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_slave.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_bfm_transactor.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_cdc.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_data_resize.v
-../../../../rtl/verilog/wb/core/mpsoc_msi_wb_mux.v
 ../../../../rtl/verilog/wb/core/mpsoc_msi_wb_interface.v
 
 ../../../../bench/verilog/regression/mpsoc_msi_testbench.sv

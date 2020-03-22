@@ -48,60 +48,59 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity mpsoc_msi_wb_data_resize is
-generic (
-    AW : integer := 32;  --Address width
+  generic (
+    AW  : integer := 32;  --Address width
     MDW : integer := 32;  --Master Data Width
-    SDW : integer := 8   --Slave Data Width
-);
+    SDW : integer := 8    --Slave Data Width
+    );
   port (
-  --Wishbone Master interface
-    wbm_adr_i : in std_logic_vector(AW-1 downto 0);
-    wbm_dat_i : in std_logic_vector(MDW-1 downto 0);
-    wbm_sel_i : in std_logic_vector(3 downto 0);
-    wbm_we_i : in std_logic;
-    wbm_cyc_i : in std_logic;
-    wbm_stb_i : in std_logic;
-    wbm_cti_i : in std_logic_vector(2 downto 0);
-    wbm_bte_i : in std_logic_vector(1 downto 0);
+    --Wishbone Master interface
+    wbm_adr_i : in  std_logic_vector(AW-1 downto 0);
+    wbm_dat_i : in  std_logic_vector(MDW-1 downto 0);
+    wbm_sel_i : in  std_logic_vector(3 downto 0);
+    wbm_we_i  : in  std_logic;
+    wbm_cyc_i : in  std_logic;
+    wbm_stb_i : in  std_logic;
+    wbm_cti_i : in  std_logic_vector(2 downto 0);
+    wbm_bte_i : in  std_logic_vector(1 downto 0);
     wbm_dat_o : out std_logic_vector(MDW-1 downto 0);
     wbm_ack_o : out std_logic;
     wbm_err_o : out std_logic;
     wbm_rty_o : out std_logic;
 
-  -- Wishbone Slave interface
+    -- Wishbone Slave interface
     wbs_adr_o : out std_logic_vector(AW-1 downto 0);
     wbs_dat_o : out std_logic_vector(SDW-1 downto 0);
-    wbs_we_o : out std_logic;
+    wbs_we_o  : out std_logic;
     wbs_cyc_o : out std_logic;
     wbs_stb_o : out std_logic;
     wbs_cti_o : out std_logic_vector(2 downto 0);
     wbs_bte_o : out std_logic_vector(1 downto 0);
-    wbs_dat_i : in std_logic_vector(SDW-1 downto 0);
-    wbs_ack_i : in std_logic;
-    wbs_err_i : in std_logic;
-    wbs_rty_i : in std_logic
-  );
+    wbs_dat_i : in  std_logic_vector(SDW-1 downto 0);
+    wbs_ack_i : in  std_logic;
+    wbs_err_i : in  std_logic;
+    wbs_rty_i : in  std_logic
+    );
 end mpsoc_msi_wb_data_resize;
 
 architecture RTL of mpsoc_msi_wb_data_resize is
 begin
-
-
   --////////////////////////////////////////////////////////////////
   --
   -- Module Body
   --
   wbs_adr_o(AW-1 downto 2) <= wbm_adr_i(AW-1 downto 2);
-  wbs_adr_o(1 downto 0) <= CONV_STD_LOGIC_VECTOR(0,2)
-  when wbm_sel_i(3) else CONV_STD_LOGIC_VECTOR(1,2)
-  when wbm_sel_i(2) else CONV_STD_LOGIC_VECTOR(2,2)
-  when wbm_sel_i(1) else CONV_STD_LOGIC_VECTOR(3,2);
+
+  wbs_adr_o(1 downto 0) <= "00"
+                        when wbm_sel_i(3) = '1' else "01"
+                        when wbm_sel_i(2) = '1' else "10"
+                        when wbm_sel_i(1) = '1' else "11";
 
   wbs_dat_o <= wbm_dat_i(31 downto 24)
-  when wbm_sel_i(3) else wbm_dat_i(23 downto 16)
-  when wbm_sel_i(2) else wbm_dat_i(15 downto 8)
-  when wbm_sel_i(1) else wbm_dat_i(7 downto 0)
-  when wbm_sel_i(0) else '0';
+               when wbm_sel_i(3) = '1' else wbm_dat_i(23 downto 16)
+               when wbm_sel_i(2) = '1' else wbm_dat_i(15 downto 8)
+               when wbm_sel_i(1) = '1' else wbm_dat_i(7 downto 0)
+               when wbm_sel_i(0) = '1' else X"00";
 
   wbs_we_o <= wbm_we_i;
 
@@ -111,10 +110,10 @@ begin
   wbs_cti_o <= wbm_cti_i;
   wbs_bte_o <= wbm_bte_i;
 
-  wbm_dat_o <= (wbs_dat_i & CONV_STD_LOGIC_VECTOR(0,24))
-  when (wbm_sel_i(3)) else (CONV_STD_LOGIC_VECTOR(0,8) & wbs_dat_i & CONV_STD_LOGIC_VECTOR(0,16))
-  when (wbm_sel_i(2)) else (CONV_STD_LOGIC_VECTOR(0,16) & wbs_dat_i & CONV_STD_LOGIC_VECTOR(0,8))
-  when (wbm_sel_i(1)) else (CONV_STD_LOGIC_VECTOR(0,24) & wbs_dat_i);
+  wbm_dat_o <= (wbs_dat_i & X"000000")
+               when (wbm_sel_i(3) = '1') else (X"00" & wbs_dat_i & X"0000")
+               when (wbm_sel_i(2) = '1') else (X"0000" & wbs_dat_i & X"00")
+               when (wbm_sel_i(1) = '1') else (X"000000" & wbs_dat_i);
 
   wbm_ack_o <= wbs_ack_i;
   wbm_err_o <= wbs_err_i;

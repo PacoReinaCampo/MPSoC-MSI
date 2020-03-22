@@ -159,10 +159,10 @@ begin
     end if;
   end process;
 
-  generating_0 : for xx in 0 to NUM_PORTS - 1 generate
-    token_wrap((xx+1)*NUM_PORTS-1 downto xx*NUM_PORTS) <= token;
+  generating_0 : for i in 0 to NUM_PORTS - 1 generate
+    token_wrap((i+1)*NUM_PORTS-1 downto i*NUM_PORTS) <= token;
 
-    token_lookahead(xx) <= token_wrap((xx+1)*NUM_PORTS-1 downto xx*NUM_PORTS);
-    order(xx)           <= reduce_or(token_lookahead(xx) and request);
+    token_lookahead(i) <= token_wrap((i+1)*NUM_PORTS-1 downto i*NUM_PORTS);
+    order(i)           <= reduce_or(token_lookahead(i) and request);
   end generate;
 end RTL;

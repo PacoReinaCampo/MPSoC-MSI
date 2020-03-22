@@ -1,10 +1,9 @@
 # vsim -c -do "run.do" work.mpsoc_msi_testbench 
-# Start time: 19:46:50 on Mar 21,2020
+# Start time: 02:32:29 on Mar 22,2020
 # Loading sv_std.std
 # Loading work.mpsoc_msi_testbench
 # Loading work.mpsoc_msi_wb_interface
-# Loading work.mpsoc_msi_wb_mux
-# Loading work.mpsoc_msi_wb_data_resize
+# Loading work.mpsoc_msi_wb_arbiter
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -15,19 +14,9 @@
 # Loading work.mpsoc_pkg
 # Loading work.mpsoc_msi_ahb3_master_port(rtl)
 # Loading work.mpsoc_msi_ahb3_slave_port(rtl)
-# Loading work.mpsoc_msi_wb_arbiter(rtl)
+# Loading work.mpsoc_msi_wb_mux(rtl)
 # Loading work.mpsoc_msi_arbiter(rtl)
-# ** Warning: (vsim-8683) Uninitialized out port /mpsoc_msi_testbench/wb_interface0/wb_arbiter_mem/wbs_bte_o(1) has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /mpsoc_msi_testbench/wb_interface0/wb_arbiter_mem/wbs_bte_o(0) has no driver.
-# This port will contribute value (U) to the signal network.
+# Loading work.mpsoc_msi_wb_data_resize(rtl)
 # do run.do
-# ** Fatal: (vsim-3420) Array lengths do not match. Left is 3 (2 downto 0). Right is 0 (-2147483646 downto 3 (null array)).
-#    Time: 0 ps  Iteration: 0  Process: /mpsoc_msi_testbench/wb_interface0/wb_arbiter_mem/line__151 File: ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
-# Fatal error in Architecture RTL at ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd line 151
-# 
-# HDL call sequence:
-# Stopped at ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd 151 Architecture RTL
-# 
-# End time: 19:46:50 on Mar 21,2020, Elapsed time: 0:00:00
-# Errors: 2, Warnings: 2
+# End time: 02:32:29 on Mar 22,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

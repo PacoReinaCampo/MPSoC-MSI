@@ -95,6 +95,8 @@ architecture RTL of mpsoc_msi_wb_cdc is
   --
   -- Variables
   --
+  signal wbm_m2s_bdata : std_logic_vector(AW+32+4 downto 0);
+
   signal wbm_m2s_en : std_logic;
   signal wbm_busy   : std_logic;
   signal wbm_cs     : std_logic;
@@ -121,19 +123,20 @@ begin
       adata => (wbm_adr_i & wbm_dat_i & wbm_sel_i & wbm_we_i),
       aen   => wbm_m2s_en,
       bclk  => wbs_clk,
-      bdata => (wbs_adr_o & wbs_dat_o & wbs_sel_o & wbs_we_o),
+      bdata => wbm_m2s_bdata,
       ben   => wbs_m2s_en
       );
 
-  wbm_cs     <= wbm_cyc_i and wbm_stb_i;
-  wbm_m2s_en <= wbm_cs and not wbm_busy;
+  wbm_cs        <= wbm_cyc_i and wbm_stb_i;
+  wbm_m2s_en    <= wbm_cs and not wbm_busy;
+  wbm_m2s_bdata <= wbs_adr_o & wbs_dat_o & wbs_sel_o & wbs_we_o;
 
   processing_0 : process (wbm_clk)
   begin
     if (rising_edge(wbm_clk)) then
-      if (wbm_ack_o or wbm_rst) then
+      if (wbm_ack_o = '1' or wbm_rst = '1') then
         wbm_busy <= '0';
-      elsif (wbm_cs) then
+      elsif (wbm_cs = '1') then
         wbm_busy <= '1';
       end if;
     end if;
@@ -142,9 +145,9 @@ begin
   processing_1 : process (wbs_clk)
   begin
     if (rising_edge(wbs_clk)) then
-      if (wbs_ack_i) then
+      if (wbs_ack_i = '1') then
         wbs_cs <= '0';
-      elsif (wbs_m2s_en) then
+      elsif (wbs_m2s_en = '1') then
         wbs_cs <= '1';
       end if;
     end if;
