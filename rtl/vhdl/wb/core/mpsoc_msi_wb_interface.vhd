@@ -253,27 +253,27 @@ architecture RTL of mpsoc_msi_wb_interface is
   signal wb_m2s_or1k_i_mem_adr  : std_logic_vector(31 downto 0);
   signal wb_m2s_or1k_i_mem_dat  : std_logic_vector(31 downto 0);
   signal wb_m2s_or1k_i_mem_sel  : std_logic_vector(3 downto 0);
-  signal wb_m2s_or1k_i_mem_we   : std_logic;
-  signal wb_m2s_or1k_i_mem_cyc  : std_logic;
-  signal wb_m2s_or1k_i_mem_stb  : std_logic;
+  signal wb_m2s_or1k_i_mem_we   : std_logic_vector(0 downto 0);
+  signal wb_m2s_or1k_i_mem_cyc  : std_logic_vector(0 downto 0);
+  signal wb_m2s_or1k_i_mem_stb  : std_logic_vector(0 downto 0);
   signal wb_m2s_or1k_i_mem_cti  : std_logic_vector(2 downto 0);
   signal wb_m2s_or1k_i_mem_bte  : std_logic_vector(1 downto 0);
   signal wb_s2m_or1k_i_mem_dat  : std_logic_vector(31 downto 0);
-  signal wb_s2m_or1k_i_mem_ack  : std_logic;
-  signal wb_s2m_or1k_i_mem_err  : std_logic;
-  signal wb_s2m_or1k_i_mem_rty  : std_logic;
+  signal wb_s2m_or1k_i_mem_ack  : std_logic_vector(0 downto 0);
+  signal wb_s2m_or1k_i_mem_err  : std_logic_vector(0 downto 0);
+  signal wb_s2m_or1k_i_mem_rty  : std_logic_vector(0 downto 0);
   signal wb_m2s_dbg_mem_adr     : std_logic_vector(31 downto 0);
   signal wb_m2s_dbg_mem_dat     : std_logic_vector(31 downto 0);
   signal wb_m2s_dbg_mem_sel     : std_logic_vector(3 downto 0);
-  signal wb_m2s_dbg_mem_we      : std_logic;
-  signal wb_m2s_dbg_mem_cyc     : std_logic;
-  signal wb_m2s_dbg_mem_stb     : std_logic;
+  signal wb_m2s_dbg_mem_we      : std_logic_vector(0 downto 0);
+  signal wb_m2s_dbg_mem_cyc     : std_logic_vector(0 downto 0);
+  signal wb_m2s_dbg_mem_stb     : std_logic_vector(0 downto 0);
   signal wb_m2s_dbg_mem_cti     : std_logic_vector(2 downto 0);
   signal wb_m2s_dbg_mem_bte     : std_logic_vector(1 downto 0);
   signal wb_s2m_dbg_mem_dat     : std_logic_vector(31 downto 0);
-  signal wb_s2m_dbg_mem_ack     : std_logic;
-  signal wb_s2m_dbg_mem_err     : std_logic;
-  signal wb_s2m_dbg_mem_rty     : std_logic;
+  signal wb_s2m_dbg_mem_ack     : std_logic_vector(0 downto 0);
+  signal wb_s2m_dbg_mem_err     : std_logic_vector(0 downto 0);
+  signal wb_s2m_dbg_mem_rty     : std_logic_vector(0 downto 0);
   signal wb_m2s_resize_uart_adr : std_logic_vector(31 downto 0);
   signal wb_m2s_resize_uart_dat : std_logic_vector(31 downto 0);
   signal wb_m2s_resize_uart_sel : std_logic_vector(3 downto 0);
@@ -286,6 +286,24 @@ architecture RTL of mpsoc_msi_wb_interface is
   signal wb_s2m_resize_uart_ack : std_logic;
   signal wb_s2m_resize_uart_err : std_logic;
   signal wb_s2m_resize_uart_rty : std_logic;
+
+  signal wb_m2s_or1k_d_adr_o : std_logic_vector(63 downto 0);
+  signal wb_m2s_or1k_d_dat_o : std_logic_vector(63 downto 0);
+  signal wb_m2s_or1k_d_sel_o : std_logic_vector(7 downto 0);
+  signal wb_m2s_or1k_d_we_o  : std_logic_vector(1 downto 0);
+  signal wb_m2s_or1k_d_cyc_o : std_logic_vector(1 downto 0);
+  signal wb_m2s_or1k_d_stb_o : std_logic_vector(1 downto 0);
+  signal wb_m2s_or1k_d_cti_o : std_logic_vector(5 downto 0);
+  signal wb_m2s_or1k_d_bte_o : std_logic_vector(3 downto 0);
+  signal wb_s2m_or1k_d_dat_i : std_logic_vector(63 downto 0);
+  signal wb_s2m_or1k_d_ack_i : std_logic_vector(1 downto 0);
+  signal wb_s2m_or1k_d_err_i : std_logic_vector(1 downto 0);
+  signal wb_s2m_or1k_d_rty_i : std_logic_vector(1 downto 0);
+
+  signal wb_s2m_or1k_i_dat_o : std_logic_vector(95 downto 0);
+  signal wb_s2m_or1k_i_ack_o : std_logic_vector(2 downto 0);
+  signal wb_s2m_or1k_i_err_o : std_logic_vector(2 downto 0);
+  signal wb_s2m_or1k_i_rty_o : std_logic_vector(2 downto 0);
 
 begin
   --////////////////////////////////////////////////////////////////
@@ -313,19 +331,32 @@ begin
       wbm_ack_o => wb_or1k_d_ack_o,
       wbm_err_o => wb_or1k_d_err_o,
       wbm_rty_o => wb_or1k_d_rty_o,
-      wbs_adr_o => (wb_m2s_or1k_d_mem_adr & wb_m2s_resize_uart_adr),
-      wbs_dat_o => (wb_m2s_or1k_d_mem_dat & wb_m2s_resize_uart_dat),
-      wbs_sel_o => (wb_m2s_or1k_d_mem_sel & wb_m2s_resize_uart_sel),
-      wbs_we_o  => (wb_m2s_or1k_d_mem_we & wb_m2s_resize_uart_we),
-      wbs_cyc_o => (wb_m2s_or1k_d_mem_cyc & wb_m2s_resize_uart_cyc),
-      wbs_stb_o => (wb_m2s_or1k_d_mem_stb & wb_m2s_resize_uart_stb),
-      wbs_cti_o => (wb_m2s_or1k_d_mem_cti & wb_m2s_resize_uart_cti),
-      wbs_bte_o => (wb_m2s_or1k_d_mem_bte & wb_m2s_resize_uart_bte),
-      wbs_dat_i => (wb_s2m_or1k_d_mem_dat & wb_s2m_resize_uart_dat),
-      wbs_ack_i => (wb_s2m_or1k_d_mem_ack & wb_s2m_resize_uart_ack),
-      wbs_err_i => (wb_s2m_or1k_d_mem_err & wb_s2m_resize_uart_err),
-      wbs_rty_i => (wb_s2m_or1k_d_mem_rty & wb_s2m_resize_uart_rty)
+      wbs_adr_o => wb_m2s_or1k_d_adr_o,
+      wbs_dat_o => wb_m2s_or1k_d_dat_o,
+      wbs_sel_o => wb_m2s_or1k_d_sel_o,
+      wbs_we_o  => wb_m2s_or1k_d_we_o,
+      wbs_cyc_o => wb_m2s_or1k_d_cyc_o,
+      wbs_stb_o => wb_m2s_or1k_d_stb_o,
+      wbs_cti_o => wb_m2s_or1k_d_cti_o,
+      wbs_bte_o => wb_m2s_or1k_d_bte_o,
+      wbs_dat_i => wb_s2m_or1k_d_dat_i,
+      wbs_ack_i => wb_s2m_or1k_d_ack_i,
+      wbs_err_i => wb_s2m_or1k_d_err_i,
+      wbs_rty_i => wb_s2m_or1k_d_rty_i
       );
+
+  wb_m2s_or1k_d_adr_o <= wb_m2s_or1k_d_mem_adr & wb_m2s_resize_uart_adr;
+  wb_m2s_or1k_d_dat_o <= wb_m2s_or1k_d_mem_dat & wb_m2s_resize_uart_dat;
+  wb_m2s_or1k_d_sel_o <= wb_m2s_or1k_d_mem_sel & wb_m2s_resize_uart_sel;
+  wb_m2s_or1k_d_we_o  <= wb_m2s_or1k_d_mem_we & wb_m2s_resize_uart_we;
+  wb_m2s_or1k_d_cyc_o <= wb_m2s_or1k_d_mem_cyc & wb_m2s_resize_uart_cyc;
+  wb_m2s_or1k_d_stb_o <= wb_m2s_or1k_d_mem_stb & wb_m2s_resize_uart_stb;
+  wb_m2s_or1k_d_cti_o <= wb_m2s_or1k_d_mem_cti & wb_m2s_resize_uart_cti;
+  wb_m2s_or1k_d_bte_o <= wb_m2s_or1k_d_mem_bte & wb_m2s_resize_uart_bte;
+  wb_s2m_or1k_d_dat_i <= wb_s2m_or1k_d_mem_dat & wb_s2m_resize_uart_dat;
+  wb_s2m_or1k_d_ack_i <= wb_s2m_or1k_d_mem_ack & wb_s2m_resize_uart_ack;
+  wb_s2m_or1k_d_err_i <= wb_s2m_or1k_d_mem_err & wb_s2m_resize_uart_err;
+  wb_s2m_or1k_d_rty_i <= wb_s2m_or1k_d_mem_rty & wb_s2m_resize_uart_rty;
 
   wb_mux_or1k_i : mpsoc_msi_wb_mux
     generic map (
@@ -399,7 +430,7 @@ begin
 
   wb_arbiter_mem : mpsoc_msi_wb_arbiter
     generic map (
-      NUM_MASTERS = < 3
+      NUM_MASTERS => 3
       )
     port map (
       wb_clk_i  => wb_clk_i,
@@ -412,10 +443,10 @@ begin
       wbm_stb_i => (wb_m2s_or1k_i_mem_stb & wb_m2s_or1k_d_mem_stb & wb_m2s_dbg_mem_stb),
       wbm_cti_i => (wb_m2s_or1k_i_mem_cti & wb_m2s_or1k_d_mem_cti & wb_m2s_dbg_mem_cti),
       wbm_bte_i => (wb_m2s_or1k_i_mem_bte & wb_m2s_or1k_d_mem_bte & wb_m2s_dbg_mem_bte),
-      wbm_dat_o => (wb_s2m_or1k_i_mem_dat & wb_s2m_or1k_d_mem_dat & wb_s2m_dbg_mem_dat),
-      wbm_ack_o => (wb_s2m_or1k_i_mem_ack & wb_s2m_or1k_d_mem_ack & wb_s2m_dbg_mem_ack),
-      wbm_err_o => (wb_s2m_or1k_i_mem_err & wb_s2m_or1k_d_mem_err & wb_s2m_dbg_mem_err),
-      wbm_rty_o => (wb_s2m_or1k_i_mem_rty & wb_s2m_or1k_d_mem_rty & wb_s2m_dbg_mem_rty),
+      wbm_dat_o => wb_s2m_or1k_i_dat_o,
+      wbm_ack_o => wb_s2m_or1k_i_ack_o,
+      wbm_err_o => wb_s2m_or1k_i_err_o,
+      wbm_rty_o => wb_s2m_or1k_i_rty_o,
       wbs_adr_o => wb_mem_adr_o,
       wbs_dat_o => wb_mem_dat_o,
       wbs_sel_o => wb_mem_sel_o,
@@ -429,6 +460,11 @@ begin
       wbs_err_i => wb_mem_err_i,
       wbs_rty_i => wb_mem_rty_i
       );
+
+  wb_s2m_or1k_i_dat_o <= wb_s2m_or1k_i_mem_dat & wb_s2m_or1k_d_mem_dat & wb_s2m_dbg_mem_dat;
+  wb_s2m_or1k_i_ack_o <= wb_s2m_or1k_i_mem_ack & wb_s2m_or1k_d_mem_ack & wb_s2m_dbg_mem_ack;
+  wb_s2m_or1k_i_err_o <= wb_s2m_or1k_i_mem_err & wb_s2m_or1k_d_mem_err & wb_s2m_dbg_mem_err;
+  wb_s2m_or1k_i_rty_o <= wb_s2m_or1k_i_mem_rty & wb_s2m_or1k_d_mem_rty & wb_s2m_dbg_mem_rty;
 
   wb_data_resize_uart : mpsoc_msi_wb_data_resize
     generic map (
@@ -461,4 +497,6 @@ begin
       wbs_err_i => wb_uart_err_i,
       wbs_rty_i => wb_uart_rty_i
       );
+
+  wb_uart_sel_o <= (others => '0');
 end RTL;

@@ -55,4 +55,5 @@
 ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_data_resize.vhd
 ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_mux.vhd
 ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_bfm_slave.vhd
+../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_interface.vhd
 
