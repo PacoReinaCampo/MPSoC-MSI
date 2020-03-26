@@ -60,15 +60,15 @@ entity mpsoc_msi_wb_arbiter is
     wb_rst_i : in std_logic;
 
     -- Wishbone Master Interface
-    wbm_adr_i : in  std_logic_vector(NUM_MASTERS*AW-1 downto 0);
-    wbm_dat_i : in  std_logic_vector(NUM_MASTERS*DW-1 downto 0);
-    wbm_sel_i : in  std_logic_vector(NUM_MASTERS*4-1 downto 0);
+    wbm_adr_i : in  M_NUM_MASTERS_AW;
+    wbm_dat_i : in  M_NUM_MASTERS_DW;
+    wbm_sel_i : in  M_NUM_MASTERS_3;
     wbm_we_i  : in  std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_cyc_i : in  std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_stb_i : in  std_logic_vector(NUM_MASTERS-1 downto 0);
-    wbm_cti_i : in  std_logic_vector(NUM_MASTERS*3-1 downto 0);
-    wbm_bte_i : in  std_logic_vector(NUM_MASTERS*2-1 downto 0);
-    wbm_dat_o : out std_logic_vector(NUM_MASTERS*DW-1 downto 0);
+    wbm_cti_i : in  M_NUM_MASTERS_2;
+    wbm_bte_i : in  M_NUM_MASTERS_1;
+    wbm_dat_o : out M_NUM_MASTERS_DW;
     wbm_ack_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_err_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_rty_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
@@ -142,17 +142,17 @@ begin
   master_selection <= to_integer(unsigned(selection));
 
   --Mux active master
-  wbs_adr_o <= wbm_adr_i((master_selection+1)*AW-1 downto master_selection*AW);
-  wbs_dat_o <= wbm_dat_i((master_selection+1)*DW-1 downto master_selection*DW);
-  wbs_sel_o <= wbm_sel_i((master_selection+1)*4-1 downto master_selection*4);
+  wbs_adr_o <= wbm_adr_i(master_selection+);
+  wbs_dat_o <= wbm_dat_i(master_selection);
+  wbs_sel_o <= wbm_sel_i(master_selection);
   wbs_we_o  <= wbm_we_i(master_selection);
   wbs_cyc_o <= wbm_cyc_i(master_selection) and active;
   wbs_stb_o <= wbm_stb_i(master_selection);
-  wbs_cti_o <= wbm_cti_i((master_selection+1)*3-1 downto master_selection*3);
-  wbs_bte_o <= wbm_bte_i((master_selection+1)*2-1 downto master_selection*2);
+  wbs_cti_o <= wbm_cti_i(master_selection);
+  wbs_bte_o <= wbm_bte_i(master_selection);
 
   generating_0 : for i in 0 to NUM_MASTERS - 1 generate
-    wbm_dat_o((i+1)*DW-1 downto i*DW) <= wbs_dat_i;
+    wbm_dat_o(i) <= wbs_dat_i;
   end generate;
 
   wbm_ack_o <= (others => '0');

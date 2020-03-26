@@ -50,18 +50,18 @@ module mpsoc_msi_wb_arbiter #(
     input wb_rst_i,
 
     // Wishbone Master Interface
-    input  [NUM_MASTERS*AW -1:0] wbm_adr_i,
-    input  [NUM_MASTERS*DW -1:0] wbm_dat_i,
-    input  [NUM_MASTERS*4  -1:0] wbm_sel_i,
-    input  [NUM_MASTERS-    1:0] wbm_we_i,
-    input  [NUM_MASTERS    -1:0] wbm_cyc_i,
-    input  [NUM_MASTERS    -1:0] wbm_stb_i,
-    input  [NUM_MASTERS*3  -1:0] wbm_cti_i,
-    input  [NUM_MASTERS*2  -1:0] wbm_bte_i,
-    output [NUM_MASTERS*DW -1:0] wbm_dat_o,
-    output [NUM_MASTERS    -1:0] wbm_ack_o,
-    output [NUM_MASTERS    -1:0] wbm_err_o,
-    output [NUM_MASTERS    -1:0] wbm_rty_o, 
+    input  [NUM_MASTERS-1:0][AW-1:0] wbm_adr_i,
+    input  [NUM_MASTERS-1:0][DW-1:0] wbm_dat_i,
+    input  [NUM_MASTERS-1:0][   3:0] wbm_sel_i,
+    input  [NUM_MASTERS-1:0]         wbm_we_i,
+    input  [NUM_MASTERS-1:0]         wbm_cyc_i,
+    input  [NUM_MASTERS-1:0]         wbm_stb_i,
+    input  [NUM_MASTERS-1:0][   2:0] wbm_cti_i,
+    input  [NUM_MASTERS-1:0][   1:0] wbm_bte_i,
+    output [NUM_MASTERS-1:0][DW-1:0] wbm_dat_o,
+    output [NUM_MASTERS-1:0]         wbm_ack_o,
+    output [NUM_MASTERS-1:0]         wbm_err_o,
+    output [NUM_MASTERS-1:0]         wbm_rty_o, 
 
     // Wishbone Slave interface
     output [AW-1:0] wbs_adr_o,
@@ -80,29 +80,9 @@ module mpsoc_msi_wb_arbiter #(
 
   //////////////////////////////////////////////////////////////////
   //
-  // Functions
-  //
-
-  `ifdef BROKEN_CLOG2
-  function integer clog2;
-    input integer in;
-    begin
-      in = in - 1;
-      for (clog2 = 0; in > 0; clog2=clog2+1)
-        in = in >> 1;
-    end
-  endfunction
-
-  `define clog2 clog2
-  `else // !`ifdef BROKEN_CLOG2
-  `define clog2 $clog2
-  `endif
-
-  //////////////////////////////////////////////////////////////////
-  //
   // Constants
   //
-  parameter MASTER_SEL_BITS = NUM_MASTERS > 1 ? `clog2(NUM_MASTERS) : 1;
+  parameter MASTER_SEL_BITS = NUM_MASTERS > 1 ? $clog2(NUM_MASTERS) : 1;
 
   //////////////////////////////////////////////////////////////////
   //
@@ -129,14 +109,14 @@ module mpsoc_msi_wb_arbiter #(
   );
 
   //Mux active master
-  assign wbs_adr_o = wbm_adr_i[master_sel*AW+:AW];
-  assign wbs_dat_o = wbm_dat_i[master_sel*DW+:DW];
-  assign wbs_sel_o = wbm_sel_i[master_sel*4+:4];
+  assign wbs_adr_o = wbm_adr_i[master_sel];
+  assign wbs_dat_o = wbm_dat_i[master_sel];
+  assign wbs_sel_o = wbm_sel_i[master_sel];
   assign wbs_we_o  = wbm_we_i [master_sel];
   assign wbs_cyc_o = wbm_cyc_i[master_sel] & active;
   assign wbs_stb_o = wbm_stb_i[master_sel];
-  assign wbs_cti_o = wbm_cti_i[master_sel*3+:3];
-  assign wbs_bte_o = wbm_bte_i[master_sel*2+:2];
+  assign wbs_cti_o = wbm_cti_i[master_sel];
+  assign wbs_bte_o = wbm_bte_i[master_sel];
 
   assign wbm_dat_o = {NUM_MASTERS{wbs_dat_i}};
   assign wbm_ack_o = ((wbs_ack_i & active) << master_sel);

@@ -40,8 +40,6 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-`ifndef _arbiter_ `define _arbiter_
-
 module mpsoc_msi_arbiter #(
   parameter NUM_PORTS = 6
 )
@@ -65,7 +63,8 @@ module mpsoc_msi_arbiter #(
   // Constants
   //
 
-  // Find First 1 - Start from MSB and count downwards, returns 0 when no bit set
+  // Find First 1
+  // Start from MSB and count downwards, returns 0 when no bit set
   function [$clog2(NUM_PORTS)-1:0] ff1;
     input [NUM_PORTS-1:0] in;
     integer i;
@@ -86,7 +85,7 @@ module mpsoc_msi_arbiter #(
   //
   // Variables
   //
-
+  genvar                  xx;
   integer                 yy;
 
   wire                    next;
@@ -100,23 +99,19 @@ module mpsoc_msi_arbiter #(
   //
   // Module Body
   //
+  assign token_wrap = {token, token};
+  assign next       = ~|(token & request);
 
-  assign token_wrap   = {token, token};
-  assign next         = ~|(token & request);
-
-  always @(posedge clk)
-    grant <= token & request;
-
-  always @(posedge clk)
+  always @(posedge clk) begin
+    grant     <= token & request;
     selection <= ff1(token & request);
-
-  always @(posedge clk)
-    active <= |(token & request);
+    active    <= |(token & request);
+  end
 
   always @(posedge clk) begin
     if (rst) token <= 'b1;
     else if (next) begin
-      for (yy = 0; yy < NUM_PORTS; yy = yy + 1) begin : TOKEN_
+      for (yy = 0; yy < NUM_PORTS; yy = yy + 1) begin : TOKEN
         if (order[yy]) begin
           token <= token_lookahead[yy];
         end
@@ -124,12 +119,10 @@ module mpsoc_msi_arbiter #(
     end
   end
 
-  genvar xx;
   generate
-    for (xx = 0; xx < NUM_PORTS; xx = xx + 1) begin : ORDER_
-      assign token_lookahead[xx]  = token_wrap[xx +: NUM_PORTS];
-      assign order[xx]            = |(token_lookahead[xx] & request);
+    for (xx = 0; xx < NUM_PORTS; xx = xx + 1) begin : ORDER
+      assign token_lookahead[xx] = token_wrap[xx +: NUM_PORTS];
+      assign order[xx]           = |(token_lookahead[xx] & request);
     end
   endgenerate
 endmodule
-`endif //  `ifndef _arbiter_

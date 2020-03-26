@@ -43,25 +43,22 @@
 ../../../../rtl/vhdl/pkg/mpsoc_pkg.vhd
 ../../../../rtl/vhdl/pkg/mpsoc_msi_pkg.vhd
 
-../../../../rtl/vhdl/generic/ahb3/mpsoc_msi_ahb3_interface.vhd
-../../../../rtl/vhdl/generic/ahb3/mpsoc_msi_ahb3_master_port.vhd
-../../../../rtl/vhdl/generic/ahb3/mpsoc_msi_ahb3_slave_port.vhd
-../../../../rtl/vhdl/generic/wb/mpsoc_msi_wb_interface.vhd
-../../../../rtl/vhdl/generic/wb/mpsoc_msi_wb_master_port.vhd
-../../../../rtl/vhdl/generic/wb/mpsoc_msi_wb_slave_port.vhd
+../../../../rtl/vhdl/ahb3/generic/mpsoc_msi_ahb3_interface.vhd
+../../../../rtl/vhdl/ahb3/generic/mpsoc_msi_ahb3_master_port.vhd
+../../../../rtl/vhdl/ahb3/generic/mpsoc_msi_ahb3_slave_port.vhd
 
-../../../../rtl/vhdl/misd/ahb3/mpsoc_misd_memory_ahb3_interface.vhd
-../../../../rtl/vhdl/misd/ahb3/mpsoc_misd_memory_ahb3_master_port.vhd
-../../../../rtl/vhdl/misd/ahb3/mpsoc_misd_memory_ahb3_slave_port.vhd
-../../../../rtl/vhdl/misd/wb/mpsoc_misd_memory_wb_interface.vhd
-../../../../rtl/vhdl/misd/wb/mpsoc_misd_memory_wb_master_port.vhd
-../../../../rtl/vhdl/misd/wb/mpsoc_misd_memory_wb_slave_port.vhd
+../../../../rtl/vhdl/ahb3/misd/mpsoc_misd_memory_ahb3_interface.vhd
+../../../../rtl/vhdl/ahb3/misd/mpsoc_misd_memory_ahb3_master_port.vhd
+../../../../rtl/vhdl/ahb3/misd/mpsoc_misd_memory_ahb3_slave_port.vhd
 
-../../../../rtl/vhdl/simd/ahb3/mpsoc_simd_memory_ahb3_interface.vhd
-../../../../rtl/vhdl/simd/ahb3/mpsoc_simd_memory_ahb3_master_port.vhd
-../../../../rtl/vhdl/simd/ahb3/mpsoc_simd_memory_ahb3_slave_port.vhd
-../../../../rtl/vhdl/simd/wb/mpsoc_simd_memory_wb_interface.vhd
-../../../../rtl/vhdl/simd/wb/mpsoc_simd_memory_wb_master_port.vhd
-../../../../rtl/vhdl/simd/wb/mpsoc_simd_memory_wb_slave_port.vhd
+../../../../rtl/vhdl/ahb3/simd/mpsoc_simd_memory_ahb3_interface.vhd
+../../../../rtl/vhdl/ahb3/simd/mpsoc_simd_memory_ahb3_master_port.vhd
+../../../../rtl/vhdl/ahb3/simd/mpsoc_simd_memory_ahb3_slave_port.vhd
+
+../../../../rtl/vhdl/wb/arbiter/mpsoc_msi_arbiter.vhd
+../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
+../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_data_resize.vhd
+../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_mux.vhd
+../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_interface.vhd
 
 ../../../../bench/vhdl/regression/mpsoc_msi_testbench.vhd

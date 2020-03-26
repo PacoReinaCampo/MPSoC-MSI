@@ -1,5 +1,5 @@
 # vsim -c -do "run.do" work.mpsoc_msi_testbench 
-# Start time: 18:02:51 on Feb 23,2020
+# Start time: 15:53:06 on Mar 26,2020
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -11,23 +11,26 @@
 # Loading work.mpsoc_msi_ahb3_interface(rtl)
 # Loading work.mpsoc_msi_ahb3_master_port(rtl)
 # Loading work.mpsoc_msi_ahb3_slave_port(rtl)
-# Loading work.mpsoc_msi_wb_interface(rtl)
-# Loading work.mpsoc_msi_wb_master_port(rtl)
-# Loading work.mpsoc_msi_wb_slave_port(rtl)
 # Loading work.mpsoc_misd_memory_ahb3_interface(rtl)
 # Loading work.mpsoc_misd_memory_ahb3_master_port(rtl)
 # Loading work.mpsoc_misd_memory_ahb3_slave_port(rtl)
-# Loading work.mpsoc_misd_memory_wb_interface(rtl)
-# Loading work.mpsoc_misd_memory_wb_master_port(rtl)
-# Loading work.mpsoc_misd_memory_wb_slave_port(rtl)
 # Loading work.mpsoc_simd_memory_ahb3_interface(rtl)
 # Loading work.mpsoc_simd_memory_ahb3_master_port(rtl)
 # Loading work.mpsoc_simd_memory_ahb3_slave_port(rtl)
-# Loading work.mpsoc_simd_memory_wb_interface(rtl)
-# Loading work.mpsoc_simd_memory_wb_master_port(rtl)
-# Loading work.mpsoc_simd_memory_wb_slave_port(rtl)
-# ** Warning: Design size of 15004 statements exceeds ModelSim-Intel FPGA Starter Edition recommended capacity.
+# Loading work.mpsoc_msi_wb_interface(rtl)
+# Loading work.mpsoc_msi_wb_mux(rtl)
+# Loading work.mpsoc_msi_wb_arbiter(rtl)
+# Loading work.mpsoc_msi_arbiter(rtl)
+# Loading work.mpsoc_msi_wb_data_resize(rtl)
+# ** Warning: Design size of 10428 statements exceeds ModelSim-Intel FPGA Starter Edition recommended capacity.
 # Expect performance to be adversely affected.
 # do run.do
-# End time: 18:02:51 on Feb 23,2020, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 1
+# ** Fatal: (vsim-3471) Slice range (-2147483646 downto -2147483648) does not belong to the prefix index range (8 downto 0).
+#    Time: 0 ps  Iteration: 0  Process: /mpsoc_msi_testbench/msi_wb_interface/wb_arbiter_mem/line__151 File: ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
+# Fatal error in Architecture RTL at ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd line 151
+# 
+# HDL call sequence:
+# Stopped at ../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd 151 Architecture RTL
+# 
+# End time: 15:53:07 on Mar 26,2020, Elapsed time: 0:00:01
+# Errors: 2, Warnings: 1

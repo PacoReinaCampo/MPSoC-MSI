@@ -14,16 +14,7 @@ ghdl -i rtl/vhdl/ahb3/simd/mpsoc_simd_memory_ahb3_master_port.vhd
 ghdl -i rtl/vhdl/ahb3/simd/mpsoc_simd_memory_ahb3_slave_port.vhd
 
 ghdl -i rtl/vhdl/wb/arbiter/mpsoc_msi_arbiter.vhd
-
-ghdl -i rtl/vhdl/wb/cdc_utils/mpsoc_msi_wb_cc561.vhd
-ghdl -i rtl/vhdl/wb/cdc_utils/mpsoc_msi_wb_sync2_pgen.vhd
-
 ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
-ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_bfm_master.vhd
-ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_bfm_memory.vhd
-ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_bfm_slave.vhd
-ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_bfm_transactor.vhd
-ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_cdc.vhd
 ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_data_resize.vhd
 ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_mux.vhd
 ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_interface.vhd

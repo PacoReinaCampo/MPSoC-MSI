@@ -67,41 +67,44 @@ module mpsoc_msi_wb_mux #(
     output                     wbm_rty_o,
 
     // Wishbone Slave interface
-    output [NUM_SLAVES*AW-1:0] wbs_adr_o,
-    output [NUM_SLAVES*DW-1:0] wbs_dat_o,
-    output [NUM_SLAVES*4 -1:0] wbs_sel_o,
-    output [NUM_SLAVES   -1:0] wbs_we_o,
-    output [NUM_SLAVES   -1:0] wbs_cyc_o,
-    output [NUM_SLAVES   -1:0] wbs_stb_o,
-    output [NUM_SLAVES*3 -1:0] wbs_cti_o,
-    output [NUM_SLAVES*2 -1:0] wbs_bte_o,
-    input  [NUM_SLAVES*DW-1:0] wbs_dat_i,
-    input  [NUM_SLAVES   -1:0] wbs_ack_i,
-    input  [NUM_SLAVES   -1:0] wbs_err_i,
-    input  [NUM_SLAVES   -1:0] wbs_rty_i
+    output [NUM_SLAVES-1:0][AW-1:0] wbs_adr_o,
+    output [NUM_SLAVES-1:0][DW-1:0] wbs_dat_o,
+    output [NUM_SLAVES-1:0][   3:0] wbs_sel_o,
+    output [NUM_SLAVES-1:0]         wbs_we_o,
+    output [NUM_SLAVES-1:0]         wbs_cyc_o,
+    output [NUM_SLAVES-1:0]         wbs_stb_o,
+    output [NUM_SLAVES-1:0][   2:0] wbs_cti_o,
+    output [NUM_SLAVES-1:0][   1:0] wbs_bte_o,
+    input  [NUM_SLAVES-1:0][DW-1:0] wbs_dat_i,
+    input  [NUM_SLAVES-1:0]         wbs_ack_i,
+    input  [NUM_SLAVES-1:0]         wbs_err_i,
+    input  [NUM_SLAVES-1:0]         wbs_rty_i
   );
 
   //////////////////////////////////////////////////////////////////
   //
   // Constants
   //
-  parameter slave_sel_bits = NUM_SLAVES > 1 ? $clog2(NUM_SLAVES) : 1;
+  parameter SLAVE_SEL_BITS = NUM_SLAVES > 1 ? $clog2(NUM_SLAVES) : 1;
 
   //////////////////////////////////////////////////////////////////
   //
   // Variables
   //
   reg                       wbm_err;
-  wire [slave_sel_bits-1:0] slave_sel;
+  wire [SLAVE_SEL_BITS-1:0] slave_sel;
   wire [NUM_SLAVES    -1:0] match;
+
+  genvar idx;
 
   //////////////////////////////////////////////////////////////////
   //
   // Functions
   //
 
-  // Find First 1 - Start from MSB and count downwards, returns 0 when no bit set
-  function [slave_sel_bits-1:0] ff1;
+  // Find First 1
+  // Start from MSB and count downwards, returns 0 when no bit set
+  function [SLAVE_SEL_BITS-1:0] ff1;
     input [NUM_SLAVES-1:0] in;
     integer i;
 
@@ -119,10 +122,8 @@ module mpsoc_msi_wb_mux #(
   // Module Body
   //
 
-  genvar idx;
-
   generate
-    for(idx=0; idx<NUM_SLAVES ; idx=idx+1) begin : addr_match
+    for(idx=0; idx<NUM_SLAVES ; idx=idx+1) begin
       assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*AW+:AW]) == MATCH_ADDR[idx*AW+:AW];
     end
   endgenerate
@@ -136,15 +137,13 @@ module mpsoc_msi_wb_mux #(
   assign wbs_dat_o = {NUM_SLAVES{wbm_dat_i}};
   assign wbs_sel_o = {NUM_SLAVES{wbm_sel_i}};
   assign wbs_we_o  = {NUM_SLAVES{wbm_we_i}};
-
-  assign wbs_cyc_o = match & (wbm_cyc_i << slave_sel);
-
   assign wbs_stb_o = {NUM_SLAVES{wbm_stb_i}};
-
   assign wbs_cti_o = {NUM_SLAVES{wbm_cti_i}};
   assign wbs_bte_o = {NUM_SLAVES{wbm_bte_i}};
 
-  assign wbm_dat_o = wbs_dat_i[slave_sel*DW+:DW];
+  assign wbs_cyc_o = match & (wbm_cyc_i << slave_sel);
+
+  assign wbm_dat_o = wbs_dat_i[slave_sel];
   assign wbm_ack_o = wbs_ack_i[slave_sel];
   assign wbm_err_o = wbs_err_i[slave_sel] | wbm_err;
   assign wbm_rty_o = wbs_rty_i[slave_sel];
