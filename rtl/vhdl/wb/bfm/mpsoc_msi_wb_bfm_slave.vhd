@@ -162,15 +162,13 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     signal wb_ack_o : out std_logic;
     signal wb_err_o : out std_logic;
     signal wb_rty_o : out std_logic;
-    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
-
-    signal has_next   : out std_logic;
-    signal cycle_type : out std_logic;
-
-    signal op      : out std_logic;
-    signal address : out std_logic_vector(AW-1 downto 0);
-    signal mask    : out std_logic_vector(DW/8-1 downto 0)
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0)
     ) is
+    variable has_next   : std_logic;
+    variable cycle_type : std_logic;
+    variable op         : std_logic;
+    variable address    : std_logic_vector(AW-1 downto 0);
+    variable mask       : std_logic_vector(DW/8-1 downto 0);
   begin
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
@@ -202,13 +200,14 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     if (DEBUG = '1') then
       report "Got wb_cyc_i";
     end if;
-    cycle_type <= get_cycle_type(wb_cti_i);
 
-    op      <= wb_we_i;
-    address <= wb_adr_i;
-    mask    <= wb_sel_i;
+    cycle_type := get_cycle_type(wb_cti_i);
 
-    has_next <= '1';
+    op      := wb_we_i;
+    address := wb_adr_i;
+    mask    := wb_sel_i;
+
+    has_next := '1';
   end init_p;
 
   procedure next_p (
@@ -220,16 +219,15 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     signal wb_ack_o : out std_logic;
     signal wb_err_o : out std_logic;
     signal wb_rty_o : out std_logic;
-    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
-
-    signal err : in std_logic;
-    signal op  : in std_logic;
-
-    signal has_next : out std_logic;
-    signal address  : out std_logic_vector(AW-1 downto 0);
-    signal data     : out std_logic_vector(DW-1 downto 0);
-    signal mask     : out std_logic_vector(DW/8-1 downto 0)
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0)
     ) is
+    variable err : std_logic;
+    variable op  : std_logic;
+
+    variable has_next : std_logic;
+    variable address  : std_logic_vector(AW-1 downto 0);
+    variable data     : std_logic_vector(DW-1 downto 0);
+    variable mask     : std_logic_vector(DW/8-1 downto 0);
   begin
     if (DEBUG = '1') then
     ----report "next address = " & address & "data = " & data & "op = " & op;
@@ -245,7 +243,7 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
         report "Error";
       end if;
       wb_err_o <= '1' after TP;
-      has_next <= '0';
+      has_next := '0';
     elsif (op = READ) then
       wb_dat_o <= data after TP;
     else
@@ -257,14 +255,14 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
 
-    has_next <= not wb_is_last(wb_cti_i) and not err;
+    has_next := not wb_is_last(wb_cti_i) and not err;
 
     if (op = WRITE) then
-      data <= wb_dat_i;
-      mask <= wb_sel_i;
+      data := wb_dat_i;
+      mask := wb_sel_i;
     end if;
 
-    address <= wb_adr_i;
+    address := wb_adr_i;
   end next_p;
 
   procedure error_response (

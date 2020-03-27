@@ -91,8 +91,8 @@ module mpsoc_msi_wb_bfm_master #(
   reg [AW          -1:0]     buffer_addr_tmp;
   reg [BUFFER_WIDTH-1:0]     buffer_addr;
 
-  reg [DW-1:0]               write_data[0:MAX_BURST_LEN-1];
-  reg [DW-1:0]               buffer_data[0:MAX_BURST_LEN-1];
+  reg [DW-1:0]               write_data  [0:MAX_BURST_LEN-1];
+  reg [DW-1:0]               buffer_data [0:MAX_BURST_LEN-1];
 
   reg [$clog2(MAX_WAIT_STATES):0] wait_states;
   reg [$clog2(MAX_WAIT_STATES):0] wait_states_cnt;
