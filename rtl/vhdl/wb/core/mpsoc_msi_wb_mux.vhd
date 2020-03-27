@@ -50,13 +50,19 @@ use ieee.math_real.all;
 
 entity mpsoc_msi_wb_mux is
   generic (
+    type M_NUM_SLAVES_AW;
+    type M_NUM_SLAVES_DW;
+    type M_NUM_SLAVES_3;
+    type M_NUM_SLAVES_2;
+    type M_NUM_SLAVES_1;
+
     DW : integer := 32;  -- Data width
     AW : integer := 32;  -- Address width
 
     NUM_SLAVES : integer := 2;  -- Number of slaves
 
-    MATCH_ADDR : M_NUM_MASTERS_AW := (others => '0');
-    MATCH_MASK : M_NUM_MASTERS_AW := (others => '0')
+    MATCH_ADDR : M_NUM_SLAVES_AW;
+    MATCH_MASK : M_NUM_SLAVES_AW
     );
   port (
     wb_clk_i : in std_logic;
@@ -77,15 +83,15 @@ entity mpsoc_msi_wb_mux is
     wbm_rty_o : out std_logic;
 
     -- Wishbone Slave interface
-    wbs_adr_o : out M_NUM_MASTERS_AW;
-    wbs_dat_o : out M_NUM_MASTERS_DW;
-    wbs_sel_o : out M_NUM_MASTERS_3;
+    wbs_adr_o : out M_NUM_SLAVES_AW;
+    wbs_dat_o : out M_NUM_SLAVES_DW;
+    wbs_sel_o : out M_NUM_SLAVES_3;
     wbs_we_o  : out std_logic_vector(NUM_SLAVES-1 downto 0);
     wbs_cyc_o : out std_logic_vector(NUM_SLAVES-1 downto 0);
     wbs_stb_o : out std_logic_vector(NUM_SLAVES-1 downto 0);
-    wbs_cti_o : out M_NUM_MASTERS_2;
-    wbs_bte_o : out M_NUM_MASTERS_1;
-    wbs_dat_i : in  M_NUM_MASTERS_DW;
+    wbs_cti_o : out M_NUM_SLAVES_2;
+    wbs_bte_o : out M_NUM_SLAVES_1;
+    wbs_dat_i : in  M_NUM_SLAVES_DW;
     wbs_ack_i : in  std_logic_vector(NUM_SLAVES-1 downto 0);
     wbs_err_i : in  std_logic_vector(NUM_SLAVES-1 downto 0);
     wbs_rty_i : in  std_logic_vector(NUM_SLAVES-1 downto 0)
@@ -156,7 +162,7 @@ begin
   -- Module Body
   --
   generating_0 : for idx in 0 to NUM_SLAVES - 1 generate
-    match(idx) <= to_stdlogic((wbm_adr_i and MATCH_MASK((idx+1)*AW-1 downto idx*AW)) = MATCH_ADDR((idx+1)*AW-1 downto idx*AW));
+   -- match(idx) <= to_stdlogic((wbm_adr_i and MATCH_MASK(idx) = MATCH_ADDR(idx);
   end generate;
 
   slave_sel <= ff1(match);
@@ -169,18 +175,18 @@ begin
   end process;
 
   generating_1 : for idx in 0 to NUM_SLAVES - 1 generate
-    wbs_adr_o(idx) <= wbm_adr_i;
-    wbs_dat_o(idx) <= wbm_dat_i;
-    wbs_sel_o(idx) <= wbm_sel_i;
+   -- wbs_adr_o(idx) <= wbm_adr_i;
+   -- wbs_dat_o(idx) <= wbm_dat_i;
+   -- wbs_sel_o(idx) <= wbm_sel_i;
     wbs_we_o(idx)  <= wbm_we_i;
     wbs_stb_o(idx) <= wbm_stb_i;
-    wbs_cti_o(idx) <= wbm_cti_i;
-    wbs_bte_o(idx) <= wbm_bte_i;
+   -- wbs_cti_o(idx) <= wbm_cti_i;
+   -- wbs_bte_o(idx) <= wbm_bte_i;
   end generate;
 
-  wbs_cyc_o <= match and std_logic_vector(unsigned(wbm_cyc_i) sll to_integer(unsigned(slave_sel)));
+  wbs_cyc_o <= match and ((NUM_SLAVES-1 downto 1 => '0') & wbm_cyc_i sll to_integer(unsigned(slave_sel)));
 
-  wbm_dat_o <= wbs_dat_i(to_integer(unsigned(slave_sel)));
+  --wbm_dat_o <= wbs_dat_i(to_integer(unsigned(slave_sel)));
   wbm_ack_o <= wbs_ack_i(to_integer(unsigned(slave_sel)));
   wbm_err_o <= wbs_err_i(to_integer(unsigned(slave_sel))) or wbm_err;
   wbm_rty_o <= wbs_rty_i(to_integer(unsigned(slave_sel)));
