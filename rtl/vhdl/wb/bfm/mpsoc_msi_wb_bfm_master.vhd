@@ -180,7 +180,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal wb_cyc_o : out std_logic;
     signal wb_cti_o : out std_logic_vector(2 downto 0);
     signal wb_bte_o : out std_logic_vector(1 downto 0)
-  ) is
+    ) is
   begin
     if (wb_rst_i /= '0') then
       wait until falling_edge(wb_rst_i);
@@ -220,7 +220,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal write_data : out M_MAX_BURST_LEN_DW;
 
     signal word : in integer
-  ) is
+    ) is
   begin
     for word in 0 to MAX_BURST_LEN-2 loop
       write_data(word) <= (others => 'X');
@@ -231,7 +231,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal buffer_data : out M_MAX_BURST_LEN_DW;
 
     signal word : in integer
-  ) is
+    ) is
   begin
     for word in 0 to MAX_BURST_LEN-2 loop
       buffer_data(word) <= (others => 'X');
@@ -243,7 +243,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
     signal wb_stb_o : out std_logic;
     signal wb_cti_o : out std_logic_vector(2 downto 0)
-  ) is
+    ) is
     variable data   : std_logic_vector(DW-1 downto 0);
     variable dat_op : std_logic_vector(DW-1 downto 0);
   begin
@@ -253,9 +253,9 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       dat_op := (others => '0');
     end if;
 
-    wb_adr_o <= addr after TP;
+    wb_adr_o <= addr   after TP;
     wb_dat_o <= dat_op after TP;
-    wb_stb_o <= '0' after TP;  --FIXME: Add wait states
+    wb_stb_o <= '0'    after TP;  --FIXME: Add wait states
 
     if ((index = to_integer(unsigned(burst_length))-1) and (cycle_type /= CTI_CLASSIC)) then
       wb_cti_o <= "111" after TP;
@@ -278,7 +278,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal wb_sel_o : out std_logic_vector(DW/8-1 downto 0);
     signal wb_adr_o : out std_logic_vector(AW-1 downto 0);
     signal wb_dat_o : out std_logic_vector(DW-1 downto 0)
-  ) is
+    ) is
   begin
 
     wb_cyc_o <= '0' after TP;
@@ -307,7 +307,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
 
     if (VERBOSE > 2) then
       report "Comparing Read Data for iteration" & integer'image(iteration) & " at address: " & integer'image(to_integer(unsigned(addr)));
-      ----report "Read Data: " & integer'image(to_integer(unsigned(read_data))) & ", buffer data: " & integer'image(to_integer(unsigned(buffer_data(to_integer(unsigned(buffer_addr)))))) & ", buffer address: " & integer'image(to_integer(unsigned(to_integer(unsigned(buffer_addr)))));
+    ----report "Read Data: " & integer'image(to_integer(unsigned(read_data))) & ", buffer data: " & integer'image(to_integer(unsigned(buffer_data(to_integer(unsigned(buffer_addr)))))) & ", buffer address: " & integer'image(to_integer(unsigned(to_integer(unsigned(buffer_addr)))));
     elsif (VERBOSE > 1) then
       report "Comparing Read Data for iteration" & integer'image(iteration) & " at address: " & integer'image(to_integer(unsigned(addr)));
     end if;
@@ -316,7 +316,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       report "Read data mismatch during iteration" & integer'image(iteration) & " at address " & integer'image(to_integer(unsigned(addr)));
       report "Expected " & integer'image(to_integer(unsigned(buffer_data(to_integer(unsigned(buffer_addr))))));
       report "Got " & integer'image(to_integer(unsigned(read_data)));
-      --exit after 3 ns;
+    --exit after 3 ns;
     elsif (VERBOSE > 1) then
       report "Data Matched";
     end if;
@@ -331,7 +331,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal wb_stb_o : out std_logic;
     signal wb_cti_o : out std_logic_vector(2 downto 0);
     signal wb_bte_o : out std_logic_vector(1 downto 0)
-  ) is
+    ) is
   begin
     wb_adr_o <= (others => '0');
     wb_dat_o <= (others => '0');
@@ -380,7 +380,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_cyc_o => wb_cyc_o,
       wb_cti_o => wb_cti_o,
       wb_bte_o => wb_bte_o
-    );
+      );
 
     wait until rising_edge(wb_clk_i);
 
@@ -389,7 +389,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_dat_o => wb_dat_o,
       wb_stb_o => wb_stb_o,
       wb_cti_o => wb_cti_o
-    );
+      );
 
     err_o <= wb_err_i;
 
@@ -403,7 +403,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_sel_o => wb_sel_o,
       wb_adr_o => wb_adr_o,
       wb_dat_o => wb_dat_o
-    );
+      );
   end write_p;
 
   procedure write_burst (
@@ -431,7 +431,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal wb_bte_o : out std_logic_vector(1 downto 0)
     ) is
     variable write_data : M_MAX_BURST_LEN_DW;
- 
+
     variable cycle_type : std_logic_vector(2 downto 0);
     variable burst_type : std_logic_vector(2 downto 0);
 
@@ -442,6 +442,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     variable burst_length    : std_logic_vector(31 downto 0);
 
     variable index : integer;
+    variable word  : integer;
   begin
     addr            := addr_i;
     buffer_addr_tmp := std_logic_vector(unsigned(addr_i)-unsigned(base_addr));
@@ -460,7 +461,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_cyc_o => wb_cyc_o,
       wb_cti_o => wb_cti_o,
       wb_bte_o => wb_bte_o
-    );
+      );
 
     while (index < to_integer(unsigned(burst_length))) loop
       buffer_data(to_integer(unsigned(buffer_addr))) <= write_data(index);
@@ -479,7 +480,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
         wb_dat_o => wb_dat_o,
         wb_stb_o => wb_stb_o,
         wb_cti_o => wb_cti_o
-      );
+        );
 
       addr            := wb_next_adr(addr, cycle_type, burst_type, DW);
       buffer_addr_tmp := std_logic_vector(unsigned(addr)-unsigned(base_addr));
@@ -488,8 +489,8 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     end loop;
 
     ----clear_write_data (
-      ----write_data => write_data,
-      ----word       => word
+    ----write_data => write_data,
+    ----word       => word
     ----);
 
     insert_wait_states (
@@ -502,7 +503,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_sel_o => wb_sel_o,
       wb_adr_o => wb_adr_o,
       wb_dat_o => wb_dat_o
-    );
+      );
   end write_burst;
 
   procedure read_burst_comp (
@@ -524,6 +525,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal wb_bte_o : out std_logic_vector(1 downto 0)
     ) is
     variable addr            : std_logic_vector(AW-1 downto 0);
+    variable data            : std_logic_vector(DW-1 downto 0);
     variable buffer_addr_tmp : std_logic_vector(AW-1 downto 0);
     variable buffer_addr     : std_logic_vector(BUFFER_WIDTH-1 downto 0);
     variable burst_length    : std_logic_vector(31 downto 0);
@@ -552,7 +554,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_cyc_o => wb_cyc_o,
       wb_cti_o => wb_cti_o,
       wb_bte_o => wb_bte_o
-    );
+      );
 
     while (index < to_integer(unsigned(burst_length))) loop
       next_p (
@@ -560,7 +562,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
         wb_dat_o => wb_dat_o,
         wb_stb_o => wb_stb_o,
         wb_cti_o => wb_cti_o
-      );
+        );
 
       ----data_compare (
         ----addr      => addr,
@@ -568,7 +570,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
         ----iteration => index,
 
         ----buffer_addr => buffer_addr
-      ----);
+        ----);
 
       addr            := wb_next_adr(addr, cycle_type, burst_type, DW);
       buffer_addr_tmp := std_logic_vector(unsigned(addr)-unsigned(base_addr));
@@ -586,8 +588,8 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_sel_o => wb_sel_o,
       wb_adr_o => wb_adr_o,
       wb_dat_o => wb_dat_o
-    );
+      );
   end read_burst_comp;
 
-  begin
+begin
 end RTL;

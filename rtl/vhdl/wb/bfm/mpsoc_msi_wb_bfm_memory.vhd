@@ -51,9 +51,10 @@ use ieee.math_real.all;
 entity mpsoc_msi_wb_bfm_memory is
   generic (
     --Wishbone parameters
-    DW    : integer := 32;
-    AW    : integer := 32;
-    DEBUG : integer := 0;
+    DW : integer := 32;
+    AW : integer := 32;
+
+    DEBUG : std_logic := '0';
 
     -- Memory parameters
     RD_MIN_DELAY : integer := 0;
@@ -84,39 +85,32 @@ entity mpsoc_msi_wb_bfm_memory is
 end mpsoc_msi_wb_bfm_memory;
 
 architecture RTL of mpsoc_msi_wb_bfm_memory is
-  component mpsoc_msi_wb_bfm_slave
-    generic (
-      DW : integer := 32;
-      AW : integer := 32;
-
-      DEBUG : std_logic := '0'
-      );
-    port (
-      wb_clk   : in  std_logic;
-      wb_rst   : in  std_logic;
-      wb_adr_i : in  std_logic_vector(AW-1 downto 0);
-      wb_dat_i : in  std_logic_vector(DW-1 downto 0);
-      wb_sel_i : in  std_logic_vector(DW/8-1 downto 0);
-      wb_we_i  : in  std_logic;
-      wb_cyc_i : in  std_logic;
-      wb_stb_i : in  std_logic;
-      wb_cti_i : in  std_logic_vector(2 downto 0);
-      wb_bte_i : in  std_logic_vector(1 downto 0);
-      wb_dat_o : out std_logic_vector(DW-1 downto 0);
-      wb_ack_o : out std_logic;
-      wb_err_o : out std_logic;
-      wb_rty_o : out std_logic
-      );
-  end component;
-
   --////////////////////////////////////////////////////////////////
   --
   -- Constants
   --
-  constant BYTES_PER_DW : integer := (DW/8);
-  constant MEM_WORDS    : integer := (MEM_SIZE_BYTES/BYTES_PER_DW);
+  constant BYTES_PER_DW : integer := DW/8;
+  constant MEM_WORDS    : integer := to_integer(unsigned(MEM_SIZE_BYTES))/BYTES_PER_DW;
 
   constant ADR_LSB : integer := integer(log2(real(BYTES_PER_DW)));
+
+  constant TP : time := 1 ns;
+
+  constant CLASSIC_CYCLE : std_logic := '0';
+  constant BURST_CYCLE   : std_logic := '1';
+
+  constant READ  : std_logic := '0';
+  constant WRITE : std_logic := '1';
+
+  constant CTI_CLASSIC      : std_logic_vector(2 downto 0) := "000";
+  constant CTI_CONST_BURST  : std_logic_vector(2 downto 0) := "001";
+  constant CTI_INC_BURST    : std_logic_vector(2 downto 0) := "010";
+  constant CTI_END_OF_BURST : std_logic_vector(2 downto 0) := "111";
+
+  constant BTE_LINEAR  : std_logic_vector(1 downto 0) := "00";
+  constant BTE_WRAP_4  : std_logic_vector(1 downto 0) := "01";
+  constant BTE_WRAP_8  : std_logic_vector(1 downto 0) := "10";
+  constant BTE_WRAP_16 : std_logic_vector(1 downto 0) := "11";
 
   --////////////////////////////////////////////////////////////////
   --
@@ -126,12 +120,93 @@ architecture RTL of mpsoc_msi_wb_bfm_memory is
 
   --////////////////////////////////////////////////////////////////
   --
+  -- Functions
+  --
+  function get_cycle_type (
+    cti : std_logic_vector(2 downto 0)
+    ) return std_logic is
+    variable get_cycle_type_return : std_logic;
+  begin
+    if (cti = CTI_CLASSIC) then
+      get_cycle_type_return := CLASSIC_CYCLE;
+    else
+      get_cycle_type_return := BURST_CYCLE;
+    end if;
+
+    return get_cycle_type_return;
+  end get_cycle_type;
+
+  function wb_is_last (
+    cti : std_logic_vector(2 downto 0)
+    ) return std_logic is
+    variable wb_is_last_return : std_logic;
+  begin
+    case (cti) is
+      when CTI_CLASSIC =>
+        wb_is_last_return := '1';
+      when CTI_CONST_BURST =>
+        wb_is_last_return := '0';
+      when CTI_INC_BURST =>
+        wb_is_last_return := '0';
+      when CTI_END_OF_BURST =>
+        wb_is_last_return := '1';
+      when others =>
+        null;
+    end case;
+
+    return wb_is_last_return;
+  end wb_is_last;
+
+  function wb_next_adr (
+    adr_i : std_logic_vector(31 downto 0);
+    cti_i : std_logic_vector(2 downto 0);
+    bte_i : std_logic_vector(1 downto 0);
+
+    dw : integer
+    ) return std_logic_vector is
+    variable wb_next_adr_return : std_logic_vector (31 downto 0);
+
+    variable adr : std_logic_vector(31 downto 0);
+
+    variable shift : integer;
+  begin
+    if (dw = 64) then
+      shift := 3;
+    elsif (dw = 32) then
+      shift := 2;
+    elsif (dw = 16) then
+      shift := 1;
+    else
+      shift := 0;
+    end if;
+    adr := std_logic_vector(unsigned(adr_i) srl shift);
+    if (cti_i = CTI_INC_BURST) then
+      case (bte_i) is
+        when BTE_LINEAR =>
+          adr := std_logic_vector(unsigned(adr)+X"00000001");
+        when BTE_WRAP_4 =>
+          adr := (adr(31 downto 2) & std_logic_vector(unsigned(adr(1 downto 0))+"01"));
+        when BTE_WRAP_8 =>
+          adr := (adr(31 downto 3) & std_logic_vector(unsigned(adr(2 downto 0))+"001"));
+        when BTE_WRAP_16 =>
+          adr := (adr(31 downto 4) & std_logic_vector(unsigned(adr(3 downto 0))+"0001"));
+        when others =>
+          null;
+      end case;
+    end if;
+    -- case (burst_type_i)
+    wb_next_adr_return := std_logic_vector(unsigned(adr) sll shift);
+    return wb_next_adr_return;
+  end wb_next_adr;
+
+  --////////////////////////////////////////////////////////////////
+  --
   -- Variables
   --
 
   --Counters for read and write accesses
-  constant reads  : integer := 0;
-  constant writes : integer := 0;
+  signal reads  : integer;
+  signal writes : integer;
 
   -- synthesis attribute ram_style of mem is block
   signal mem : M_MEM_WORDS_DW;
@@ -139,81 +214,361 @@ architecture RTL of mpsoc_msi_wb_bfm_memory is
   signal address : std_logic_vector(AW-1 downto 0);
   signal data    : std_logic_vector(DW-1 downto 0);
 
-  constant i     : integer;
-  constant delay : integer;
-  constant seed  : integer;
+  signal delay : integer;
+  signal seed  : integer;
+
+  signal has_next   : std_logic;
+  signal cycle_type : std_logic;
+  signal op         : std_logic;
+  signal mask       : std_logic_vector(DW/8-1 downto 0);
+
+  signal err : std_logic;
+
+  --////////////////////////////////////////////////////////////////
+  --
+  -- Procedures
+  --
+  procedure init_p (
+    signal wb_clk_i : in std_logic;
+    signal wb_rst_i : in std_logic;
+
+    signal wb_cyc_i : in std_logic;
+    signal wb_we_i  : in std_logic;
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_adr_i : in std_logic_vector(AW-1 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+    signal wb_sel_i : in std_logic_vector(DW/8-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0)
+    ) is
+    variable has_next   : std_logic;
+    variable cycle_type : std_logic;
+    variable op         : std_logic;
+    variable address    : std_logic_vector(AW-1 downto 0);
+    variable mask       : std_logic_vector(DW/8-1 downto 0);
+  begin
+    wb_ack_o <= '0' after TP;
+    wb_err_o <= '0' after TP;
+    wb_rty_o <= '0' after TP;
+
+    wb_dat_o <= (others => '0') after TP;
+
+    if (wb_rst_i /= '0') then
+      if (DEBUG = '1') then
+        report "Waiting for reset release";
+      end if;
+      wait until falling_edge(wb_rst_i);
+      wait until rising_edge(wb_clk_i);
+      if (DEBUG = '1') then
+        report "Reset was released";
+      end if;
+    end if;
+
+    --Catch start of next cycle
+    if (wb_cyc_i = '1') then
+      wait until rising_edge(wb_cyc_i);
+    end if;
+    wait until rising_edge(wb_clk_i);
+
+    --Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
+    while (wb_cyc_i /= '1') loop
+      wait until rising_edge(wb_clk_i);
+    end loop;
+    if (DEBUG = '1') then
+      report "Got wb_cyc_i";
+    end if;
+
+    cycle_type := get_cycle_type(wb_cti_i);
+
+    op      := wb_we_i;
+    address := wb_adr_i;
+    mask    := wb_sel_i;
+
+    has_next := '1';
+  end init_p;
+
+  procedure next_p (
+    signal wb_clk_i : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : in std_logic;
+    signal op  : in std_logic
+    ) is
+
+    variable has_next : std_logic;
+    variable address  : std_logic_vector(AW-1 downto 0);
+    variable data     : std_logic_vector(DW-1 downto 0);
+    variable mask     : std_logic_vector(DW/8-1 downto 0);
+  begin
+    if (DEBUG = '1') then
+      report "next address = " & integer'image(to_integer(unsigned(address))) &
+        "data = " & integer'image(to_integer(unsigned(data))) &
+        "op = " & std_logic'image(op);
+    end if;
+    wb_dat_o <= (others => '0') after TP;
+
+    wb_ack_o <= '0' after TP;
+    wb_err_o <= '0' after TP;
+    wb_rty_o <= '0' after TP;           --TODO : rty not supported
+
+    if (err = '1') then
+      if (DEBUG = '1') then
+        report "Error";
+      end if;
+      wb_err_o <= '1' after TP;
+      has_next := '0';
+    elsif (op = READ) then
+      wb_dat_o <= data after TP;
+    else
+      wb_ack_o <= '1' after TP;
+    end if;
+
+    wait until rising_edge(wb_clk_i);
+
+    wb_ack_o <= '0' after TP;
+    wb_err_o <= '0' after TP;
+
+    has_next := not wb_is_last(wb_cti_i) and not err;
+
+    if (op = WRITE) then
+      data := wb_dat_i;
+      mask := wb_sel_i;
+    end if;
+
+    address := wb_adr_i;
+  end next_p;
+
+  procedure error_response (
+    signal wb_clk_i : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : inout std_logic;
+    signal op  : in    std_logic
+    ) is
+  begin
+    err <= '1';
+
+    next_p (
+      wb_clk_i => wb_clk_i,
+
+      wb_cti_i => wb_cti_i,
+      wb_dat_i => wb_dat_i,
+
+      wb_ack_o => wb_ack_o,
+      wb_err_o => wb_err_o,
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o,
+
+      err => err,
+      op  => op
+      );
+
+    err <= '0';
+  end error_response;
+
+  procedure read_ack (
+    signal wb_clk_i : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : in std_logic;
+    signal op  : in std_logic;
+
+    signal data : out std_logic_vector(DW-1 downto 0);
+
+    signal data_i : in std_logic_vector(DW-1 downto 0)
+    ) is
+  begin
+    data <= data_i;
+
+    next_p (
+      wb_clk_i => wb_clk_i,
+
+      wb_cti_i => wb_cti_i,
+      wb_dat_i => wb_dat_i,
+
+      wb_ack_o => wb_ack_o,
+      wb_err_o => wb_err_o,
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o,
+
+      err => err,
+      op  => op
+      );
+  end read_ack;
+
+  procedure write_ack (
+    signal wb_clk_i : in std_logic;
+
+    signal wb_cti_i : in std_logic_vector(2 downto 0);
+    signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
+
+    signal wb_ack_o : out std_logic;
+    signal wb_err_o : out std_logic;
+    signal wb_rty_o : out std_logic;
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : in std_logic;
+    signal op  : in std_logic;
+
+    signal data_o : out std_logic_vector(DW-1 downto 0)
+    ) is
+  begin
+    if (DEBUG = '1') then
+      report "Write ack";
+    end if;
+
+    next_p (
+      wb_clk_i => wb_clk_i,
+
+      wb_cti_i => wb_cti_i,
+      wb_dat_i => wb_dat_i,
+
+      wb_ack_o => wb_ack_o,
+      wb_err_o => wb_err_o,
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o,
+
+      err => err,
+      op  => op
+      );
+
+    data_o <= data;
+  end write_ack;
 
 begin
   --////////////////////////////////////////////////////////////////
   --
   -- Module Body
   --
-  bfm0 : mpsoc_msi_wb_bfm_slave
-    generic map (
-      AW => AW,
-      DW => AW,
+  processing_0 : process
+  begin
+    init_p (
+      wb_clk_i => wb_clk_i,
+      wb_rst_i => wb_rst_i,
 
-      DEBUG => DEBUG
-      )
-    port map (
-      wb_clk   => wb_clk_i,
-      wb_rst   => wb_rst_i,
+      wb_cyc_i => wb_cyc_i,
+      wb_we_i  => wb_we_i,
+      wb_cti_i => wb_cti_i,
       wb_adr_i => wb_adr_i,
       wb_dat_i => wb_dat_i,
       wb_sel_i => wb_sel_i,
-      wb_we_i  => wb_we_i,
-      wb_cyc_i => wb_cyc_i,
-      wb_stb_i => wb_stb_i,
-      wb_cti_i => wb_cti_i,
-      wb_bte_i => wb_bte_i,
-      wb_dat_o => wb_dat_o,
+
       wb_ack_o => wb_ack_o,
       wb_err_o => wb_err_o,
-      wb_rty_o => wb_rty_o
+      wb_rty_o => wb_rty_o,
+      wb_dat_o => wb_dat_o
       );
 
-  processing_0 : process
-  begin
-    (null)();            
-    address <= bfm0.address;  --Fetch start address
-
-    if (bfm0.op = WRITE) then
+    if (op = WRITE) then
       writes <= writes+1;
     else
       reads <= reads+1;
     end if;
-    while (bfm0.has_next) loop
+    while (has_next = '1') loop
       --Set error on out of range accesses
-      if (address(31 downto ADR_LSB) > MEM_WORDS) then
-        (null)("%0d : Error : Attempt to access %x, which is outside of memory", timing(), address);
-        (null)();
-      elsif (bfm0.op = WRITE) then
-        (null)(data);
+      if (unsigned(address(31 downto ADR_LSB)) > to_unsigned(MEM_WORDS, 31-ADR_LSB+1)) then
+        report "Error : Attempt to access " & integer'image(to_integer(unsigned(address))) & ", which is outside of memory";
+
+        error_response (
+          wb_clk_i => wb_clk_i,
+
+          wb_cti_i => wb_cti_i,
+          wb_dat_i => wb_dat_i,
+
+          wb_ack_o => wb_ack_o,
+          wb_err_o => wb_err_o,
+          wb_rty_o => wb_rty_o,
+          wb_dat_o => wb_dat_o,
+
+          err => err,
+          op  => op
+          );
+      elsif (op = WRITE) then
+        write_ack (
+          wb_clk_i => wb_clk_i,
+
+          wb_cti_i => wb_cti_i,
+          wb_dat_i => wb_dat_i,
+
+          wb_ack_o => wb_ack_o,
+          wb_err_o => wb_err_o,
+          wb_rty_o => wb_rty_o,
+          wb_dat_o => wb_dat_o,
+
+          err => err,
+          op  => op,
+
+          data_o => data
+          );
         if (DEBUG = '1') then
-          (null)("%d : ram Write 0x%h = 0x%h %b", timing(), address, data, bfm0.mask);
+          report "RAM Write " & integer'image(to_integer(unsigned(address))) & " = " & integer'image(to_integer(unsigned(data))) & integer'image(to_integer(unsigned(mask)));
         end if;
         for i in 0 to DW/8 - 1 loop
-          if (bfm0.mask(i)) then
-            mem(address(31 downto ADR_LSB))((i+1)*8-1 downto i*8) <= data((i+1)*8-1 downto i*8);
+          if (mask(i) = '1') then
+            mem(to_integer(unsigned(address(31 downto ADR_LSB))))((i+1)*8-1 downto i*8) <= data((i+1)*8-1 downto i*8);
           end if;
         end loop;
       else
         data <= (others => '0');
         for i in 0 to DW/8 - 1 loop
-          if (bfm0.mask(i)) then
-            data((i+1)*8-1 downto i*8) <= mem(address(31 downto ADR_LSB))((i+1)*8-1 downto i*8);
+          if (mask(i) = '1') then
+            data((i+1)*8-1 downto i*8) <= mem(to_integer(unsigned(address(31 downto ADR_LSB))))((i+1)*8-1 downto i*8);
           end if;
         end loop;
+
         if (DEBUG = '1') then
-          (null)("%d : ram Read  0x%h = 0x%h %b", timing(), address, data, bfm0.mask);
+          report "RAM Read " & integer'image(to_integer(unsigned(address))) & " = " & integer'image(to_integer(unsigned(data))) & integer'image(to_integer(unsigned(mask)));
         end if;
-        delay <= (null)(seed, RD_MIN_DELAY, RD_MAX_DELAY);
+
+        ----delay <= rand_uniform(seed, RD_MIN_DELAY, RD_MAX_DELAY);
+
         for repeat in 1 to delay loop
           wait until rising_edge(wb_clk_i);
         end loop;
-        (null)(data);
+
+        read_ack (
+          wb_clk_i => wb_clk_i,
+
+          wb_cti_i => wb_cti_i,
+          wb_dat_i => wb_dat_i,
+
+          wb_ack_o => wb_ack_o,
+          wb_err_o => wb_err_o,
+          wb_rty_o => wb_rty_o,
+          wb_dat_o => wb_dat_o,
+
+          err => err,
+          op  => op,
+
+          data   => data,
+          data_i => data
+          );
       end if;
-      if (bfm0.cycle_type = BURST_CYCLE) then
+      if (cycle_type = BURST_CYCLE) then
         address <= wb_next_adr(address, wb_cti_i, wb_bte_i, DW);
       end if;
     end loop;

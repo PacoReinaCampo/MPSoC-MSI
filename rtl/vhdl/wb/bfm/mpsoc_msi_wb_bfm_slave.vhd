@@ -149,8 +149,8 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
   -- Tasks
   --
   procedure init_p (
-    signal wb_clk : in std_logic;
-    signal wb_rst : in std_logic;
+    signal wb_clk_i : in std_logic;
+    signal wb_rst_i : in std_logic;
 
     signal wb_cyc_i : in std_logic;
     signal wb_we_i  : in std_logic;
@@ -176,12 +176,12 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
 
     wb_dat_o <= (others => '0') after TP;
 
-    if (wb_rst /= '0') then
+    if (wb_rst_i /= '0') then
       if (DEBUG = '1') then
         report "Waiting for reset release";
       end if;
-      wait until falling_edge(wb_rst);
-      wait until rising_edge(wb_clk);
+      wait until falling_edge(wb_rst_i);
+      wait until rising_edge(wb_clk_i);
       if (DEBUG = '1') then
         report "Reset was released";
       end if;
@@ -191,11 +191,11 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     if (wb_cyc_i = '1') then
       wait until rising_edge(wb_cyc_i);
     end if;
-    wait until rising_edge(wb_clk);
+    wait until rising_edge(wb_clk_i);
 
     --Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
     while (wb_cyc_i /= '1') loop
-      wait until rising_edge(wb_clk);
+      wait until rising_edge(wb_clk_i);
     end loop;
     if (DEBUG = '1') then
       report "Got wb_cyc_i";
@@ -211,7 +211,7 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
   end init_p;
 
   procedure next_p (
-    signal wb_clk : in std_logic;
+    signal wb_clk_i : in std_logic;
 
     signal wb_cti_i : in std_logic_vector(2 downto 0);
     signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
@@ -219,10 +219,11 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     signal wb_ack_o : out std_logic;
     signal wb_err_o : out std_logic;
     signal wb_rty_o : out std_logic;
-    signal wb_dat_o : out std_logic_vector(DW-1 downto 0)
+    signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
+
+    signal err : in std_logic;
+    signal op  : in std_logic
     ) is
-    variable err : std_logic;
-    variable op  : std_logic;
 
     variable has_next : std_logic;
     variable address  : std_logic_vector(AW-1 downto 0);
@@ -230,13 +231,15 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     variable mask     : std_logic_vector(DW/8-1 downto 0);
   begin
     if (DEBUG = '1') then
-    ----report "next address = " & address & "data = " & data & "op = " & op;
+      report "next address = " & integer'image(to_integer(unsigned(address))) &
+        "data = " & integer'image(to_integer(unsigned(data))) &
+        "op = " & std_logic'image(op);
     end if;
     wb_dat_o <= (others => '0') after TP;
 
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
-    wb_rty_o <= '0' after TP;  --TODO : rty not supported
+    wb_rty_o <= '0' after TP;           --TODO : rty not supported
 
     if (err = '1') then
       if (DEBUG = '1') then
@@ -250,7 +253,7 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
       wb_ack_o <= '1' after TP;
     end if;
 
-    wait until rising_edge(wb_clk);
+    wait until rising_edge(wb_clk_i);
 
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
@@ -266,7 +269,7 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
   end next_p;
 
   procedure error_response (
-    signal wb_clk : in std_logic;
+    signal wb_clk_i : in std_logic;
 
     signal wb_cti_i : in std_logic_vector(2 downto 0);
     signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
@@ -277,19 +280,13 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
 
     signal err : inout std_logic;
-
-    signal op  : in std_logic;
-
-    signal has_next : out std_logic;
-    signal address  : out std_logic_vector(AW-1 downto 0);
-    signal data     : out std_logic_vector(DW-1 downto 0);
-    signal mask     : out std_logic_vector(DW/8-1 downto 0)
+    signal op  : in    std_logic
     ) is
   begin
     err <= '1';
 
     next_p (
-      wb_clk => wb_clk,
+      wb_clk_i => wb_clk_i,
 
       wb_cti_i => wb_cti_i,
       wb_dat_i => wb_dat_i,
@@ -300,19 +297,14 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
       wb_dat_o => wb_dat_o,
 
       err => err,
-      op  => op,
-
-      has_next => has_next,
-      address  => address,
-      data     => data,
-      mask     => mask
+      op  => op
       );
 
     err <= '0';
   end error_response;
 
   procedure read_ack (
-    signal wb_clk : in std_logic;
+    signal wb_clk_i : in std_logic;
 
     signal wb_cti_i : in std_logic_vector(2 downto 0);
     signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
@@ -322,14 +314,10 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     signal wb_rty_o : out std_logic;
     signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
 
-    signal err : inout std_logic;
-
+    signal err : in std_logic;
     signal op  : in std_logic;
 
-    signal has_next : out std_logic;
-    signal address  : out std_logic_vector(AW-1 downto 0);
-    signal data     : out std_logic_vector(DW-1 downto 0);
-    signal mask     : out std_logic_vector(DW/8-1 downto 0);
+    signal data : out std_logic_vector(DW-1 downto 0);
 
     signal data_i : in std_logic_vector(DW-1 downto 0)
     ) is
@@ -337,7 +325,7 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     data <= data_i;
 
     next_p (
-      wb_clk => wb_clk,
+      wb_clk_i => wb_clk_i,
 
       wb_cti_i => wb_cti_i,
       wb_dat_i => wb_dat_i,
@@ -348,17 +336,12 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
       wb_dat_o => wb_dat_o,
 
       err => err,
-      op  => op,
-
-      has_next => has_next,
-      address  => address,
-      data     => data,
-      mask     => mask
+      op  => op
       );
   end read_ack;
 
   procedure write_ack (
-    signal wb_clk : in std_logic;
+    signal wb_clk_i : in std_logic;
 
     signal wb_cti_i : in std_logic_vector(2 downto 0);
     signal wb_dat_i : in std_logic_vector(DW-1 downto 0);
@@ -368,14 +351,8 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     signal wb_rty_o : out std_logic;
     signal wb_dat_o : out std_logic_vector(DW-1 downto 0);
 
-    signal err : inout std_logic;
-
+    signal err : in std_logic;
     signal op  : in std_logic;
-
-    signal has_next : out std_logic;
-    signal address  : out std_logic_vector(AW-1 downto 0);
-    signal data     : out std_logic_vector(DW-1 downto 0);
-    signal mask     : out std_logic_vector(DW/8-1 downto 0);
 
     signal data_o : out std_logic_vector(DW-1 downto 0)
     ) is
@@ -385,7 +362,7 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
     end if;
 
     next_p (
-      wb_clk => wb_clk,
+      wb_clk_i => wb_clk_i,
 
       wb_cti_i => wb_cti_i,
       wb_dat_i => wb_dat_i,
@@ -396,19 +373,11 @@ architecture RTL of mpsoc_msi_wb_bfm_slave is
       wb_dat_o => wb_dat_o,
 
       err => err,
-      op  => op,
-
-      has_next => has_next,
-      address  => address,
-      data     => data,
-      mask     => mask
+      op  => op
       );
 
     data_o <= data;
   end write_ack;
 
 begin
-  has_next <= '0';
-  err      <= '0';
-  op       <= READ;
 end RTL;

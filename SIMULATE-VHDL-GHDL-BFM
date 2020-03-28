@@ -1,7 +1,9 @@
 ghdl -i rtl/vhdl/pkg/mpsoc_msi_wb_pkg.vhd
 
 ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_master.vhd
+ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_memory.vhd
+ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_slave.vhd
 
 ghdl -m mpsoc_msi_wb_bfm_master
 
-ghdl -r mpsoc_msi_wb_bfm_master --ieee-asserts=disable-at-0 --disp-tree=inst > mpsoc_msi_wb_bfm_master.tree
+ghdl -r mpsoc_msi_wb_bfm_memory --ieee-asserts=disable-at-0 --disp-tree=inst > mpsoc_msi_wb_bfm_memory.tree
