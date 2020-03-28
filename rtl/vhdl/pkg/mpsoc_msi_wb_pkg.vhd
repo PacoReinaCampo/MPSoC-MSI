@@ -63,10 +63,10 @@ package mpsoc_msi_wb_pkg is
   constant CTI_INC_BURST    : std_logic_vector(2 downto 0) := "010";
   constant CTI_END_OF_BURST : std_logic_vector(2 downto 0) := "111";
 
-  constant BTE_LINEAR  : std_logic_vector(2 downto 0) := "000";
-  constant BTE_WRAP_4  : std_logic_vector(2 downto 0) := "001";
-  constant BTE_WRAP_8  : std_logic_vector(2 downto 0) := "010";
-  constant BTE_WRAP_16 : std_logic_vector(2 downto 0) := "011";
+  constant BTE_LINEAR  : std_logic_vector(1 downto 0) := "00";
+  constant BTE_WRAP_4  : std_logic_vector(1 downto 0) := "01";
+  constant BTE_WRAP_8  : std_logic_vector(1 downto 0) := "10";
+  constant BTE_WRAP_16 : std_logic_vector(1 downto 0) := "11";
 end mpsoc_msi_wb_pkg;
 
 package body mpsoc_msi_wb_pkg is
@@ -112,7 +112,7 @@ package body mpsoc_msi_wb_pkg is
   function wb_next_adr (
     adr_i : std_logic_vector(31 downto 0);
     cti_i : std_logic_vector(2 downto 0);
-    bte_i : std_logic_vector(2 downto 0);
+    bte_i : std_logic_vector(1 downto 0);
 
     dw : integer
     ) return std_logic_vector is
