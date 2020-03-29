@@ -1,0 +1,4 @@
+rm -rf wb.vvp
+iverilog -g2012 -o wb.vvp -c wb.vtor -s wb_msi_tb \
+-I rtl/verilog/pkg
+vvp wb.vvp

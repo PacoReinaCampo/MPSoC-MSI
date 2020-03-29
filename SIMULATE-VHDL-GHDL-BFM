@@ -1,9 +1,9 @@
 ghdl -i rtl/vhdl/pkg/mpsoc_msi_wb_pkg.vhd
 
-ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_master.vhd
-ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_memory.vhd
-ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_slave.vhd
-ghdl -i rtl/vhdl/wb/bfm/mpsoc_msi_wb_bfm_transactor.vhd
+ghdl -i bench/vhdl/bfm/mpsoc_msi_wb_bfm_master.vhd
+ghdl -i bench/vhdl/bfm/mpsoc_msi_wb_bfm_memory.vhd
+ghdl -i bench/vhdl/bfm/mpsoc_msi_wb_bfm_slave.vhd
+ghdl -i bench/vhdl/bfm/mpsoc_msi_wb_bfm_transactor.vhd
 
 ghdl -m mpsoc_msi_wb_bfm_master
 
