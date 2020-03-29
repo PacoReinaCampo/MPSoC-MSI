@@ -1,0 +1,8 @@
+rtl/verilog/wb/bfm/mpsoc_msi_wb_bfm_master.v
+rtl/verilog/wb/bfm/mpsoc_msi_wb_bfm_memory.v
+rtl/verilog/wb/bfm/mpsoc_msi_wb_bfm_slave.v
+rtl/verilog/wb/bfm/mpsoc_msi_wb_bfm_transactor.v
+
+bench/verilog/bfm/vlog_tap_generator.v
+bench/verilog/bfm/vlog_tb_utils.v
+bench/verilog/bfm/wb_bfm_tb.v

@@ -129,7 +129,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
   function wb_next_adr (
     adr_i : std_logic_vector(31 downto 0);
     cti_i : std_logic_vector(2 downto 0);
-    bte_i : std_logic_vector(2 downto 0);
+    bte_i : std_logic_vector(1 downto 0);
 
     dw : integer
     ) return std_logic_vector is
@@ -211,8 +211,8 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
       wb_bte_o <= "00"  after TP;
     elsif (VERBOSE > 1) then
       report "INIT: Incr Burst cycle";
-      wb_cti_o <= "010"                  after TP;
-      wb_bte_o <= burst_type(1 downto 0) after TP;
+      wb_cti_o <= "010"      after TP;
+      wb_bte_o <= burst_type after TP;
     end if;
   end init_p;
 
@@ -411,7 +411,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     signal addr_i         : in  std_logic_vector(AW-1 downto 0);
     signal mask_i         : in  std_logic_vector(DW/8-1 downto 0);
     signal cycle_type_i   : in  std_logic_vector(2 downto 0);
-    signal burst_type_i   : in  std_logic_vector(2 downto 0);
+    signal burst_type_i   : in  std_logic_vector(1 downto 0);
     signal burst_length_i : in  std_logic_vector(31 downto 0);
     signal err_o          : out std_logic;
 
@@ -433,7 +433,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     variable write_data : M_MAX_BURST_LEN_DW;
 
     variable cycle_type : std_logic_vector(2 downto 0);
-    variable burst_type : std_logic_vector(2 downto 0);
+    variable burst_type : std_logic_vector(1 downto 0);
 
     variable addr : std_logic_vector(AW-1 downto 0);
 
@@ -533,7 +533,7 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
     variable op              : std_logic;
 
     variable cycle_type : std_logic_vector(2 downto 0);
-    variable burst_type : std_logic_vector(2 downto 0);
+    variable burst_type : std_logic_vector(1 downto 0);
 
     variable index : integer;
   begin
