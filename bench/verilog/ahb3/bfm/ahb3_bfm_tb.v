@@ -40,7 +40,7 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-module wb_bfm_tb;
+module ahb3_bfm_tb;
   //////////////////////////////////////////////////////////////////
   //
   // Constants
@@ -84,7 +84,7 @@ module wb_bfm_tb;
   always #5 wb_clk <= ~wb_clk;
   initial  #100 wb_rst <= 0;
 
-  mpsoc_msi_wb_bfm_transactor #(
+  mpsoc_msi_ahb3_bfm_transactor #(
     .MEM_HIGH (32'h00007fff),
     .AUTORUN (0),
     .VERBOSE (0)
@@ -107,10 +107,10 @@ module wb_bfm_tb;
     .done     (done)
   );
 
-  mpsoc_msi_wb_bfm_memory #(
+  mpsoc_msi_ahb3_bfm_memory #(
     .DEBUG (0)
   )
-  wb_mem_model0 (
+  wb_mem_model (
     .wb_clk_i (wb_clk),
     .wb_rst_i (wb_rst),
     .wb_adr_i (wb_m2s_adr),
