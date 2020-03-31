@@ -40,110 +40,77 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-module ahb3_bfm_tb;
-  //////////////////////////////////////////////////////////////////
-  //
-  // Constants
-  //
-  localparam AW = 32;
-  localparam DW = 32;
+//////////////////////////////////////////////////////////////////
+//
+// Constants
+//
 
-  //////////////////////////////////////////////////////////////////
-  //
-  // Variables
-  //
-  reg wb_clk = 1'b1;
-  reg wb_rst = 1'b1;
+localparam CLASSIC_CYCLE = 1'b0;
+localparam BURST_CYCLE   = 1'b1;
 
-  wire done;
+localparam READ  = 1'b0;
+localparam WRITE = 1'b1;
 
-  wire [AW-1:0] wb_m2s_adr;
-  wire [DW-1:0] wb_m2s_dat;
-  wire [   3:0] wb_m2s_sel;
-  wire          wb_m2s_we ;
-  wire          wb_m2s_cyc;
-  wire          wb_m2s_stb;
-  wire [   2:0] wb_m2s_cti;
-  wire [   1:0] wb_m2s_bte;
-  wire [DW-1:0] wb_s2m_dat;
-  wire          wb_s2m_ack;
-  wire          wb_s2m_err;
-  wire          wb_s2m_rty;
+localparam [2:0] CTI_CLASSIC      = 3'b000;
+localparam [2:0] CTI_CONST_BURST  = 3'b001;
+localparam [2:0] CTI_INC_BURST    = 3'b010;
+localparam [2:0] CTI_END_OF_BURST = 3'b111;
 
-  integer TRANSACTIONS;
-  integer SUBTRANSACTIONS;
-  integer SEED;
 
-  //////////////////////////////////////////////////////////////////
-  //
-  // Module Body
-  //
-  vlog_tb_utils vlog_tb_utils0();
-  vlog_tap_generator #("wb_bfm.tap", 1) vtg();
+localparam [1:0] BTE_LINEAR  = 2'd0;
+localparam [1:0] BTE_WRAP_4  = 2'd1;
+localparam [1:0] BTE_WRAP_8  = 2'd2;
+localparam [1:0] BTE_WRAP_16 = 2'd3;
 
-  always #5 wb_clk <= ~wb_clk;
-  initial  #100 wb_rst <= 0;
+//////////////////////////////////////////////////////////////////
+//
+// Functions
+//
 
-  mpsoc_msi_ahb3_bfm_transactor #(
-    .MEM_HIGH (32'h00007fff),
-    .AUTORUN (0),
-    .VERBOSE (0)
-  )
-  master (
-    .wb_clk_i (wb_clk),
-    .wb_rst_i (wb_rst),
-    .wb_adr_o (wb_m2s_adr),
-    .wb_dat_o (wb_m2s_dat),
-    .wb_sel_o (wb_m2s_sel),
-    .wb_we_o  (wb_m2s_we ),
-    .wb_cyc_o (wb_m2s_cyc),
-    .wb_stb_o (wb_m2s_stb),
-    .wb_cti_o (wb_m2s_cti),
-    .wb_bte_o (wb_m2s_bte),
-    .wb_dat_i (wb_s2m_dat),
-    .wb_ack_i (wb_s2m_ack),
-    .wb_err_i (wb_s2m_err),
-    .wb_rty_i (wb_s2m_rty),
-    .done     (done)
-  );
-
-  mpsoc_msi_ahb3_bfm_memory #(
-    .DEBUG (0)
-  )
-  wb_mem_model (
-    .wb_clk_i (wb_clk),
-    .wb_rst_i (wb_rst),
-    .wb_adr_i (wb_m2s_adr),
-    .wb_dat_i (wb_m2s_dat),
-    .wb_sel_i (wb_m2s_sel),
-    .wb_we_i  (wb_m2s_we ),
-    .wb_cyc_i (wb_m2s_cyc),
-    .wb_stb_i (wb_m2s_stb),
-    .wb_cti_i (wb_m2s_cti),
-    .wb_bte_i (wb_m2s_bte),
-    .wb_dat_o (wb_s2m_dat),
-    .wb_ack_o (wb_s2m_ack),
-    .wb_err_o (wb_s2m_err),
-    .wb_rty_o (wb_s2m_rty)
-  );
-
-  initial begin
-    //Grab CLI parameters
-    if($value$plusargs("transactions=%d", TRANSACTIONS))
-      master.set_transactions(TRANSACTIONS);
-    if($value$plusargs("subtransactions=%d", SUBTRANSACTIONS))
-      master.set_subtransactions(SUBTRANSACTIONS);
-    if($value$plusargs("seed=%d", SEED))
-      master.SEED = SEED;
-
-    master.display_settings;
-    master.run;
-    master.display_stats;
+function get_cycle_type;
+  input [2:0] cti;
+  begin
+    get_cycle_type = (cti === CTI_CLASSIC) ? CLASSIC_CYCLE : BURST_CYCLE;
   end
+endfunction
 
-  always @(posedge done) begin
-    vtg.ok("All tests complete");
-    $display("All tests complete");
-    $finish;
+function wb_is_last;
+  input [2:0] cti;
+  begin
+    case (cti)
+      CTI_CLASSIC      : wb_is_last = 1'b1;
+      CTI_CONST_BURST  : wb_is_last = 1'b0;
+      CTI_INC_BURST    : wb_is_last = 1'b0;
+      CTI_END_OF_BURST : wb_is_last = 1'b1;
+      default          : $display("%d : Illegal Wishbone B3 cycle type (%b)", $time, cti);
+    endcase
   end
-endmodule
+endfunction
+
+function [31:0] wb_next_adr;
+  input [31:0] adr_i;
+  input [ 2:0] cti_i;
+  input [ 2:0] bte_i;
+
+  input integer dw;
+
+  reg [31:0] adr;
+
+  integer shift;
+
+  begin
+    if (dw == 64) shift = 3;
+    else if (dw == 32) shift = 2;
+    else if (dw == 16) shift = 1;
+    else shift = 0;
+    adr = adr_i >> shift;
+    if (cti_i == CTI_INC_BURST)
+      case (bte_i)
+        BTE_LINEAR   : adr = adr + 1;
+        BTE_WRAP_4   : adr = {adr[31:2], adr[1:0]+2'd1};
+        BTE_WRAP_8   : adr = {adr[31:3], adr[2:0]+3'd1};
+        BTE_WRAP_16  : adr = {adr[31:4], adr[3:0]+4'd1};
+      endcase // case (burst_type_i)
+    wb_next_adr = adr << shift;
+  end
+endfunction

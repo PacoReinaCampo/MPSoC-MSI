@@ -11,7 +11,7 @@
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
 //              Master Slave Interface                                        //
-//              Wishbone Bus Interface                                        //
+//              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +75,7 @@ module mpsoc_msi_ahb3_bfm_memory #(
   // Constants
   //
 
-  `include "mpsoc_msi_wb_pkg.v"
+  `include "mpsoc_msi_ahb3_pkg.v"
 
   localparam bytes_per_dw = (DW/8);
   localparam mem_words = (MEM_SIZE_BYTES/bytes_per_dw);

@@ -11,7 +11,7 @@
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
 //              Master Slave Interface                                        //
-//              Wishbone Bus Interface                                        //
+//              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 

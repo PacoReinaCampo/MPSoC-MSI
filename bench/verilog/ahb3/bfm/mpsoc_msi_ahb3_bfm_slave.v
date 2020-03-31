@@ -11,7 +11,7 @@
 //                                                                            //
 //              MPSoC-RISCV CPU                                               //
 //              Master Slave Interface                                        //
-//              Wishbone Bus Interface                                        //
+//              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +67,7 @@ module mpsoc_msi_ahb3_bfm_slave #(
   // Constants
   //
 
-  `include "mpsoc_msi_wb_pkg.v"
+  `include "mpsoc_msi_ahb3_pkg.v"
 
   localparam TP = 1;
 
