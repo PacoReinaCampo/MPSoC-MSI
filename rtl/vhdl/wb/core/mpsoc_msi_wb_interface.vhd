@@ -47,6 +47,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+package array_pkg is
+  type std_logic_matrix is array(natural range <>) of std_logic_vector;
+end package;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.array_pkg.all;
+
 entity mpsoc_msi_wb_interface is
   port (
     wb_clk_i        : in  std_logic;
@@ -124,39 +134,17 @@ architecture RTL of mpsoc_msi_wb_interface is
 
   --////////////////////////////////////////////////////////////////
   --
-  -- Types
-  --
-  type M_TWO_SLAVES_AW is array (1 downto 0) of std_logic_vector(AW-1 downto 0);
-  type M_TWO_SLAVES_DW is array (1 downto 0) of std_logic_vector(DW-1 downto 0);
-  type M_TWO_SLAVES_3 is array (1 downto 0) of std_logic_vector(3 downto 0);
-  type M_TWO_SLAVES_2 is array (1 downto 0) of std_logic_vector(2 downto 0);
-  type M_TWO_SLAVES_1 is array (1 downto 0) of std_logic_vector(1 downto 0);
-
-  type M_THREE_MASTERS_AW is array (2 downto 0) of std_logic_vector(AW-1 downto 0);
-  type M_THREE_MASTERS_DW is array (2 downto 0) of std_logic_vector(DW-1 downto 0);
-  type M_THREE_MASTERS_3 is array (2 downto 0) of std_logic_vector(3 downto 0);
-  type M_THREE_MASTERS_2 is array (2 downto 0) of std_logic_vector(2 downto 0);
-  type M_THREE_MASTERS_1 is array (2 downto 0) of std_logic_vector(1 downto 0);
-
-  --////////////////////////////////////////////////////////////////
-  --
   -- Components
   --
   component mpsoc_msi_wb_mux
     generic (
-      type M_NUM_SLAVES_AW;
-      type M_NUM_SLAVES_DW;
-      type M_NUM_SLAVES_3;
-      type M_NUM_SLAVES_2;
-      type M_NUM_SLAVES_1;
-
       DW : integer := 32;  -- Data width
       AW : integer := 32;  -- Address width
 
       NUM_SLAVES : integer := 2;  -- Number of slaves
 
-      MATCH_ADDR : M_NUM_SLAVES_AW;
-      MATCH_MASK : M_NUM_SLAVES_AW
+      MATCH_ADDR : std_logic_vector(NUM_SLAVES*AW-1 downto 0) := (others => '0');
+      MATCH_MASK : std_logic_vector(NUM_SLAVES*AW-1 downto 0) := (others => '0')
       );
     port (
       wb_clk_i : in std_logic;
@@ -177,15 +165,15 @@ architecture RTL of mpsoc_msi_wb_interface is
       wbm_rty_o : out std_logic;
 
       -- Wishbone Slave interface
-      wbs_adr_o : out M_NUM_SLAVES_AW;
-      wbs_dat_o : out M_NUM_SLAVES_DW;
-      wbs_sel_o : out M_NUM_SLAVES_3;
+      wbs_adr_o : out std_logic_matrix(NUM_SLAVES-1 downto 0)(AW-1 downto 0);
+      wbs_dat_o : out std_logic_matrix(NUM_SLAVES-1 downto 0)(DW-1 downto 0);
+      wbs_sel_o : out std_logic_matrix(NUM_SLAVES-1 downto 0)(3 downto 0);
       wbs_we_o  : out std_logic_vector(NUM_SLAVES-1 downto 0);
       wbs_cyc_o : out std_logic_vector(NUM_SLAVES-1 downto 0);
       wbs_stb_o : out std_logic_vector(NUM_SLAVES-1 downto 0);
-      wbs_cti_o : out M_NUM_SLAVES_2;
-      wbs_bte_o : out M_NUM_SLAVES_1;
-      wbs_dat_i : in  M_NUM_SLAVES_DW;
+      wbs_cti_o : out std_logic_matrix(NUM_SLAVES-1 downto 0)(2 downto 0);
+      wbs_bte_o : out std_logic_matrix(NUM_SLAVES-1 downto 0)(1 downto 0);
+      wbs_dat_i : in  std_logic_matrix(NUM_SLAVES-1 downto 0)(DW-1 downto 0);
       wbs_ack_i : in  std_logic_vector(NUM_SLAVES-1 downto 0);
       wbs_err_i : in  std_logic_vector(NUM_SLAVES-1 downto 0);
       wbs_rty_i : in  std_logic_vector(NUM_SLAVES-1 downto 0)
@@ -194,12 +182,6 @@ architecture RTL of mpsoc_msi_wb_interface is
 
   component mpsoc_msi_wb_arbiter
     generic (
-      type M_NUM_MASTERS_AW;
-      type M_NUM_MASTERS_DW;
-      type M_NUM_MASTERS_3;
-      type M_NUM_MASTERS_2;
-      type M_NUM_MASTERS_1;
-
       DW : integer := 32;
       AW : integer := 32;
 
@@ -210,15 +192,15 @@ architecture RTL of mpsoc_msi_wb_interface is
       wb_rst_i : in std_logic;
 
       -- Wishbone Master Interface
-      wbm_adr_i : in  M_NUM_MASTERS_AW;
-      wbm_dat_i : in  M_NUM_MASTERS_DW;
-      wbm_sel_i : in  M_NUM_MASTERS_3;
+      wbm_adr_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(AW-1 downto 0);
+      wbm_dat_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(DW-1 downto 0);
+      wbm_sel_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(3 downto 0);
       wbm_we_i  : in  std_logic_vector(NUM_MASTERS-1 downto 0);
       wbm_cyc_i : in  std_logic_vector(NUM_MASTERS-1 downto 0);
       wbm_stb_i : in  std_logic_vector(NUM_MASTERS-1 downto 0);
-      wbm_cti_i : in  M_NUM_MASTERS_2;
-      wbm_bte_i : in  M_NUM_MASTERS_1;
-      wbm_dat_o : out M_NUM_MASTERS_DW;
+      wbm_cti_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(2 downto 0);
+      wbm_bte_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(1 downto 0);
+      wbm_dat_o : out std_logic_matrix(NUM_MASTERS-1 downto 0)(DW-1 downto 0);
       wbm_ack_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
       wbm_err_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
       wbm_rty_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
@@ -292,28 +274,28 @@ architecture RTL of mpsoc_msi_wb_interface is
   signal wb_s2m_or1k_d_mem_err  : std_logic;
   signal wb_s2m_or1k_d_mem_rty  : std_logic;
 
-  signal wb_m2s_or1k_i_mem_adr  : std_logic_vector(31 downto 0);
-  signal wb_m2s_or1k_i_mem_dat  : std_logic_vector(31 downto 0);
-  signal wb_m2s_or1k_i_mem_sel  : std_logic_vector(3 downto 0);
+  signal wb_m2s_or1k_i_mem_adr  : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_or1k_i_mem_dat  : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_or1k_i_mem_sel  : std_logic_matrix(0 downto 0)(3 downto 0);
   signal wb_m2s_or1k_i_mem_we   : std_logic_vector(0 downto 0);
   signal wb_m2s_or1k_i_mem_cyc  : std_logic_vector(0 downto 0);
   signal wb_m2s_or1k_i_mem_stb  : std_logic_vector(0 downto 0);
-  signal wb_m2s_or1k_i_mem_cti  : std_logic_vector(2 downto 0);
-  signal wb_m2s_or1k_i_mem_bte  : std_logic_vector(1 downto 0);
-  signal wb_s2m_or1k_i_mem_dat  : std_logic_vector(31 downto 0);
+  signal wb_m2s_or1k_i_mem_cti  : std_logic_matrix(0 downto 0)(2 downto 0);
+  signal wb_m2s_or1k_i_mem_bte  : std_logic_matrix(0 downto 0)(1 downto 0);
+  signal wb_s2m_or1k_i_mem_dat  : std_logic_matrix(0 downto 0)(31 downto 0);
   signal wb_s2m_or1k_i_mem_ack  : std_logic_vector(0 downto 0);
   signal wb_s2m_or1k_i_mem_err  : std_logic_vector(0 downto 0);
   signal wb_s2m_or1k_i_mem_rty  : std_logic_vector(0 downto 0);
 
-  signal wb_m2s_dbg_mem_adr     : std_logic_vector(31 downto 0);
-  signal wb_m2s_dbg_mem_dat     : std_logic_vector(31 downto 0);
-  signal wb_m2s_dbg_mem_sel     : std_logic_vector(3 downto 0);
+  signal wb_m2s_dbg_mem_adr     : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_dbg_mem_dat     : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_dbg_mem_sel     : std_logic_matrix(0 downto 0)(3 downto 0);
   signal wb_m2s_dbg_mem_we      : std_logic_vector(0 downto 0);
   signal wb_m2s_dbg_mem_cyc     : std_logic_vector(0 downto 0);
   signal wb_m2s_dbg_mem_stb     : std_logic_vector(0 downto 0);
-  signal wb_m2s_dbg_mem_cti     : std_logic_vector(2 downto 0);
-  signal wb_m2s_dbg_mem_bte     : std_logic_vector(1 downto 0);
-  signal wb_s2m_dbg_mem_dat     : std_logic_vector(31 downto 0);
+  signal wb_m2s_dbg_mem_cti     : std_logic_matrix(0 downto 0)(2 downto 0);
+  signal wb_m2s_dbg_mem_bte     : std_logic_matrix(0 downto 0)(1 downto 0);
+  signal wb_s2m_dbg_mem_dat     : std_logic_matrix(0 downto 0)(31 downto 0);
   signal wb_s2m_dbg_mem_ack     : std_logic_vector(0 downto 0);
   signal wb_s2m_dbg_mem_err     : std_logic_vector(0 downto 0);
   signal wb_s2m_dbg_mem_rty     : std_logic_vector(0 downto 0);
@@ -331,28 +313,28 @@ architecture RTL of mpsoc_msi_wb_interface is
   signal wb_s2m_resize_uart_err : std_logic;
   signal wb_s2m_resize_uart_rty : std_logic;
 
-  signal wb_m2s_or1k_d_adr_o : M_TWO_SLAVES_AW;
-  signal wb_m2s_or1k_d_dat_o : M_TWO_SLAVES_DW;
-  signal wb_m2s_or1k_d_sel_o : M_TWO_SLAVES_3;
+  signal wb_m2s_or1k_d_adr_o : std_logic_matrix(1 downto 0)(AW-1 downto 0);
+  signal wb_m2s_or1k_d_dat_o : std_logic_matrix(1 downto 0)(DW-1 downto 0);
+  signal wb_m2s_or1k_d_sel_o : std_logic_matrix(1 downto 0)(3 downto 0);
   signal wb_m2s_or1k_d_we_o  : std_logic_vector(1 downto 0);
   signal wb_m2s_or1k_d_cyc_o : std_logic_vector(1 downto 0);
   signal wb_m2s_or1k_d_stb_o : std_logic_vector(1 downto 0);
-  signal wb_m2s_or1k_d_cti_o : M_TWO_SLAVES_2;
-  signal wb_m2s_or1k_d_bte_o : M_TWO_SLAVES_1;
-  signal wb_s2m_or1k_d_dat_i : M_TWO_SLAVES_DW;
+  signal wb_m2s_or1k_d_cti_o : std_logic_matrix(1 downto 0)(2 downto 0);
+  signal wb_m2s_or1k_d_bte_o : std_logic_matrix(1 downto 0)(1 downto 0);
+  signal wb_s2m_or1k_d_dat_i : std_logic_matrix(1 downto 0)(DW-1 downto 0);
   signal wb_s2m_or1k_d_ack_i : std_logic_vector(1 downto 0);
   signal wb_s2m_or1k_d_err_i : std_logic_vector(1 downto 0);
   signal wb_s2m_or1k_d_rty_i : std_logic_vector(1 downto 0);
 
-  signal wb_m2s_or1k_i_adr_i : M_THREE_MASTERS_AW;
-  signal wb_m2s_or1k_i_dat_i : M_THREE_MASTERS_DW;
-  signal wb_m2s_or1k_i_sel_i : M_THREE_MASTERS_3;
+  signal wb_m2s_or1k_i_adr_i : std_logic_matrix(2 downto 0)(AW-1 downto 0);
+  signal wb_m2s_or1k_i_dat_i : std_logic_matrix(2 downto 0)(DW-1 downto 0);
+  signal wb_m2s_or1k_i_sel_i : std_logic_matrix(2 downto 0)(3 downto 0);
   signal wb_m2s_or1k_i_we_i  : std_logic_vector(2 downto 0);
   signal wb_m2s_or1k_i_cyc_i : std_logic_vector(2 downto 0);
   signal wb_m2s_or1k_i_stb_i : std_logic_vector(2 downto 0);
-  signal wb_m2s_or1k_i_cti_i : M_THREE_MASTERS_2;
-  signal wb_m2s_or1k_i_bte_i : M_THREE_MASTERS_1;
-  signal wb_s2m_or1k_i_dat_o : M_THREE_MASTERS_DW;
+  signal wb_m2s_or1k_i_cti_i : std_logic_matrix(2 downto 0)(2 downto 0);
+  signal wb_m2s_or1k_i_bte_i : std_logic_matrix(2 downto 0)(1 downto 0);
+  signal wb_s2m_or1k_i_dat_o : std_logic_matrix(2 downto 0)(DW-1 downto 0);
   signal wb_s2m_or1k_i_ack_o : std_logic_vector(2 downto 0);
   signal wb_s2m_or1k_i_err_o : std_logic_vector(2 downto 0);
   signal wb_s2m_or1k_i_rty_o : std_logic_vector(2 downto 0);
@@ -364,12 +346,6 @@ begin
   --
   wb_mux_or1k_d : mpsoc_msi_wb_mux
     generic map (
-      M_NUM_SLAVES_AW => M_TWO_SLAVES_AW,
-      M_NUM_SLAVES_DW => M_TWO_SLAVES_DW,
-      M_NUM_SLAVES_3  => M_TWO_SLAVES_3,
-      M_NUM_SLAVES_2  => M_TWO_SLAVES_2,
-      M_NUM_SLAVES_1  => M_TWO_SLAVES_1,
-
       DW => DW,
       AW => AW,
 
@@ -422,12 +398,6 @@ begin
 
   wb_mux_or1k_i : mpsoc_msi_wb_mux
     generic map (
-      M_NUM_SLAVES_AW => std_logic_vector(AW-1 downto 0),
-      M_NUM_SLAVES_DW => std_logic_vector(DW-1 downto 0),
-      M_NUM_SLAVES_3  => std_logic_vector(3 downto 0),
-      M_NUM_SLAVES_2  => std_logic_vector(2 downto 0),
-      M_NUM_SLAVES_1  => std_logic_vector(1 downto 0),
-
       DW => DW,
       AW => AW,
 
@@ -467,12 +437,6 @@ begin
 
   wb_mux_dbg : mpsoc_msi_wb_mux
     generic map (
-      M_NUM_SLAVES_AW => std_logic_vector(AW-1 downto 0),
-      M_NUM_SLAVES_DW => std_logic_vector(DW-1 downto 0),
-      M_NUM_SLAVES_3  => std_logic_vector(3 downto 0),
-      M_NUM_SLAVES_2  => std_logic_vector(2 downto 0),
-      M_NUM_SLAVES_1  => std_logic_vector(1 downto 0),
-
       DW => DW,
       AW => AW,
 
@@ -512,12 +476,6 @@ begin
 
   wb_arbiter_mem : mpsoc_msi_wb_arbiter
     generic map (
-      M_NUM_MASTERS_AW => M_THREE_MASTERS_AW,
-      M_NUM_MASTERS_DW => M_THREE_MASTERS_DW,
-      M_NUM_MASTERS_3  => M_THREE_MASTERS_3,
-      M_NUM_MASTERS_2  => M_THREE_MASTERS_2,
-      M_NUM_MASTERS_1  => M_THREE_MASTERS_1,
-
       DW => DW,
       AW => AW,
 

@@ -46,16 +46,20 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+package array_pkg is
+  type std_logic_matrix is array(natural range <>) of std_logic_vector;
+end package;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use ieee.math_real.all;
+
+use work.array_pkg.all;
 
 entity mpsoc_msi_wb_arbiter is
   generic (
-    type M_NUM_MASTERS_AW;
-    type M_NUM_MASTERS_DW;
-    type M_NUM_MASTERS_3;
-    type M_NUM_MASTERS_2;
-    type M_NUM_MASTERS_1;
-
     DW : integer := 32;
     AW : integer := 32;
 
@@ -66,15 +70,15 @@ entity mpsoc_msi_wb_arbiter is
     wb_rst_i : in std_logic;
 
     -- Wishbone Master Interface
-    wbm_adr_i : in  M_NUM_MASTERS_AW;
-    wbm_dat_i : in  M_NUM_MASTERS_DW;
-    wbm_sel_i : in  M_NUM_MASTERS_3;
+    wbm_adr_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(AW-1 downto 0);
+    wbm_dat_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(DW-1 downto 0);
+    wbm_sel_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(3 downto 0);
     wbm_we_i  : in  std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_cyc_i : in  std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_stb_i : in  std_logic_vector(NUM_MASTERS-1 downto 0);
-    wbm_cti_i : in  M_NUM_MASTERS_2;
-    wbm_bte_i : in  M_NUM_MASTERS_1;
-    wbm_dat_o : out M_NUM_MASTERS_DW;
+    wbm_cti_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(2 downto 0);
+    wbm_bte_i : in  std_logic_matrix(NUM_MASTERS-1 downto 0)(1 downto 0);
+    wbm_dat_o : out std_logic_matrix(NUM_MASTERS-1 downto 0)(DW-1 downto 0);
     wbm_ack_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_err_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
     wbm_rty_o : out std_logic_vector(NUM_MASTERS-1 downto 0);
@@ -148,17 +152,17 @@ begin
   master_selection <= to_integer(unsigned(selection));
 
   --Mux active master
-  --wbs_adr_o <= wbm_adr_i(master_selection);
-  --wbs_dat_o <= wbm_dat_i(master_selection);
-  --wbs_sel_o <= wbm_sel_i(master_selection);
-  --wbs_we_o  <= wbm_we_i(master_selection);
-  --wbs_cyc_o <= wbm_cyc_i(master_selection) and active;
-  --wbs_stb_o <= wbm_stb_i(master_selection);
-  --wbs_cti_o <= wbm_cti_i(master_selection);
-  --wbs_bte_o <= wbm_bte_i(master_selection);
+  wbs_adr_o <= wbm_adr_i(0);
+  wbs_dat_o <= wbm_dat_i(0);
+  wbs_sel_o <= wbm_sel_i(0);
+  wbs_we_o  <= wbm_we_i(0);
+  wbs_cyc_o <= wbm_cyc_i(0) and active;
+  wbs_stb_o <= wbm_stb_i(0);
+  wbs_cti_o <= wbm_cti_i(0);
+  wbs_bte_o <= wbm_bte_i(0);
 
   generating_0 : for i in 0 to NUM_MASTERS - 1 generate
-    --wbm_dat_o(i) <= wbs_dat_i;
+    wbm_dat_o(i) <= wbs_dat_i;
   end generate;
 
   wbm_ack_o <= (NUM_MASTERS-1 downto 1 => '0') & (wbs_ack_i and active) sll master_selection;
