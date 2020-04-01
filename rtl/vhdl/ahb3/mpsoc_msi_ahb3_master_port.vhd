@@ -1,4 +1,4 @@
--- Converted from rtl/vhdl/mpsoc_simd_memory_ahb3_master_port.sv
+-- Converted from rtl/vhdl/mpsoc_msi_ahb3_master_port.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,6 @@
 -- *   Francisco Javier Reina Campo <frareicam@gmail.com>
 -- */
 
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -51,11 +50,12 @@ use ieee.math_real.all;
 
 use work.mpsoc_pkg.all;
 
-entity mpsoc_simd_memory_ahb3_master_port is
+entity mpsoc_msi_ahb3_master_port is
   generic (
-    PLEN           : integer := 64;
-    XLEN           : integer := 64;
-    CORES_PER_SIMD : integer := 8
+    PLEN    : integer := 64;
+    XLEN    : integer := 64;
+    MASTERS : integer := 5;
+    SLAVES  : integer := 5
   );
   port (
     --Common signals
@@ -81,35 +81,35 @@ entity mpsoc_simd_memory_ahb3_master_port is
     mst_HRESP     : out std_logic;
 
     --AHB Master Interfaces; send data to AHB slaves
-    slvHADDRmask : in  M_CORES_PER_SIMD_PLEN;
-    slvHADDRbase : in  M_CORES_PER_SIMD_PLEN;
-    slvHSEL      : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+    slvHADDRmask : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
+    slvHADDRbase : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
+    slvHSEL      : out std_logic_vector(SLAVES-1 downto 0);
     slvHADDR     : out std_logic_vector(PLEN-1 downto 0);
     slvHWDATA    : out std_logic_vector(XLEN-1 downto 0);
-    slvHRDATA    : in  M_CORES_PER_SIMD_XLEN;
+    slvHRDATA    : in  std_logic_matrix(SLAVES-1 downto 0)(XLEN-1 downto 0);
     slvHWRITE    : out std_logic;
     slvHSIZE     : out std_logic_vector(2 downto 0);
     slvHBURST    : out std_logic_vector(2 downto 0);
     slvHPROT     : out std_logic_vector(3 downto 0);
     slvHTRANS    : out std_logic_vector(1 downto 0);
     slvHMASTLOCK : out std_logic;
-    slvHREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+    slvHREADY    : in  std_logic_vector(SLAVES-1 downto 0);
     slvHREADYOUT : out std_logic;
-    slvHRESP     : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+    slvHRESP     : in  std_logic_vector(SLAVES-1 downto 0);
 
     --Internal signals
     can_switch     : out std_logic;
     slvpriority    : out std_logic_vector(2 downto 0);
-    master_granted : in  std_logic_vector(CORES_PER_SIMD-1 downto 0)
+    master_granted : in  std_logic_vector(SLAVES-1 downto 0)
     );
-end mpsoc_simd_memory_ahb3_master_port;
+end mpsoc_msi_ahb3_master_port;
 
-architecture RTL of mpsoc_simd_memory_ahb3_master_port is
+architecture RTL of mpsoc_msi_ahb3_master_port is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants
   --
-  constant CORES_PER_SIMD_BITS : integer := integer(log2(real(CORES_PER_SIMD)));
+  constant SLAVES_BITS : integer := integer(log2(real(SLAVES)));
 
   constant NO_ACCESS      : std_logic_vector(1 downto 0) := "00";
   constant ACCESS_PENDING : std_logic_vector(1 downto 0) := "01";
@@ -125,15 +125,15 @@ architecture RTL of mpsoc_simd_memory_ahb3_master_port is
   signal access_pending_s : std_logic;
   signal access_granted_s : std_logic;
 
-  signal current_HSEL : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal pending_HSEL : std_logic_vector(CORES_PER_SIMD-1 downto 0);
+  signal current_HSEL : std_logic_vector(SLAVES-1 downto 0);
+  signal pending_HSEL : std_logic_vector(SLAVES-1 downto 0);
 
   signal local_HREADYOUT : std_logic;
 
   signal mux_sel : std_logic;
 
-  signal slave_sel  : std_logic_vector(CORES_PER_SIMD_BITS-1 downto 0);
-  signal slaves2int : std_logic_vector(CORES_PER_SIMD_BITS-1 downto 0);
+  signal slave_sel  : std_logic_vector(SLAVES_BITS-1 downto 0);
+  signal slaves2int : std_logic_vector(SLAVES_BITS-1 downto 0);
 
   signal burst_cnt : std_logic_vector(3 downto 0);
 
@@ -147,7 +147,7 @@ architecture RTL of mpsoc_simd_memory_ahb3_master_port is
   signal regHPROT     : std_logic_vector(3 downto 0);
   signal regHMASTLOCK : std_logic;
 
-  signal slvHSEL_sgn : std_logic_vector(CORES_PER_SIMD-1 downto 0);
+  signal slvHSEL_sgn : std_logic_vector(SLAVES-1 downto 0);
 
   --////////////////////////////////////////////////////////////////
   --
@@ -192,11 +192,11 @@ architecture RTL of mpsoc_simd_memory_ahb3_master_port is
   end function to_stdlogic;
 
   function onehot2int (
-    onehot : std_logic_vector(CORES_PER_SIMD-1 downto 0)
+    onehot : std_logic_vector(SLAVES-1 downto 0)
     ) return integer is
     variable onehot2int_return : integer := -1;
 
-    variable onehot_return : std_logic_vector(CORES_PER_SIMD-1 downto 0) := onehot;
+    variable onehot_return : std_logic_vector(SLAVES-1 downto 0) := onehot;
   begin
     while (reduce_or(onehot) = '1') loop
       onehot2int_return := onehot2int_return + 1;
@@ -350,7 +350,7 @@ begin
   --  * Slave-port replies by asserting master_gnt
   --  * TODO: check for illegal combinations (more than 1 slvHSEL asserted)
 
-  generating_0 : for s in 0 to CORES_PER_SIMD - 1 generate
+  generating_0 : for s in 0 to SLAVES - 1 generate
     current_HSEL(s) <= to_stdlogic(mst_HTRANS /= HTRANS_IDLE) and to_stdlogic((mst_HADDR and slvHADDRmask(s)) = (slvHADDRbase(s) and slvHADDRmask(s)));
     pending_HSEL(s) <= to_stdlogic(regHTRANS /= HTRANS_IDLE) and to_stdlogic((regHADDR and slvHADDRmask(s)) = (slvHADDRbase(s) and slvHADDRmask(s)));
     slvHSEL_sgn(s)  <= (pending_HSEL(s))
@@ -366,7 +366,7 @@ begin
       slave_sel <= (others => '0');
     elsif (rising_edge(HCLK)) then
       if (mst_HREADY = '1') then
-        slave_sel <= std_logic_vector(to_unsigned(onehot2int(slvHSEL_sgn), CORES_PER_SIMD_BITS));
+        slave_sel <= std_logic_vector(to_unsigned(onehot2int(slvHSEL_sgn), SLAVES_BITS));
       end if;
     end if;
   end process;

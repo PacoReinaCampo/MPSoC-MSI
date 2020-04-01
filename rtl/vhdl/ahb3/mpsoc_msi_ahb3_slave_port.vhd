@@ -48,7 +48,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.mpsoc_msi_pkg.all;
+use work.mpsoc_pkg.all;
 
 entity mpsoc_msi_ahb3_slave_port is
   generic (
@@ -63,16 +63,16 @@ entity mpsoc_msi_ahb3_slave_port is
 
     --AHB Slave Interfaces (receive data from AHB Masters)
     --AHB Masters conect to these ports
-    mstpriority  : in  M_MASTERS_2;
+    mstpriority  : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
     mstHSEL      : in  std_logic_vector(MASTERS-1 downto 0);
-    mstHADDR     : in  M_MASTERS_PLEN;
-    mstHWDATA    : in  M_MASTERS_XLEN;
+    mstHADDR     : in  std_logic_matrix(MASTERS-1 downto 0)(PLEN-1 downto 0);
+    mstHWDATA    : in  std_logic_matrix(MASTERS-1 downto 0)(XLEN-1 downto 0);
     mstHRDATA    : out std_logic_vector(XLEN-1 downto 0);
     mstHWRITE    : in  std_logic_vector(MASTERS-1 downto 0);
-    mstHSIZE     : in  M_MASTERS_2;
-    mstHBURST    : in  M_MASTERS_2;
-    mstHPROT     : in  M_MASTERS_3;
-    mstHTRANS    : in  M_MASTERS_1;
+    mstHSIZE     : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+    mstHBURST    : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+    mstHPROT     : in  std_logic_matrix(MASTERS-1 downto 0)(3 downto 0);
+    mstHTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
     mstHMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
     mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  --HREADY input from master-bus
     mstHREADYOUT : out std_logic;  --HREADYOUT output to master-bus
@@ -115,7 +115,7 @@ architecture RTL of mpsoc_msi_ahb3_slave_port is
 
   signal pending_master       : std_logic_vector(MASTERS-1 downto 0);  --next master waiting to be served
   signal last_granted_master  : std_logic_vector(MASTERS-1 downto 0);  --for requested priority level
-  signal last_granted_masters : M_2_MASTERS;  --per priority level, for round-robin
+  signal last_granted_masters : std_logic_matrix(2 downto 0)(MASTERS-1 downto 0);  --per priority level, for round-robin
 
   signal granted_master_idx     : std_logic_vector(MASTER_BITS-1 downto 0);  --granted master as index
   signal granted_master_idx_dly : std_logic_vector(MASTER_BITS-1 downto 0);  --deleayed granted master index (for HWDATA)
@@ -182,7 +182,7 @@ architecture RTL of mpsoc_msi_ahb3_slave_port is
 
   function highest_requested_priority (
     hsel : std_logic_vector(MASTERS-1 downto 0);
-    priorities : M_MASTERS_2
+    priorities : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0)
   ) return std_logic_vector is
     variable highest_requested_priority_return : std_logic_vector (2 downto 0);
   begin
@@ -197,7 +197,7 @@ architecture RTL of mpsoc_msi_ahb3_slave_port is
 
   function requesters (
     hsel: std_logic_vector(MASTERS-1 downto 0);
-    priorities : M_MASTERS_2;
+    priorities : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
     priority_select : std_logic_vector(2 downto 0)
 
   ) return std_logic_vector is
@@ -279,7 +279,7 @@ begin
   processing_1 : process (HCLK, HRESETn)
   begin
     if (HRESETn = '0') then
-      last_granted_masters(to_integer(unsigned(requested_priority_lvl))) <= (0 => '1', others => '0');
+      last_granted_masters(to_integer(unsigned(requested_priority_lvl))) <= std_logic_vector(to_unsigned(1, MASTERS));
     elsif (rising_edge(HCLK)) then
       --else if (!slv_HSEL    ) last_granted_masters[requested_priority_lvl] <= pending_master;
       if (slv_HREADY = '1') then

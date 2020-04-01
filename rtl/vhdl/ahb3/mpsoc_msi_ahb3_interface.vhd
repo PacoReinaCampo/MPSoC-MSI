@@ -1,4 +1,4 @@
--- Converted from rtl/vhdl/mpsoc_simd_memory_ahb3_interface.sv
+-- Converted from rtl/vhdl/mpsoc_msi_ahb3_interface.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -49,11 +49,12 @@ use ieee.numeric_std.all;
 
 use work.mpsoc_pkg.all;
 
-entity mpsoc_simd_memory_ahb3_interface is
+entity mpsoc_msi_ahb3_interface is
   generic (
-    PLEN           : integer := 64;
-    XLEN           : integer := 64;
-    CORES_PER_SIMD : integer := 8
+    PLEN    : integer := 64;
+    XLEN    : integer := 64;
+    MASTERS : integer := 5;
+    SLAVES  : integer := 5
   );
   port (
     --Common signals
@@ -62,49 +63,50 @@ entity mpsoc_simd_memory_ahb3_interface is
 
     --Master Ports; AHB masters connect to these
     -- thus these are actually AHB Slave Interfaces
-    mst_priority : in M_CORES_PER_SIMD_2;
+    mst_priority : in std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
 
-    mst_HSEL      : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    mst_HADDR     : in  M_CORES_PER_SIMD_PLEN;
-    mst_HWDATA    : in  M_CORES_PER_SIMD_XLEN;
-    mst_HRDATA    : out M_CORES_PER_SIMD_XLEN;
-    mst_HWRITE    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    mst_HSIZE     : in  M_CORES_PER_SIMD_2;
-    mst_HBURST    : in  M_CORES_PER_SIMD_2;
-    mst_HPROT     : in  M_CORES_PER_SIMD_3;
-    mst_HTRANS    : in  M_CORES_PER_SIMD_1;
-    mst_HMASTLOCK : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    mst_HREADYOUT : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    mst_HREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    mst_HRESP     : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+    mst_HSEL      : in  std_logic_vector(MASTERS-1 downto 0);
+    mst_HADDR     : in  std_logic_matrix(MASTERS-1 downto 0)(PLEN-1 downto 0);
+    mst_HWDATA    : in  std_logic_matrix(MASTERS-1 downto 0)(XLEN-1 downto 0);
+    mst_HRDATA    : out std_logic_matrix(MASTERS-1 downto 0)(XLEN-1 downto 0);
+    mst_HWRITE    : in  std_logic_vector(MASTERS-1 downto 0);
+    mst_HSIZE     : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+    mst_HBURST    : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+    mst_HPROT     : in  std_logic_matrix(MASTERS-1 downto 0)(3 downto 0);
+    mst_HTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
+    mst_HMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
+    mst_HREADYOUT : out std_logic_vector(MASTERS-1 downto 0);
+    mst_HREADY    : in  std_logic_vector(MASTERS-1 downto 0);
+    mst_HRESP     : out std_logic_vector(MASTERS-1 downto 0);
 
     --Slave Ports; AHB Slaves connect to these
     --  thus these are actually AHB Master Interfaces
-    slv_addr_mask : in M_CORES_PER_SIMD_PLEN;
-    slv_addr_base : in M_CORES_PER_SIMD_PLEN;
+    slv_addr_mask : in std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
+    slv_addr_base : in std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
 
-    slv_HSEL      : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    slv_HADDR     : out M_CORES_PER_SIMD_PLEN;
-    slv_HWDATA    : out M_CORES_PER_SIMD_XLEN;
-    slv_HRDATA    : in  M_CORES_PER_SIMD_XLEN;
-    slv_HWRITE    : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    slv_HSIZE     : out M_CORES_PER_SIMD_2;
-    slv_HBURST    : out M_CORES_PER_SIMD_2;
-    slv_HPROT     : out M_CORES_PER_SIMD_3;
-    slv_HTRANS    : out M_CORES_PER_SIMD_1;
-    slv_HMASTLOCK : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
-    slv_HREADYOUT : out std_logic_vector(CORES_PER_SIMD-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
-    slv_HREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);  --combinatorial HREADY from all connected slaves
-    slv_HRESP     : in  std_logic_vector(CORES_PER_SIMD-1 downto 0)
+    slv_HSEL      : out std_logic_vector(SLAVES-1 downto 0);
+    slv_HADDR     : out std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
+    slv_HWDATA    : out std_logic_matrix(SLAVES-1 downto 0)(XLEN-1 downto 0);
+    slv_HRDATA    : in  std_logic_matrix(SLAVES-1 downto 0)(XLEN-1 downto 0);
+    slv_HWRITE    : out std_logic_vector(SLAVES-1 downto 0);
+    slv_HSIZE     : out std_logic_matrix(SLAVES-1 downto 0)(2 downto 0);
+    slv_HBURST    : out std_logic_matrix(SLAVES-1 downto 0)(2 downto 0);
+    slv_HPROT     : out std_logic_matrix(SLAVES-1 downto 0)(3 downto 0);
+    slv_HTRANS    : out std_logic_matrix(SLAVES-1 downto 0)(1 downto 0);
+    slv_HMASTLOCK : out std_logic_vector(SLAVES-1 downto 0);
+    slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+    slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  --combinatorial HREADY from all connected slaves
+    slv_HRESP     : in  std_logic_vector(SLAVES-1 downto 0)
   );
-end mpsoc_simd_memory_ahb3_interface;
+end mpsoc_msi_ahb3_interface;
 
-architecture RTL of mpsoc_simd_memory_ahb3_interface is
-  component mpsoc_simd_memory_ahb3_master_port
+architecture RTL of mpsoc_msi_ahb3_interface is
+  component mpsoc_msi_ahb3_master_port
     generic (
-      PLEN           : integer := 64;
-      XLEN           : integer := 64;
-      CORES_PER_SIMD : integer := 8
+      PLEN    : integer := 64;
+      XLEN    : integer := 64;
+      MASTERS : integer := 5;
+      SLAVES  : integer := 5
     );
     port (
       --Common signals
@@ -130,34 +132,35 @@ architecture RTL of mpsoc_simd_memory_ahb3_interface is
       mst_HRESP     : out std_logic;
 
       --AHB Master Interfaces; send data to AHB slaves
-      slvHADDRmask : in  M_CORES_PER_SIMD_PLEN;
-      slvHADDRbase : in  M_CORES_PER_SIMD_PLEN;
-      slvHSEL      : out std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      slvHADDRmask : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
+      slvHADDRbase : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
+      slvHSEL      : out std_logic_vector(SLAVES-1 downto 0);
       slvHADDR     : out std_logic_vector(PLEN-1 downto 0);
       slvHWDATA    : out std_logic_vector(XLEN-1 downto 0);
-      slvHRDATA    : in  M_CORES_PER_SIMD_XLEN;
+      slvHRDATA    : in  std_logic_matrix(SLAVES-1 downto 0)(XLEN-1 downto 0);
       slvHWRITE    : out std_logic;
       slvHSIZE     : out std_logic_vector(2 downto 0);
       slvHBURST    : out std_logic_vector(2 downto 0);
       slvHPROT     : out std_logic_vector(3 downto 0);
       slvHTRANS    : out std_logic_vector(1 downto 0);
       slvHMASTLOCK : out std_logic;
-      slvHREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      slvHREADY    : in  std_logic_vector(SLAVES-1 downto 0);
       slvHREADYOUT : out std_logic;
-      slvHRESP     : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
+      slvHRESP     : in  std_logic_vector(SLAVES-1 downto 0);
 
       --Internal signals
       can_switch     : out std_logic;
       slvpriority    : out std_logic_vector(2 downto 0);
-      master_granted : in  std_logic_vector(CORES_PER_SIMD-1 downto 0)
+      master_granted : in  std_logic_vector(SLAVES-1 downto 0)
     );
   end component;
 
-  component mpsoc_simd_memory_ahb3_slave_port
+  component mpsoc_msi_ahb3_slave_port
     generic (
-      PLEN           : integer := 64;
-      XLEN           : integer := 64;
-      CORES_PER_SIMD : integer := 8
+      PLEN    : integer := 64;
+      XLEN    : integer := 64;
+      MASTERS : integer := 5;
+      SLAVES  : integer := 5
     );
     port (
       HCLK    : in std_logic;
@@ -165,18 +168,18 @@ architecture RTL of mpsoc_simd_memory_ahb3_interface is
 
       --AHB Slave Interfaces (receive data from AHB Masters)
       --AHB Masters conect to these ports
-      mstpriority  : in  M_CORES_PER_SIMD_2;
-      mstHSEL      : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-      mstHADDR     : in  M_CORES_PER_SIMD_PLEN;
-      mstHWDATA    : in  M_CORES_PER_SIMD_XLEN;
+      mstpriority  : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+      mstHSEL      : in  std_logic_vector(MASTERS-1 downto 0);
+      mstHADDR     : in  std_logic_matrix(MASTERS-1 downto 0)(PLEN-1 downto 0);
+      mstHWDATA    : in  std_logic_matrix(MASTERS-1 downto 0)(XLEN-1 downto 0);
       mstHRDATA    : out std_logic_vector(XLEN-1 downto 0);
-      mstHWRITE    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-      mstHSIZE     : in  M_CORES_PER_SIMD_2;
-      mstHBURST    : in  M_CORES_PER_SIMD_2;
-      mstHPROT     : in  M_CORES_PER_SIMD_3;
-      mstHTRANS    : in  M_CORES_PER_SIMD_1;
-      mstHMASTLOCK : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-      mstHREADY    : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);  --HREADY input from master-bus
+      mstHWRITE    : in  std_logic_vector(MASTERS-1 downto 0);
+      mstHSIZE     : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+      mstHBURST    : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+      mstHPROT     : in  std_logic_matrix(MASTERS-1 downto 0)(3 downto 0);
+      mstHTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
+      mstHMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
+      mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  --HREADY input from master-bus
       mstHREADYOUT : out std_logic;    --HREADYOUT output to master-bus
       mstHRESP     : out std_logic;
 
@@ -196,8 +199,8 @@ architecture RTL of mpsoc_simd_memory_ahb3_interface is
       slv_HREADY    : in  std_logic;
       slv_HRESP     : in  std_logic;
 
-      can_switch     : in  std_logic_vector(CORES_PER_SIMD-1 downto 0);
-      granted_master : out std_logic_vector(CORES_PER_SIMD-1 downto 0)
+      can_switch     : in  std_logic_vector(MASTERS-1 downto 0);
+      granted_master : out std_logic_vector(MASTERS-1 downto 0)
     );
   end component;
 
@@ -210,39 +213,39 @@ architecture RTL of mpsoc_simd_memory_ahb3_interface is
   --
   -- Variables
   --
-  signal frommstpriority   : M_CORES_PER_SIMD_2;
-  signal frommstHSEL       : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal frommstHADDR      : M_CORES_PER_SIMD_PLEN;
-  signal frommstHWDATA     : M_CORES_PER_SIMD_XLEN;
-  signal tomstHRDATA       : M_CORES_PER_SIMD_CORES_PER_SIMD_XLEN;
-  signal frommstHWRITE     : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal frommstHSIZE      : M_CORES_PER_SIMD_2;
-  signal frommstHBURST     : M_CORES_PER_SIMD_2;
-  signal frommstHPROT      : M_CORES_PER_SIMD_3;
-  signal frommstHTRANS     : M_CORES_PER_SIMD_1;
-  signal frommstHMASTLOCK  : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal frommstHREADYOUT  : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal frommst_canswitch : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal tomstHREADY       : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal tomstHRESP        : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal tomstgrant        : M_CORES_PER_SIMD_CORES_PER_SIMD;
+  signal frommstpriority   : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+  signal frommstHSEL       : std_logic_matrix(MASTERS-1 downto 0)(SLAVES-1 downto 0);
+  signal frommstHADDR      : std_logic_matrix(MASTERS-1 downto 0)(PLEN-1 downto 0);
+  signal frommstHWDATA     : std_logic_matrix(MASTERS-1 downto 0)(XLEN-1 downto 0);
+  signal tomstHRDATA       : std_logic_3array(MASTERS-1 downto 0)(SLAVES-1 downto 0)(XLEN-1 downto 0);
+  signal frommstHWRITE     : std_logic_vector(MASTERS-1 downto 0);
+  signal frommstHSIZE      : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+  signal frommstHBURST     : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+  signal frommstHPROT      : std_logic_matrix(MASTERS-1 downto 0)(3 downto 0);
+  signal frommstHTRANS     : std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
+  signal frommstHMASTLOCK  : std_logic_vector(MASTERS-1 downto 0);
+  signal frommstHREADYOUT  : std_logic_vector(MASTERS-1 downto 0);
+  signal frommst_canswitch : std_logic_vector(MASTERS-1 downto 0);
+  signal tomstHREADY       : std_logic_matrix(MASTERS-1 downto 0)(SLAVES-1 downto 0);
+  signal tomstHRESP        : std_logic_matrix(MASTERS-1 downto 0)(SLAVES-1 downto 0);
+  signal tomstgrant        : std_logic_matrix(MASTERS-1 downto 0)(SLAVES-1 downto 0);
 
-  signal toslvpriority    : M_CORES_PER_SIMD_CORES_PER_SIMD_2;
-  signal toslvHSEL        : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal toslvHADDR       : M_CORES_PER_SIMD_CORES_PER_SIMD_PLEN;
-  signal toslvHWDATA      : M_CORES_PER_SIMD_CORES_PER_SIMD_XLEN;
-  signal fromslvHRDATA    : M_CORES_PER_SIMD_XLEN;
-  signal toslvHWRITE      : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal toslvHSIZE       : M_CORES_PER_SIMD_CORES_PER_SIMD_2;
-  signal toslvHBURST      : M_CORES_PER_SIMD_CORES_PER_SIMD_2;
-  signal toslvHPROT       : M_CORES_PER_SIMD_CORES_PER_SIMD_3;
-  signal toslvHTRANS      : M_CORES_PER_SIMD_CORES_PER_SIMD_1;
-  signal toslvHMASTLOCK   : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal toslvHREADY      : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal toslv_canswitch  : M_CORES_PER_SIMD_CORES_PER_SIMD;
-  signal fromslvHREADYOUT : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal fromslvHRESP     : std_logic_vector(CORES_PER_SIMD-1 downto 0);
-  signal fromslvgrant     : M_CORES_PER_SIMD_CORES_PER_SIMD;
+  signal toslvpriority    : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(2 downto 0);
+  signal toslvHSEL        : std_logic_matrix(SLAVES-1 downto 0)(MASTERS-1 downto 0);
+  signal toslvHADDR       : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(PLEN-1 downto 0);
+  signal toslvHWDATA      : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(XLEN-1 downto 0);
+  signal fromslvHRDATA    : std_logic_matrix(SLAVES-1 downto 0)(XLEN-1 downto 0);
+  signal toslvHWRITE      : std_logic_matrix(SLAVES-1 downto 0)(MASTERS-1 downto 0);
+  signal toslvHSIZE       : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(2 downto 0);
+  signal toslvHBURST      : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(2 downto 0);
+  signal toslvHPROT       : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(3 downto 0);
+  signal toslvHTRANS      : std_logic_3array(SLAVES-1 downto 0)(MASTERS-1 downto 0)(1 downto 0);
+  signal toslvHMASTLOCK   : std_logic_matrix(SLAVES-1 downto 0)(MASTERS-1 downto 0);
+  signal toslvHREADY      : std_logic_matrix(SLAVES-1 downto 0)(MASTERS-1 downto 0);
+  signal toslv_canswitch  : std_logic_matrix(SLAVES-1 downto 0)(MASTERS-1 downto 0);
+  signal fromslvHREADYOUT : std_logic_vector(SLAVES-1 downto 0);
+  signal fromslvHRESP     : std_logic_vector(SLAVES-1 downto 0);
+  signal fromslvgrant     : std_logic_matrix(SLAVES-1 downto 0)(MASTERS-1 downto 0);
 
 begin
   --////////////////////////////////////////////////////////////////
@@ -251,12 +254,13 @@ begin
   --
 
   --Hookup Master Interfaces
-  generating_0 : for m in 0 to CORES_PER_SIMD - 1 generate
-    master_port : mpsoc_simd_memory_ahb3_master_port
+  generating_0 : for m in 0 to MASTERS - 1 generate
+    master_port : mpsoc_msi_ahb3_master_port
       generic map (
-        PLEN           => XLEN,
-        XLEN           => XLEN,
-        CORES_PER_SIMD => CORES_PER_SIMD
+        PLEN    => PLEN,
+        XLEN    => XLEN,
+        MASTERS => MASTERS,
+        SLAVES  => SLAVES
       )
       port map (
         HRESETn => HRESETn,
@@ -306,8 +310,8 @@ begin
   --wire mangling
 
   --Master-->Slave
-  generating_1 : for s in 0 to CORES_PER_SIMD - 1 generate
-    generating_2 : for m in 0 to CORES_PER_SIMD - 1 generate
+  generating_1 : for s in 0 to SLAVES - 1 generate
+    generating_2 : for m in 0 to MASTERS - 1 generate
       toslvpriority(s)(m)   <= frommstpriority(m);
       toslvHSEL(s)(m)       <= frommstHSEL(m)(s);
       toslvHADDR(s)(m)      <= frommstHADDR(m);
@@ -326,8 +330,8 @@ begin
   --wire mangling
 
   --Slave-->Master
-  generating_3 : for m in 0 to CORES_PER_SIMD - 1 generate
-    generating_4 : for s in 0 to CORES_PER_SIMD - 1 generate
+  generating_3 : for m in 0 to MASTERS - 1 generate
+    generating_4 : for s in 0 to SLAVES - 1 generate
       tomstgrant(m)(s)  <= fromslvgrant(s)(m);
       tomstHRDATA(m)(s) <= fromslvHRDATA(s);
       tomstHREADY(m)(s) <= fromslvHREADYOUT(s);
@@ -336,12 +340,13 @@ begin
   end generate;  --next s
 
   --Hookup Slave Interfaces
-  generating_5 : for s in 0 to CORES_PER_SIMD - 1 generate
-    slave_port : mpsoc_simd_memory_ahb3_slave_port
+  generating_5 : for s in 0 to SLAVES - 1 generate
+    slave_port : mpsoc_msi_ahb3_slave_port
       generic map (
-        PLEN           => XLEN,
-        XLEN           => XLEN,
-        CORES_PER_SIMD => CORES_PER_SIMD
+        PLEN    => PLEN,
+        XLEN    => XLEN,
+        MASTERS => MASTERS,
+        SLAVES  => SLAVES
       )
       port map (
         HRESETn => HRESETn,

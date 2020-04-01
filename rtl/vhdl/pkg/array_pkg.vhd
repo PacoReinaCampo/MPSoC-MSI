@@ -47,47 +47,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-package mpsoc_msi_pkg is
+package array_pkg is
 
   --////////////////////////////////////////////////////////////////
   --
-  -- Constants MSI
+  -- Types
   --
-  constant MASTERS : integer := 5;
-  constant SLAVES  : integer := 5;
-  --
-  constant APB_ADDR_WIDTH : integer := 12;
-  constant APB_DATA_WIDTH : integer := 32;
+  type std_logic_matrix is array(natural range <>) of std_logic_vector;
+  type std_logic_3darray is array(natural range <>) of std_logic_matrix;
 
-  --////////////////////////////////////////////////////////////////
-  --
-  -- Types MSI
-  --
-
-  type M_MASTERS_PLEN is array (MASTERS-1 downto 0) of std_logic_vector(64-1 downto 0);
-  type M_MASTERS_XLEN is array (MASTERS-1 downto 0) of std_logic_vector(64-1 downto 0);
-  type M_MASTERS_3 is array (MASTERS-1 downto 0) of std_logic_vector(3 downto 0);
-  type M_MASTERS_2 is array (MASTERS-1 downto 0) of std_logic_vector(2 downto 0);
-  type M_MASTERS_1 is array (MASTERS-1 downto 0) of std_logic_vector(1 downto 0);
-
-  type M_2_MASTERS is array (2 downto 0) of std_logic_vector(MASTERS-1 downto 0);
-
-  type M_SLAVES_PLEN is array (SLAVES-1 downto 0) of std_logic_vector(64-1 downto 0);
-  type M_SLAVES_XLEN is array (SLAVES-1 downto 0) of std_logic_vector(64-1 downto 0);
-  type M_SLAVES_3 is array (SLAVES-1 downto 0) of std_logic_vector(3 downto 0);
-  type M_SLAVES_2 is array (SLAVES-1 downto 0) of std_logic_vector(2 downto 0);
-  type M_SLAVES_1 is array (SLAVES-1 downto 0) of std_logic_vector(1 downto 0);
-
-  type M_MASTERS_SLAVES is array (MASTERS-1 downto 0) of std_logic_vector(SLAVES-1 downto 0);
-
-  type M_MASTERS_SLAVES_XLEN is array (MASTERS-1 downto 0) of M_SLAVES_XLEN;
-
-  type M_SLAVES_MASTERS is array (SLAVES-1 downto 0) of std_logic_vector(MASTERS-1 downto 0);
-
-  type M_SLAVES_MASTERS_PLEN is array (SLAVES-1 downto 0) of M_MASTERS_PLEN;
-  type M_SLAVES_MASTERS_XLEN is array (SLAVES-1 downto 0) of M_MASTERS_XLEN;
-  type M_SLAVES_MASTERS_3 is array (SLAVES-1 downto 0) of M_MASTERS_3;
-  type M_SLAVES_MASTERS_2 is array (SLAVES-1 downto 0) of M_MASTERS_2;
-  type M_SLAVES_MASTERS_1 is array (SLAVES-1 downto 0) of M_MASTERS_1;
-
-end mpsoc_msi_pkg;
+end array_pkg;
