@@ -332,5 +332,5 @@ module mpsoc_msi_wb_bfm_master #(
         @(posedge wb_clk_i);
       data = wb_dat_i;
     end
-  endtask // while
+  endtask
 endmodule

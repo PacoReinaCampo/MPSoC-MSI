@@ -737,10 +737,23 @@ package mpsoc_pkg is
   --
   -- Types
   --
-  type std_logic_matrix is array(natural range <>) of std_logic_vector;
-  type std_logic_3array is array(natural range <>) of std_logic_matrix;
+  type std_logic_matrix is array (natural range <>) of std_logic_vector;
+  type std_logic_3array is array (natural range <>) of std_logic_matrix;
+  type std_logic_4array is array (natural range <>) of std_logic_3array;
+  type std_logic_5array is array (natural range <>) of std_logic_4array;
+  type std_logic_6array is array (natural range <>) of std_logic_5array;
+  type std_logic_7array is array (natural range <>) of std_logic_6array;
+  type std_logic_8array is array (natural range <>) of std_logic_7array;
+  type std_logic_9array is array (natural range <>) of std_logic_8array;
 
+  type xyz_std_logic        is array (natural range <>, natural range <>, natural range <>) of std_logic;
   type xyz_std_logic_vector is array (natural range <>, natural range <>, natural range <>) of std_logic_vector;
   type xyz_std_logic_matrix is array (natural range <>, natural range <>, natural range <>) of std_logic_matrix;
   type xyz_std_logic_3array is array (natural range <>, natural range <>, natural range <>) of std_logic_3array;
+  type xyz_std_logic_4array is array (natural range <>, natural range <>, natural range <>) of std_logic_4array;
+  type xyz_std_logic_5array is array (natural range <>, natural range <>, natural range <>) of std_logic_5array;
+  type xyz_std_logic_6array is array (natural range <>, natural range <>, natural range <>) of std_logic_6array;
+  type xyz_std_logic_7array is array (natural range <>, natural range <>, natural range <>) of std_logic_7array;
+  type xyz_std_logic_8array is array (natural range <>, natural range <>, natural range <>) of std_logic_8array;
+  type xyz_std_logic_9array is array (natural range <>, natural range <>, natural range <>) of std_logic_9array;
 end mpsoc_pkg;

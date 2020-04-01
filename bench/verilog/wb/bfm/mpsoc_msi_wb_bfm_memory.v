@@ -164,4 +164,4 @@ module mpsoc_msi_wb_bfm_memory #(
         address = wb_next_adr(address, wb_cti_i, wb_bte_i, DW);
     end
   end
-endmodule // wb_bfm_memory
+endmodule
