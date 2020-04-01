@@ -94,12 +94,6 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
 
   --////////////////////////////////////////////////////////////////
   --
-  -- Types
-  --
-  type M_MAX_BURST_LEN_DW is array (MAX_BURST_LEN-1 downto 0) of std_logic_vector(DW-1 downto 0);
-
-  --////////////////////////////////////////////////////////////////
-  --
   -- Variables
   --
   signal addr : std_logic_vector(AW-1 downto 0);
@@ -113,60 +107,14 @@ architecture RTL of mpsoc_msi_wb_bfm_master is
   signal buffer_addr_tmp : std_logic_vector(AW-1 downto 0);
   signal buffer_addr     : std_logic_vector(BUFFER_WIDTH-1 downto 0);
 
-  signal write_data  : M_MAX_BURST_LEN_DW;
-  signal buffer_data : M_MAX_BURST_LEN_DW;
+  signal write_data  : std_logic_matrix(MAX_BURST_LEN-1 downto 0)(DW-1 downto 0);
+  signal buffer_data : std_logic_matrix(MAX_BURST_LEN-1 downto 0)(DW-1 downto 0);
 
   signal wait_states     : std_logic_vector(integer(log2(real(MAX_WAIT_STATES))) downto 0);
   signal wait_states_cnt : std_logic_vector(integer(log2(real(MAX_WAIT_STATES))) downto 0);
 
   signal index : integer;
   signal word  : integer;
-
-  --////////////////////////////////////////////////////////////////
-  --
-  -- Functions
-  --
-  function wb_next_adr (
-    adr_i : std_logic_vector(31 downto 0);
-    cti_i : std_logic_vector(2 downto 0);
-    bte_i : std_logic_vector(1 downto 0);
-
-    dw : integer
-    ) return std_logic_vector is
-    variable wb_next_adr_return : std_logic_vector (31 downto 0);
-
-    variable adr : std_logic_vector(31 downto 0);
-
-    variable shift : integer;
-  begin
-    if (dw = 64) then
-      shift := 3;
-    elsif (dw = 32) then
-      shift := 2;
-    elsif (dw = 16) then
-      shift := 1;
-    else
-      shift := 0;
-    end if;
-    adr := std_logic_vector(unsigned(adr_i) srl shift);
-    if (cti_i = CTI_INC_BURST) then
-      case (bte_i) is
-        when BTE_LINEAR =>
-          adr := std_logic_vector(unsigned(adr)+X"00000001");
-        when BTE_WRAP_4 =>
-          adr := (adr(31 downto 2) & std_logic_vector(unsigned(adr(1 downto 0))+"01"));
-        when BTE_WRAP_8 =>
-          adr := (adr(31 downto 3) & std_logic_vector(unsigned(adr(2 downto 0))+"001"));
-        when BTE_WRAP_16 =>
-          adr := (adr(31 downto 4) & std_logic_vector(unsigned(adr(3 downto 0))+"0001"));
-        when others =>
-          null;
-      end case;
-    end if;
-    -- case (burst_type_i)
-    wb_next_adr_return := std_logic_vector(unsigned(adr) sll shift);
-    return wb_next_adr_return;
-  end wb_next_adr;
 
   --////////////////////////////////////////////////////////////////
   --

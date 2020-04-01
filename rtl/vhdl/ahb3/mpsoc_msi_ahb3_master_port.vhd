@@ -158,39 +158,6 @@ architecture RTL of mpsoc_msi_ahb3_master_port is
   --
   -- functions
   --
-  function reduce_nor (
-    reduce_nor_in : std_logic_vector
-    ) return std_logic is
-    variable reduce_nor_out : std_logic := '0';
-  begin
-    for i in reduce_nor_in'range loop
-      reduce_nor_out := reduce_nor_out nor reduce_nor_in(i);
-    end loop;
-    return reduce_nor_out;
-  end reduce_nor;
-
-  function reduce_or (
-    reduce_or_in : std_logic_vector
-    ) return std_logic is
-    variable reduce_or_out : std_logic := '0';
-  begin
-    for i in reduce_or_in'range loop
-      reduce_or_out := reduce_or_out or reduce_or_in(i);
-    end loop;
-    return reduce_or_out;
-  end reduce_or;
-
-  function to_stdlogic (
-    input : boolean
-    ) return std_logic is
-  begin
-    if input then
-      return('1');
-    else
-      return('0');
-    end if;
-  end function to_stdlogic;
-
   function onehot2int (
     onehot : std_logic_vector(SLAVES-1 downto 0)
     ) return integer is

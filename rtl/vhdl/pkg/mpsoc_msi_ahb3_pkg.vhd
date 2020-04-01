@@ -740,16 +740,16 @@ package mpsoc_msi_ahb3_pkg is
   type std_logic_8array is array (natural range <>) of std_logic_7array;
   type std_logic_9array is array (natural range <>) of std_logic_8array;
 
-  type xy_std_logic        is array (natural range <>, natural range <>, natural range <>) of std_logic;
-  type xy_std_logic_vector is array (natural range <>, natural range <>, natural range <>) of std_logic_vector;
-  type xy_std_logic_matrix is array (natural range <>, natural range <>, natural range <>) of std_logic_matrix;
-  type xy_std_logic_3array is array (natural range <>, natural range <>, natural range <>) of std_logic_3array;
-  type xy_std_logic_4array is array (natural range <>, natural range <>, natural range <>) of std_logic_4array;
-  type xy_std_logic_5array is array (natural range <>, natural range <>, natural range <>) of std_logic_5array;
-  type xy_std_logic_6array is array (natural range <>, natural range <>, natural range <>) of std_logic_6array;
-  type xy_std_logic_7array is array (natural range <>, natural range <>, natural range <>) of std_logic_7array;
-  type xy_std_logic_8array is array (natural range <>, natural range <>, natural range <>) of std_logic_8array;
-  type xy_std_logic_9array is array (natural range <>, natural range <>, natural range <>) of std_logic_9array;
+  type xy_std_logic        is array (natural range <>, natural range <>) of std_logic;
+  type xy_std_logic_vector is array (natural range <>, natural range <>) of std_logic_vector;
+  type xy_std_logic_matrix is array (natural range <>, natural range <>) of std_logic_matrix;
+  type xy_std_logic_3array is array (natural range <>, natural range <>) of std_logic_3array;
+  type xy_std_logic_4array is array (natural range <>, natural range <>) of std_logic_4array;
+  type xy_std_logic_5array is array (natural range <>, natural range <>) of std_logic_5array;
+  type xy_std_logic_6array is array (natural range <>, natural range <>) of std_logic_6array;
+  type xy_std_logic_7array is array (natural range <>, natural range <>) of std_logic_7array;
+  type xy_std_logic_8array is array (natural range <>, natural range <>) of std_logic_8array;
+  type xy_std_logic_9array is array (natural range <>, natural range <>) of std_logic_9array;
 
   type xyz_std_logic        is array (natural range <>, natural range <>, natural range <>) of std_logic;
   type xyz_std_logic_vector is array (natural range <>, natural range <>, natural range <>) of std_logic_vector;
@@ -761,4 +761,47 @@ package mpsoc_msi_ahb3_pkg is
   type xyz_std_logic_7array is array (natural range <>, natural range <>, natural range <>) of std_logic_7array;
   type xyz_std_logic_8array is array (natural range <>, natural range <>, natural range <>) of std_logic_8array;
   type xyz_std_logic_9array is array (natural range <>, natural range <>, natural range <>) of std_logic_9array;
+
+  function to_stdlogic (input : boolean) return std_logic;
+  function reduce_or (reduce_or_in : std_logic_vector) return std_logic;
+  function reduce_nor (reduce_nor_in : std_logic_vector) return std_logic;
+end mpsoc_msi_ahb3_pkg;
+
+package body mpsoc_msi_ahb3_pkg is
+  --////////////////////////////////////////////////////////////////
+  --
+  -- Functions
+  --
+  function to_stdlogic (
+    input : boolean
+    ) return std_logic is
+  begin
+    if input then
+      return('1');
+    else
+      return('0');
+    end if;
+  end function to_stdlogic;
+
+  function reduce_or (
+    reduce_or_in : std_logic_vector
+    ) return std_logic is
+    variable reduce_or_out : std_logic := '0';
+  begin
+    for i in reduce_or_in'range loop
+      reduce_or_out := reduce_or_out or reduce_or_in(i);
+    end loop;
+    return reduce_or_out;
+  end reduce_or;
+
+  function reduce_nor (
+    reduce_nor_in : std_logic_vector
+    ) return std_logic is
+    variable reduce_nor_out : std_logic := '0';
+  begin
+    for i in reduce_nor_in'range loop
+      reduce_nor_out := reduce_nor_out nor reduce_nor_in(i);
+    end loop;
+    return reduce_nor_out;
+  end reduce_nor;
 end mpsoc_msi_ahb3_pkg;

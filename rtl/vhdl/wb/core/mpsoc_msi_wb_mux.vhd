@@ -46,17 +46,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
-package array_pkg is
-  type std_logic_matrix is array(natural range <>) of std_logic_vector;
-end package;
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.array_pkg.all;
+use work.mpsoc_msi_wb_pkg.all;
 
 entity mpsoc_msi_wb_mux is
   generic (
@@ -137,28 +129,6 @@ architecture RTL of mpsoc_msi_wb_mux is
     end loop;
     return ff1_return;
   end ff1;
-
-  function reduce_or (
-    reduce_or_in : std_logic_vector
-    ) return std_logic is
-    variable reduce_or_out : std_logic := '0';
-  begin
-    for i in reduce_or_in'range loop
-      reduce_or_out := reduce_or_out or reduce_or_in(i);
-    end loop;
-    return reduce_or_out;
-  end reduce_or;
-
-  function to_stdlogic (
-    input : boolean
-    ) return std_logic is
-  begin
-    if input then
-      return('1');
-    else
-      return('0');
-    end if;
-  end function to_stdlogic;
 
 begin
   --////////////////////////////////////////////////////////////////

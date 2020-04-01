@@ -1,21 +1,21 @@
 # vsim -c -do "run.do" work.mpsoc_msi_testbench 
-# Start time: 05:54:47 on Apr 01,2020
+# Start time: 16:13:27 on Apr 01,2020
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
 # Loading ieee.numeric_std(body)
 # Loading ieee.math_real(body)
-# Loading work.mpsoc_msi_ahb3_pkg
+# Loading work.mpsoc_msi_ahb3_pkg(body)
 # Loading work.mpsoc_msi_testbench(rtl)
 # Loading work.mpsoc_msi_ahb3_interface(rtl)
 # Loading work.mpsoc_msi_ahb3_master_port(rtl)
 # Loading work.mpsoc_msi_ahb3_slave_port(rtl)
-# Loading work.array_pkg
+# Loading work.mpsoc_msi_wb_pkg(body)
 # Loading work.mpsoc_msi_wb_interface(rtl)
 # Loading work.mpsoc_msi_wb_mux(rtl)
 # Loading work.mpsoc_msi_wb_arbiter(rtl)
 # Loading work.mpsoc_msi_arbiter(rtl)
 # Loading work.mpsoc_msi_wb_data_resize(rtl)
 # do run.do
-# End time: 05:54:48 on Apr 01,2020, Elapsed time: 0:00:01
+# End time: 16:13:27 on Apr 01,2020, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0

@@ -46,17 +46,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
-package array_pkg is
-  type std_logic_matrix is array(natural range <>) of std_logic_vector;
-end package;
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.array_pkg.all;
+use work.mpsoc_msi_wb_pkg.all;
 
 entity mpsoc_msi_wb_arbiter is
   generic (

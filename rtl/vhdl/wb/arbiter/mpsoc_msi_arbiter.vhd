@@ -48,6 +48,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
+use work.mpsoc_msi_wb_pkg.all;
+
 entity mpsoc_msi_arbiter is
   generic (
     NUM_PORTS : integer := 6
@@ -71,18 +73,12 @@ architecture RTL of mpsoc_msi_arbiter is
 
   --////////////////////////////////////////////////////////////////
   --
-  -- Types
-  --
-  type M_NUM_PORTS_NUM_PORTS is array (NUM_PORTS-1 downto 0) of std_logic_vector(NUM_PORTS-1 downto 0);
-
-  --////////////////////////////////////////////////////////////////
-  --
   -- Variables
   --
   signal next_s : std_logic;
   signal order  : std_logic_vector(NUM_PORTS-1 downto 0);
 
-  signal token_lookahead : M_NUM_PORTS_NUM_PORTS;
+  signal token_lookahead : std_logic_matrix(NUM_PORTS-1 downto 0)(NUM_PORTS-1 downto 0);
   signal token           : std_logic_vector(NUM_PORTS-1 downto 0);
   signal token_wrap      : std_logic_vector(WRAP_LENGTH-1 downto 0);
 
@@ -90,27 +86,6 @@ architecture RTL of mpsoc_msi_arbiter is
   --
   -- functions
   --
-  function reduce_or (
-    reduce_or_in : std_logic_vector
-    ) return std_logic is
-    variable reduce_or_out : std_logic := '0';
-  begin
-    for i in reduce_or_in'range loop
-      reduce_or_out := reduce_or_out or reduce_or_in(i);
-    end loop;
-    return reduce_or_out;
-  end reduce_or;
-
-  function reduce_nor (
-    reduce_nor_in : std_logic_vector
-    ) return std_logic is
-    variable reduce_nor_out : std_logic := '0';
-  begin
-    for i in reduce_nor_in'range loop
-      reduce_nor_out := reduce_nor_out nor reduce_nor_in(i);
-    end loop;
-    return reduce_nor_out;
-  end reduce_nor;
 
   -- Find First 1
   -- Start from MSB and count downwards, returns 0 when no bit set
