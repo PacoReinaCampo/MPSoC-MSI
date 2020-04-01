@@ -1,4 +1,4 @@
--- Converted from pkg/mpsoc_pkg.sv
+-- Converted from pkg/mpsoc_msi_ahb3_pkg.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-package mpsoc_pkg is
+package mpsoc_msi_ahb3_pkg is
 
   --core parameters
   constant XLEN                   : integer := 64;
@@ -89,12 +89,6 @@ package mpsoc_pkg is
 
   constant PMA_CNT                : integer := 4;
   constant PMP_CNT                : integer := 16;  --Number of Physical Memory Protection entries
-
-  type M_PMA_CNT_13 is array (PMA_CNT-1 downto 0) of std_logic_vector(13 downto 0);
-  type M_PMA_CNT_PLEN is array (PMA_CNT-1 downto 0) of std_logic_vector(PLEN-1 downto 0);
-
-  type M_PMP_CNT_7 is array (PMP_CNT-1 downto 0) of std_logic_vector(7 downto 0);
-  type M_PMP_CNT_PLEN is array (PMP_CNT-1 downto 0) of std_logic_vector(PLEN-1 downto 0);
 
   constant BP_GLOBAL_BITS         : integer := 2;
   constant BP_LOCAL_BITS          : integer := 10;
@@ -746,6 +740,17 @@ package mpsoc_pkg is
   type std_logic_8array is array (natural range <>) of std_logic_7array;
   type std_logic_9array is array (natural range <>) of std_logic_8array;
 
+  type xy_std_logic        is array (natural range <>, natural range <>, natural range <>) of std_logic;
+  type xy_std_logic_vector is array (natural range <>, natural range <>, natural range <>) of std_logic_vector;
+  type xy_std_logic_matrix is array (natural range <>, natural range <>, natural range <>) of std_logic_matrix;
+  type xy_std_logic_3array is array (natural range <>, natural range <>, natural range <>) of std_logic_3array;
+  type xy_std_logic_4array is array (natural range <>, natural range <>, natural range <>) of std_logic_4array;
+  type xy_std_logic_5array is array (natural range <>, natural range <>, natural range <>) of std_logic_5array;
+  type xy_std_logic_6array is array (natural range <>, natural range <>, natural range <>) of std_logic_6array;
+  type xy_std_logic_7array is array (natural range <>, natural range <>, natural range <>) of std_logic_7array;
+  type xy_std_logic_8array is array (natural range <>, natural range <>, natural range <>) of std_logic_8array;
+  type xy_std_logic_9array is array (natural range <>, natural range <>, natural range <>) of std_logic_9array;
+
   type xyz_std_logic        is array (natural range <>, natural range <>, natural range <>) of std_logic;
   type xyz_std_logic_vector is array (natural range <>, natural range <>, natural range <>) of std_logic_vector;
   type xyz_std_logic_matrix is array (natural range <>, natural range <>, natural range <>) of std_logic_matrix;
@@ -756,4 +761,4 @@ package mpsoc_pkg is
   type xyz_std_logic_7array is array (natural range <>, natural range <>, natural range <>) of std_logic_7array;
   type xyz_std_logic_8array is array (natural range <>, natural range <>, natural range <>) of std_logic_8array;
   type xyz_std_logic_9array is array (natural range <>, natural range <>, natural range <>) of std_logic_9array;
-end mpsoc_pkg;
+end mpsoc_msi_ahb3_pkg;

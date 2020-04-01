@@ -40,7 +40,7 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-../../../../rtl/vhdl/pkg/mpsoc_pkg.vhd
+../../../../rtl/vhdl/pkg/mpsoc_msi_ahb3_pkg.vhd
 
 ../../../../rtl/vhdl/ahb3/mpsoc_msi_ahb3_interface.vhd
 ../../../../rtl/vhdl/ahb3/mpsoc_msi_ahb3_master_port.vhd

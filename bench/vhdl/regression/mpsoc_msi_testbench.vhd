@@ -47,7 +47,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.mpsoc_pkg.all;
+use work.mpsoc_msi_ahb3_pkg.all;
 
 entity mpsoc_msi_testbench is
 end mpsoc_msi_testbench;
