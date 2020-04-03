@@ -67,7 +67,7 @@ module mpsoc_msi_ahb3_bfm_slave #(
   // Constants
   //
 
-  `include "mpsoc_msi_ahb3_pkg.v"
+  `include "mpsoc_bfm_ahb3_pkg.v"
 
   localparam TP = 1;
 

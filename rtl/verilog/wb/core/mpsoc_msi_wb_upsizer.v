@@ -81,7 +81,7 @@ module mpsoc_msi_wb_upsizer #(
   //
   // Constants
   //
-  `include "mpsoc_msi_wb_pkg.v"
+  `include "mpsoc_bfm_wb_pkg.v"
 
   localparam SELW = DW_IN/8; //sel width
 

@@ -70,7 +70,7 @@ module mpsoc_msi_ahb3_bfm_master #(
   // Constants
   //
 
-  `include "mpsoc_msi_ahb3_pkg.v"
+  `include "mpsoc_bfm_ahb3_pkg.v"
 
   parameter BUFFER_WIDTH = $clog2(MAX_BURST_LEN);
   parameter ADR_LSB      = $clog2(DW/8);

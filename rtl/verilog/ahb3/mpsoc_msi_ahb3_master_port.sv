@@ -40,7 +40,7 @@
  *   Francisco Javier Reina Campo <frareicam@gmail.com>
  */
 
-`include "mpsoc_pkg.sv"
+`include "mpsoc_msi_ahb3_pkg.sv"
 
 module mpsoc_msi_ahb3_master_port #(
   parameter PLEN    = 64,
