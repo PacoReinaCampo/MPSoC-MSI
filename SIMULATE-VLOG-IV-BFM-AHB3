@@ -1,4 +1,0 @@
-rm -rf bfm_ahb3.vvp
-iverilog -g2012 -o bfm_ahb3.vvp -c bfm_ahb3.vtor -s ahb3_bfm_tb \
--I rtl/verilog/pkg
-vvp bfm_ahb3.vvp
