@@ -1,4 +1,0 @@
-rm -rf bfm.vvp
-iverilog -g2012 -o bfm.vvp -c bfm.vtor -s wb_bfm_tb \
--I rtl/verilog/pkg
-vvp bfm.vvp

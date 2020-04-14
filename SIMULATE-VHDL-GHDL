@@ -1,8 +1,0 @@
-ghdl -i rtl/vhdl/pkg/mpsoc_pkg.vhd
-ghdl -i rtl/vhdl/pkg/mpsoc_msi_pkg.vhd
-
-ghdl -i rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
-
-ghdl -m mpsoc_msi_wb_arbiter
-
-ghdl -r mpsoc_msi_wb_arbiter --ieee-asserts=disable-at-0 --disp-tree=inst > mpsoc_msi_wb_arbiter.tree
