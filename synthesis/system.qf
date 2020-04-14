@@ -1,0 +1,14 @@
+rm -rf synthesis
+mkdir synthesis
+mkdir synthesis/mpsoc_msi
+mkdir synthesis/mpsoc_msi/source
+mkdir synthesis/mpsoc_msi/synthesis
+mkdir synthesis/mpsoc_msi/layout
+
+#cp rtl/verilog/core/mpsoc_msi_interface.sv   synthesis/mpsoc_msi/source
+#cp rtl/verilog/core/mpsoc_msi_master_port.sv synthesis/mpsoc_msi/source
+#cp rtl/verilog/core/mpsoc_msi_slave_port.sv  synthesis/mpsoc_msi/source
+
+cd synthesis/mpsoc_msi
+
+qflow -T osu018 synthesize place route mpsoc_msi_testbench
