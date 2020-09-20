@@ -1,5 +1,5 @@
-../../../../../bench/verilog/regression/wb/vlog_tap_generator.sv
-../../../../../bench/verilog/regression/wb/vlog_tb_utils.sv
+../../../../../bench/verilog/tests/wb/vlog_tap_generator.sv
+../../../../../bench/verilog/tests/wb/vlog_tb_utils.sv
 
 ../../../../../bench/verilog/bfm/wb/mpsoc_msi_wb_bfm_master.sv
 ../../../../../bench/verilog/bfm/wb/mpsoc_msi_wb_bfm_memory.sv

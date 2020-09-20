@@ -1,5 +1,0 @@
-../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_interface.sv
-../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_master_port.sv
-../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_slave_port.sv
-
-../../../../../bench/verilog/regression/ahb3/mpsoc_msi_testbench.sv

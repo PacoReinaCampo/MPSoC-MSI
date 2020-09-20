@@ -1,7 +1,0 @@
-../../../../../rtl/vhdl/ahb3/pkg/mpsoc_msi_ahb3_pkg.vhd
-
-../../../../../rtl/vhdl/ahb3/core/mpsoc_msi_ahb3_interface.vhd
-../../../../../rtl/vhdl/ahb3/core/mpsoc_msi_ahb3_slave_port.vhd
-../../../../../rtl/vhdl/ahb3/core/mpsoc_msi_ahb3_master_port.vhd
-
-../../../../../bench/vhdl/regression/ahb3/mpsoc_msi_testbench.vhd
