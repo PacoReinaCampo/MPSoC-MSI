@@ -335,6 +335,20 @@ A Master Slave Interface (MSI) is a model of communication where one device has 
 
 #### 2.2.1.1. Organization
 
+| Core                            | Module description     |
+| ------------------------------- | ---------------------- |
+| `mpsoc_msi_ahb3_interface`      | Master Slave Interface |
+| `...mpsoc_msi_ahb3_master_port` | Master Slave Interface |
+| `...mpsoc_msi_ahb3_slave_port`  | Master Slave Interface |
+
+| Core                            | Module description     |
+| ------------------------------- | ---------------------- |
+| `mpsoc_msi_wb_interface`        | Master Slave Interface |
+| `...mpsoc_msi_wb_mux`           | Master Slave Interface |
+| `...mpsoc_msi_wb_arbiter`       | Master Slave Interface |
+| `.....mpsoc_msi_arbiter`        | Master Slave Interface |
+| `...mpsoc_msi_wb_data_resize`   | Master Slave Interface |
+
 #### 2.2.1.2. Parameters
 
 ### 2.2.2. Interface
