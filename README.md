@@ -319,9 +319,9 @@ A Master Slave Interface (MSI) is a model of communication where one device has 
 
 ### 2.1.1. Functionality
 
-#### 2.1.1.1. Organization
+#### 2.1.1.1. Structure
 
-#### 2.1.1.2. Pipeline
+#### 2.1.1.2. Behavior
 
 ### 2.1.2. Interface
 
@@ -337,7 +337,7 @@ A Master Slave Interface (MSI) is a model of communication where one device has 
 
 ### 2.2.1. Functionality
 
-#### 2.2.1.1. Organization
+#### 2.2.1.1. Structure
 
 | Core                            | Module description     |
 | ------------------------------- | ---------------------- |
@@ -353,7 +353,7 @@ A Master Slave Interface (MSI) is a model of communication where one device has 
 | `.....mpsoc_msi_arbiter`        | Master Slave Interface |
 | `...mpsoc_msi_wb_data_resize`   | Master Slave Interface |
 
-#### 2.2.1.2. Pipeline
+#### 2.2.1.2. Behavior
 
 ### 2.2.2. Interface
 
@@ -369,9 +369,9 @@ A Master Slave Interface (MSI) is a model of communication where one device has 
 
 ### 2.3.1. Functionality
 
-#### 2.3.1.1. Organization
+#### 2.3.1.1. Structure
 
-#### 2.3.1.2. Pipeline
+#### 2.3.1.2. Behavior
 
 ### 2.3.2. Interface
 
