@@ -1,3 +1,5 @@
++incdir+../../../../../../rtl/verilog/ahb3/pkg
+
 ../../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_interface.sv
 ../../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_master_port.sv
 ../../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_slave_port.sv
