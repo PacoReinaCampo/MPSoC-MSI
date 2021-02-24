@@ -40,9 +40,9 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-`include "axi_defines.vh"
+import peripheral_axi4_pkg::*;
 
-module axi_slave_generic (/*AUTOARG*/
+module peripheral_bfm_slave_generic_axi4 (/*AUTOARG*/
    // Outputs
    awready, wready, bid, bresp, bvalid, arready, rid, rdata, rresp,
    rlast, rvalid,
@@ -179,7 +179,7 @@ module axi_slave_generic (/*AUTOARG*/
    always @(posedge aclk)
      if (~aresetn) begin
         bid <= 0;
-        bresp <= `AXI_RESPONSE_OKAY;
+        bresp <= AXI_RESPONSE_OKAY;
         bvalid <= 0;        
      end else begin
         if (bready & wlast) begin
@@ -213,7 +213,7 @@ module axi_slave_generic (/*AUTOARG*/
      if (~aresetn) begin
         rdata <= 0;
         rvalid <= 0;
-        rresp <= `AXI_RESPONSE_OKAY;   
+        rresp <= AXI_RESPONSE_OKAY;   
         rlast <= 0;        
      end else begin
         if (rready) begin
@@ -245,4 +245,4 @@ module axi_slave_generic (/*AUTOARG*/
       end // if (wready)      
    end
    
-endmodule // axi_slave_generic
+endmodule // peripheral_bfm_slave_generic_axi4

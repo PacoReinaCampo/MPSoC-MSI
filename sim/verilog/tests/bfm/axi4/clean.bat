@@ -1,2 +1,2 @@
-del transcript wb_bfm.tap
+del transcript *.vcd
 rmdir /s /q work

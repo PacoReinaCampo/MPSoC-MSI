@@ -40,7 +40,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module testbench_axi_master_bfm (/*AUTOARG*/) ;
+module peripheral_bfm_testbench (/*AUTOARG*/) ;
 
    //
    // Free running clock
@@ -105,7 +105,7 @@ module testbench_axi_master_bfm (/*AUTOARG*/) ;
    wire                 wvalid;                 // From master of axi_master_bfm.v
    // End of automatics
 
-   axi_master_bfm master(/*AUTOINST*/
+   peripheral_bfm_master_generic_axi4 master(/*AUTOINST*/
                          // Outputs
                          .awid                  (awid[3:0]),
                          .awadr                 (awadr[31:0]),
@@ -147,7 +147,7 @@ module testbench_axi_master_bfm (/*AUTOARG*/) ;
                          .rlast                 (rlast),
                          .rvalid                (rvalid));
    
-   axi_slave_generic slave (/*AUTOINST*/
+   peripheral_bfm_slave_generic_axi4 slave (/*AUTOINST*/
                             // Outputs
                             .awready            (awready),
                             .wready             (wready),
@@ -189,7 +189,7 @@ module testbench_axi_master_bfm (/*AUTOARG*/) ;
                             .rready             (rready));
    
 
-   test_case test();
+   peripheral_bfm_basic test();
    initial begin
       @(posedge test_fail);      
       $display("TEST FAIL @ %d", $time);
@@ -205,4 +205,4 @@ module testbench_axi_master_bfm (/*AUTOARG*/) ;
       $finish;      
    end
    
-endmodule // testbench_axi_master_bfm
+endmodule // peripheral_bfm_testbench

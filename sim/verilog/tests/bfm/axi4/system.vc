@@ -1,9 +1,8 @@
-+incdir+../../../../../rtl/verilog/axi4/pkg
+../../../../../rtl/verilog/axi4/pkg/peripheral_axi4_pkg.sv
 
-../../../../../bench/verilog/tests/bfm/axi4/axi_master_bfm.v
-../../../../../bench/verilog/tests/bfm/axi4/axi_master_generic.v
-../../../../../bench/verilog/tests/bfm/axi4/axi_slave_bfm.v
-../../../../../bench/verilog/tests/bfm/axi4/axi_slave_generic.v
-../../../../../bench/verilog/tests/bfm/axi4/basic.v
-../../../../../bench/verilog/tests/bfm/axi4/testbench_axi_master_bfm.v
-
+../../../../../bench/verilog/tests/bfm/axi4/peripheral_bfm_basic.sv
+../../../../../bench/verilog/tests/bfm/axi4/peripheral_bfm_master_axi4.sv
+../../../../../bench/verilog/tests/bfm/axi4/peripheral_bfm_master_generic_axi4.sv
+../../../../../bench/verilog/tests/bfm/axi4/peripheral_bfm_slave_axi4.sv
+../../../../../bench/verilog/tests/bfm/axi4/peripheral_bfm_slave_generic_axi4.sv
+../../../../../bench/verilog/tests/bfm/axi4/peripheral_bfm_testbench.sv
