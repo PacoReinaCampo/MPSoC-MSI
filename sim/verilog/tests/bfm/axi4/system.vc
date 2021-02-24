@@ -1,0 +1,9 @@
++incdir+../../../../../rtl/verilog/axi4/pkg
+
+../../../../../bench/verilog/tests/bfm/axi4/axi_master_bfm.v
+../../../../../bench/verilog/tests/bfm/axi4/axi_master_generic.v
+../../../../../bench/verilog/tests/bfm/axi4/axi_slave_bfm.v
+../../../../../bench/verilog/tests/bfm/axi4/axi_slave_generic.v
+../../../../../bench/verilog/tests/bfm/axi4/basic.v
+../../../../../bench/verilog/tests/bfm/axi4/testbench_axi_master_bfm.v
+
