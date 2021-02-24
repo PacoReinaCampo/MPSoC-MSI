@@ -42,54 +42,44 @@
 
 import peripheral_axi4_pkg::*;
 
-module peripheral_bfm_basic (/*AUTOARG*/ ) ;
-`define TB peripheral_bfm_testbench
-`define MASTER `TB.master
-`define SLAVE `TB.slave
-`define MEMORY `SLAVE.memory
-   
-   initial begin
-`ifdef NCVERILOG
-      $shm_open("basic.shm");	  
-      $shm_probe(`TB,"MAC");      
-`else
-      $dumpfile("basic.vcd");
-	  $dumpvars(0, `TB);
-`endif
-   end
+module peripheral_bfm_basic;
 
-   integer i;
-   reg [31:0] read_data;
+  initial begin
+    $dumpfile("basic.vcd");
+    $dumpvars(0, peripheral_bfm_testbench);
+  end
 
-   initial begin
-      repeat(100) @(posedge `TB.aclk);
-      $display("BASIC: Timeout Failure! @ %d", $time);
-      $finish;      
-   end
-   
-   initial begin
-      $display("AXI Master BFM Test: Basic");
-      
-      @(negedge `TB.aresetn);
-      @(posedge `TB.aresetn);
-      repeat (10) @(posedge `TB.aclk);
-      `MASTER.write_single(32'h0000_0004, 32'hdead_beef, AXI_BURST_SIZE_WORD, 4'hF);
-      `MASTER.write_single(32'h0000_0008, 32'h1234_5678, AXI_BURST_SIZE_WORD, 4'hF);
-      `MASTER.write_single(32'h0000_000C, 32'hABCD_EF00, AXI_BURST_SIZE_WORD, 4'hF);
-      `MASTER.write_single(32'h0000_0010, 32'hAA55_66BB, AXI_BURST_SIZE_WORD, 4'hF);
-      repeat (10) @(posedge `TB.aclk);
-    
-      `MASTER.read_single_and_check(32'h0000_0004, 32'hdead_beef, AXI_BURST_SIZE_WORD, 4'hF);
-      `MASTER.read_single_and_check(32'h0000_0008, 32'h1234_5678, AXI_BURST_SIZE_WORD, 4'hF);
-      `MASTER.read_single_and_check(32'h0000_000C, 32'hABCD_EF00, AXI_BURST_SIZE_WORD, 4'hF);
-      `MASTER.read_single_and_check(32'h0000_0010, 32'hAA55_66BB, AXI_BURST_SIZE_WORD, 4'hF);
+  integer i;
 
-      for (i=0; i<32; i=i+1) begin
-         $display("MEMORY[%d] = 0x%04x", i, `MEMORY[i]);         
-      end
-      
-      `TB.test_passed <= 1;      
-      
-   end
-   
+  reg [31:0] read_data;
+
+  initial begin
+    repeat(100) @(posedge peripheral_bfm_testbench.aclk);
+    $display("BASIC: Timeout Failure! @ %d", $time);
+    $finish;      
+  end
+
+  initial begin
+    $display("AXI Master BFM Test: Basic");
+
+    @(negedge peripheral_bfm_testbench.aresetn);
+    @(posedge peripheral_bfm_testbench.aresetn);
+    repeat (10) @(posedge peripheral_bfm_testbench.aclk);
+    peripheral_bfm_testbench.master.write_single(32'h0000_0004, 32'hdead_beef, AXI_BURST_SIZE_WORD, 4'hF);
+    peripheral_bfm_testbench.master.write_single(32'h0000_0008, 32'h1234_5678, AXI_BURST_SIZE_WORD, 4'hF);
+    peripheral_bfm_testbench.master.write_single(32'h0000_000C, 32'hABCD_EF00, AXI_BURST_SIZE_WORD, 4'hF);
+    peripheral_bfm_testbench.master.write_single(32'h0000_0010, 32'hAA55_66BB, AXI_BURST_SIZE_WORD, 4'hF);
+    repeat (10) @(posedge peripheral_bfm_testbench.aclk);
+
+    peripheral_bfm_testbench.master.read_single_and_check(32'h0000_0004, 32'hdead_beef, AXI_BURST_SIZE_WORD, 4'hF);
+    peripheral_bfm_testbench.master.read_single_and_check(32'h0000_0008, 32'h1234_5678, AXI_BURST_SIZE_WORD, 4'hF);
+    peripheral_bfm_testbench.master.read_single_and_check(32'h0000_000C, 32'hABCD_EF00, AXI_BURST_SIZE_WORD, 4'hF);
+    peripheral_bfm_testbench.master.read_single_and_check(32'h0000_0010, 32'hAA55_66BB, AXI_BURST_SIZE_WORD, 4'hF);
+
+    for (i=0; i<32; i=i+1) begin
+      $display("MEMORY[%d] = 0x%04x", i, peripheral_bfm_testbench.slave.memory[i]);         
+    end
+
+    peripheral_bfm_testbench.test_passed <= 1;      
+  end
 endmodule // peripheral_bfm_basic
