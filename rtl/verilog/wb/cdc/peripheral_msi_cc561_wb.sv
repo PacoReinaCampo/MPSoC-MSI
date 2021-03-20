@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_cc561 #(
+module peripheral_msi_cc561_wb #(
   parameter DW=0
 )
   (
@@ -81,7 +81,7 @@ module mpsoc_msi_wb_cc561 #(
     ben <= bpulse;
   end
 
-  mpsoc_msi_wb_sync2_pgen sync2_pgen (
+  peripheral_msi_sync2_pgen_wb sync2_pgen (
     .c (bclk),
     .d (aen_r), //CDC
     .p (bpulse),

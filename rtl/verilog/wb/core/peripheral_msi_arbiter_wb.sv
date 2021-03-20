@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_arbiter #(
+module peripheral_msi_arbiter_wb #(
   parameter DW = 32,
   parameter AW = 32,
   parameter NUM_MASTERS = 0
@@ -97,7 +97,7 @@ module mpsoc_msi_wb_arbiter #(
   //
   // Module Body
   //
-  mpsoc_msi_arbiter #(
+  peripheral_msi_arbiter #(
     .NUM_PORTS (NUM_MASTERS)
   )
   arbiter0 (

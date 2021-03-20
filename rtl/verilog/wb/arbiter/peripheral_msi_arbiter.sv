@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_arbiter #(
+module peripheral_msi_arbiter #(
   parameter NUM_PORTS = 6
 )
   (

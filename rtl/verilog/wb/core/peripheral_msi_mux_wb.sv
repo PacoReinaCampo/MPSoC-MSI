@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_mux #(
+module peripheral_msi_mux_wb #(
   parameter DW = 32,         // Data width
   parameter AW = 32,         // Address width
   parameter NUM_SLAVES = 2,  // Number of slaves

@@ -41,13 +41,13 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_data_resize #(
+module periphral_msi_data_resize_wb #(
   parameter AW  = 32,  //Address width
   parameter MDW = 32,  //Master Data Width
   parameter SDW = 8    //Slave Data Width
 )
   (
-    //Wishbone Master interface
+    // WishBone Master Interface
     input  [AW- 1:0] wbm_adr_i,
     input  [MDW-1:0] wbm_dat_i,
     input  [    3:0] wbm_sel_i,
@@ -61,7 +61,7 @@ module mpsoc_msi_wb_data_resize #(
     output           wbm_err_o,
     output           wbm_rty_o,
 
-    // Wishbone Slave interface
+    // WishBone Slave Interface
     output [ AW-1:0] wbs_adr_o,
     output [SDW-1:0] wbs_dat_o,
     output           wbs_we_o,
@@ -99,7 +99,7 @@ module mpsoc_msi_wb_data_resize #(
 
   assign wbm_dat_o = (wbm_sel_i[3]) ? {wbs_dat_i, 24'd0} :
                      (wbm_sel_i[2]) ? {8'd0 , wbs_dat_i, 16'd0} :
-                     (wbm_sel_i[1]) ? {16'd0, wbs_dat_i, 8'd0} : {24'd0, wbs_dat_i};
+                     (wbm_sel_i[1]) ? {16'd0, wbs_dat_i,  8'd0} : {24'd0, wbs_dat_i};
 
   assign wbm_ack_o = wbs_ack_i;
   assign wbm_err_o = wbs_err_i;

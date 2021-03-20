@@ -1,4 +1,4 @@
--- Converted from rtl/vhdl/mpsoc_msi_ahb3_interface.sv
+-- Converted from rtl/vhdl/peripheral_msi_interface_ahb3.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -47,9 +47,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.mpsoc_msi_ahb3_pkg.all;
+use work.peripheral_ahb3_pkg.all;
 
-entity mpsoc_msi_ahb3_interface is
+entity peripheral_msi_interface_ahb3 is
   generic (
     PLEN    : integer := 64;
     XLEN    : integer := 64;
@@ -98,10 +98,10 @@ entity mpsoc_msi_ahb3_interface is
     slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  --combinatorial HREADY from all connected slaves
     slv_HRESP     : in  std_logic_vector(SLAVES-1 downto 0)
   );
-end mpsoc_msi_ahb3_interface;
+end peripheral_msi_interface_ahb3;
 
-architecture RTL of mpsoc_msi_ahb3_interface is
-  component mpsoc_msi_ahb3_master_port
+architecture RTL of peripheral_msi_interface_ahb3 is
+  component peripheral_msi_master_port_ahb3
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -155,7 +155,7 @@ architecture RTL of mpsoc_msi_ahb3_interface is
     );
   end component;
 
-  component mpsoc_msi_ahb3_slave_port
+  component peripheral_msi_slave_port_ahb3
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -255,7 +255,7 @@ begin
 
   --Hookup Master Interfaces
   generating_0 : for m in 0 to MASTERS - 1 generate
-    master_port : mpsoc_msi_ahb3_master_port
+    master_port : peripheral_msi_master_port_ahb3
       generic map (
         PLEN    => PLEN,
         XLEN    => XLEN,
@@ -341,7 +341,7 @@ begin
 
   --Hookup Slave Interfaces
   generating_5 : for s in 0 to SLAVES - 1 generate
-    slave_port : mpsoc_msi_ahb3_slave_port
+    slave_port : peripheral_msi_slave_port_ahb3
       generic map (
         PLEN    => PLEN,
         XLEN    => XLEN,

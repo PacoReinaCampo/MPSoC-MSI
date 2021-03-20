@@ -1,4 +1,4 @@
--- Converted from core/mpsoc_msi_wb_arbiter.v
+-- Converted from core/peripheral_msi_arbiter_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -49,9 +49,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.mpsoc_msi_wb_pkg.all;
+use work.peripheral_wb_pkg.all;
 
-entity mpsoc_msi_wb_arbiter is
+entity peripheral_msi_arbiter_wb is
   generic (
     DW : integer := 32;
     AW : integer := 32;
@@ -90,10 +90,10 @@ entity mpsoc_msi_wb_arbiter is
     wbs_err_i : in  std_logic;
     wbs_rty_i : in  std_logic
     );
-end mpsoc_msi_wb_arbiter;
+end peripheral_msi_arbiter_wb;
 
-architecture RTL of mpsoc_msi_wb_arbiter is
-  component mpsoc_msi_arbiter
+architecture RTL of peripheral_msi_arbiter_wb is
+  component peripheral_msi_arbiter
     generic (
       NUM_PORTS : integer := 6
       );
@@ -129,7 +129,7 @@ begin
   --
   -- Module Body
   --
-  arbiter0 : mpsoc_msi_arbiter
+  arbiter0 : peripheral_msi_arbiter
     generic map (
       NUM_PORTS => NUM_MASTERS
       )

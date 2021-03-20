@@ -1,4 +1,4 @@
--- Converted from core/mpsoc_msi_wb_data_resize.v
+-- Converted from core/peripheral_msi_data_resize_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity mpsoc_msi_wb_data_resize is
+entity peripheral_msi_data_resize_wb is
   generic (
     AW  : integer := 32;  --Address width
     MDW : integer := 32;  --Master Data Width
@@ -82,9 +82,9 @@ entity mpsoc_msi_wb_data_resize is
     wbs_err_i : in  std_logic;
     wbs_rty_i : in  std_logic
     );
-end mpsoc_msi_wb_data_resize;
+end peripheral_msi_data_resize_wb;
 
-architecture RTL of mpsoc_msi_wb_data_resize is
+architecture RTL of peripheral_msi_data_resize_wb is
 begin
   --////////////////////////////////////////////////////////////////
   --

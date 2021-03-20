@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_sync2_pgen (
+module peripheral_msi_sync2_pgen_wb (
   input  c,
   input  d,
   output p,

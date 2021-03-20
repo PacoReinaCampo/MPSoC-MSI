@@ -40,7 +40,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_ahb3_slave_port #(
+module peripheral_msi_slave_port_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
   parameter MASTERS = 5,  //number of slave-ports
@@ -48,7 +48,7 @@ module mpsoc_msi_ahb3_slave_port #(
 )
   (
     input                               HRESETn,
-                                        HCLK,
+    input                               HCLK,
 
     //AHB Slave Interfaces (receive data from AHB Masters)
     //AHB Masters conect to these ports
@@ -86,6 +86,7 @@ module mpsoc_msi_ahb3_slave_port #(
     input      [MASTERS-1:0]            can_switch,
     output reg [MASTERS-1:0]            granted_master
   );
+
   //////////////////////////////////////////////////////////////////
   //
   // Constants

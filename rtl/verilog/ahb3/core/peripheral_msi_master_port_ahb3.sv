@@ -40,9 +40,9 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-`include "mpsoc_msi_ahb3_pkg.sv"
+`include "peripheral_ahb3_pkg.sv"
 
-module mpsoc_msi_ahb3_master_port #(
+module peripheral_msi_master_port_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
   parameter MASTERS = 5, //number of AHB masters
@@ -51,7 +51,7 @@ module mpsoc_msi_ahb3_master_port #(
   (
     //Common signals
     input                          HRESETn,
-                                   HCLK,
+    input                          HCLK,
 
     //AHB Slave Interfaces (receive data from AHB Masters)
     //AHB Masters connect to these ports
@@ -123,8 +123,8 @@ module mpsoc_msi_ahb3_master_port #(
   logic [            3:0] burst_cnt;
 
   logic [            2:0] regpriority;
-  logic [PLEN -1:0] regHADDR;
-  logic [XLEN -1:0] regHWDATA;
+  logic [PLEN       -1:0] regHADDR;
+  logic [XLEN       -1:0] regHWDATA;
   logic [            1:0] regHTRANS;
   logic                   regHWRITE;
   logic [            2:0] regHSIZE;

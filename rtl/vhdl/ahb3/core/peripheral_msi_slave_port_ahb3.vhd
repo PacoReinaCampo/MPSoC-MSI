@@ -1,4 +1,4 @@
--- Converted from rtl/vhdl/mpsoc_msi_ahb3_slave_port.sv
+-- Converted from rtl/vhdl/peripheral_msi_slave_port_ahb3.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,9 +48,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.mpsoc_msi_ahb3_pkg.all;
+use work.peripheral_ahb3_pkg.all;
 
-entity mpsoc_msi_ahb3_slave_port is
+entity peripheral_msi_slave_port_ahb3 is
   generic (
     PLEN    : integer := 64;
     XLEN    : integer := 64;
@@ -97,9 +97,9 @@ entity mpsoc_msi_ahb3_slave_port is
     can_switch     : in  std_logic_vector(MASTERS-1 downto 0);
     granted_master : out std_logic_vector(MASTERS-1 downto 0)
   );
-end mpsoc_msi_ahb3_slave_port;
+end peripheral_msi_slave_port_ahb3;
 
-architecture RTL of mpsoc_msi_ahb3_slave_port is
+architecture RTL of peripheral_msi_slave_port_ahb3 is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

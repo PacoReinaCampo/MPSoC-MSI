@@ -1,4 +1,4 @@
--- Converted from core/mpsoc_msi_wb_cdc.v
+-- Converted from core/peripheral_msi_cdc_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,10 +48,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity mpsoc_msi_wb_cdc is
+entity peripheral_msi_cdc_wb is
   generic (
     AW : integer := 32
-    );
+  );
   port (
     wbm_clk   : in  std_logic;
     wbm_rst   : in  std_logic;
@@ -73,11 +73,11 @@ entity mpsoc_msi_wb_cdc is
     wbs_stb_o : out std_logic;
     wbs_dat_i : in  std_logic_vector(31 downto 0);
     wbs_ack_i : in  std_logic
-    );
-end mpsoc_msi_wb_cdc;
+  );
+end peripheral_msi_cdc_wb;
 
-architecture RTL of mpsoc_msi_wb_cdc is
-  component mpsoc_msi_wb_cc561
+architecture RTL of peripheral_msi_cdc_wb is
+  component peripheral_msi_cc561_wb
     generic (
       DW : integer := 0
       );
@@ -114,7 +114,7 @@ begin
   wbm_busy <= '0';
   wbs_cs   <= '0';
 
-  cdc_m2s : mpsoc_msi_wb_cc561
+  cdc_m2s : peripheral_msi_cc561_wb
     generic map (
       DW => AW+32+4+1
       )
@@ -157,7 +157,7 @@ begin
   wbs_cyc_o <= wbs_m2s_en or wbs_cs;
   wbs_stb_o <= wbs_m2s_en or wbs_cs;
 
-  cdc_s2m : mpsoc_msi_wb_cc561
+  cdc_s2m : peripheral_msi_cc561_wb
     generic map (
       DW => 32
       )

@@ -1,4 +1,4 @@
--- Converted from arbiter/mpsoc_msi_arbiter.v
+-- Converted from arbiter/peripheral_msi_arbiter.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -49,12 +49,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.mpsoc_msi_wb_pkg.all;
+use work.peripheral_wb_pkg.all;
 
-entity mpsoc_msi_arbiter is
+entity peripheral_msi_arbiter is
   generic (
     NUM_PORTS : integer := 6
-    );
+  );
   port (
     clk       : in  std_logic;
     rst       : in  std_logic;
@@ -62,10 +62,10 @@ entity mpsoc_msi_arbiter is
     grant     : out std_logic_vector(NUM_PORTS-1 downto 0);
     selection : out std_logic_vector(integer(log2(real(NUM_PORTS)))-1 downto 0);
     active    : out std_logic
-    );
-end mpsoc_msi_arbiter;
+  );
+end peripheral_msi_arbiter;
 
-architecture RTL of mpsoc_msi_arbiter is
+architecture RTL of peripheral_msi_arbiter is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

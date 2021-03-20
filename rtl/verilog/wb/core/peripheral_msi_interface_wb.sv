@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_interface (
+module peripheral_msi_interface_wb (
   input         wb_clk_i,
   input         wb_rst_i,
   input  [31:0] wb_or1k_d_adr_i,
@@ -163,7 +163,7 @@ module mpsoc_msi_wb_interface (
   //
   // Module Body
   //
-  mpsoc_msi_wb_mux #(
+  peripheral_msi_mux_wb #(
     .NUM_SLAVES (2),
     .MATCH_ADDR ({32'h00000000, 32'h90000000}),
     .MATCH_MASK ({32'hfe000000, 32'hfffffff8})
@@ -197,7 +197,7 @@ module mpsoc_msi_wb_interface (
     .wbs_rty_i ({wb_s2m_or1k_d_mem_rty, wb_s2m_resize_uart_rty})
   );
 
-  mpsoc_msi_wb_mux #(
+  peripheral_msi_mux_wb #(
     .NUM_SLAVES (1),
     .MATCH_ADDR ({32'h00000000}),
     .MATCH_MASK ({32'hfe000000})
@@ -231,7 +231,7 @@ module mpsoc_msi_wb_interface (
     .wbs_rty_i ({wb_s2m_or1k_i_mem_rty})
   );
 
-  mpsoc_msi_wb_mux #(
+  peripheral_msi_mux_wb #(
     .NUM_SLAVES (1),
     .MATCH_ADDR ({32'h00000000}),
     .MATCH_MASK ({32'hfe000000})
@@ -265,7 +265,7 @@ module mpsoc_msi_wb_interface (
     .wbs_rty_i ({wb_s2m_dbg_mem_rty})
   );
 
-  mpsoc_msi_wb_arbiter #(
+  peripheral_msi_arbiter_wb #(
     .NUM_MASTERS (3)
   )
   wb_arbiter_mem (
@@ -297,7 +297,7 @@ module mpsoc_msi_wb_interface (
     .wbs_rty_i (wb_mem_rty_i)
   );
 
-  mpsoc_msi_wb_data_resize #(
+  peripheral_msi_data_resize_wb #(
     .AW  (32),
     .MDW (32),
     .SDW (8)

@@ -1,4 +1,4 @@
--- Converted from core/mpsoc_msi_wb_interface.v
+-- Converted from core/peripheral_msi_interface_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,9 +48,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.mpsoc_msi_wb_pkg.all;
+use work.peripheral_wb_pkg.all;
 
-entity mpsoc_msi_wb_interface is
+entity peripheral_msi_interface_wb is
   port (
     wb_clk_i        : in  std_logic;
     wb_rst_i        : in  std_logic;
@@ -115,9 +115,9 @@ entity mpsoc_msi_wb_interface is
     wb_uart_err_i   : in  std_logic;
     wb_uart_rty_i   : in  std_logic
     );
-end mpsoc_msi_wb_interface;
+end peripheral_msi_interface_wb;
 
-architecture RTL of mpsoc_msi_wb_interface is
+architecture RTL of peripheral_msi_interface_wb is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants
@@ -129,7 +129,7 @@ architecture RTL of mpsoc_msi_wb_interface is
   --
   -- Components
   --
-  component mpsoc_msi_wb_mux
+  component peripheral_msi_mux_wb
     generic (
       DW : integer := 32;  -- Data width
       AW : integer := 32;  -- Address width
@@ -173,7 +173,7 @@ architecture RTL of mpsoc_msi_wb_interface is
       );
   end component;
 
-  component mpsoc_msi_wb_arbiter
+  component peripheral_msi_arbiter_wb
     generic (
       DW : integer := 32;
       AW : integer := 32;
@@ -214,7 +214,7 @@ architecture RTL of mpsoc_msi_wb_interface is
       );
   end component;
 
-  component mpsoc_msi_wb_data_resize
+  component peripheral_msi_data_resize_wb
     generic (
       AW  : integer := 32;  --Address width
       MDW : integer := 32;  --Master Data Width
@@ -337,7 +337,7 @@ begin
   --
   -- Module Body
   --
-  wb_mux_or1k_d : mpsoc_msi_wb_mux
+  wb_mux_or1k_d : peripheral_msi_mux_wb
     generic map (
       DW => DW,
       AW => AW,
@@ -389,7 +389,7 @@ begin
   wb_s2m_or1k_d_err_i <= (wb_s2m_or1k_d_mem_err, wb_s2m_resize_uart_err);
   wb_s2m_or1k_d_rty_i <= (wb_s2m_or1k_d_mem_rty, wb_s2m_resize_uart_rty);
 
-  wb_mux_or1k_i : mpsoc_msi_wb_mux
+  wb_mux_or1k_i : peripheral_msi_mux_wb
     generic map (
       DW => DW,
       AW => AW,
@@ -428,7 +428,7 @@ begin
       wbs_rty_i => wb_s2m_or1k_i_mem_rty
       );
 
-  wb_mux_dbg : mpsoc_msi_wb_mux
+  wb_mux_dbg : peripheral_msi_mux_wb
     generic map (
       DW => DW,
       AW => AW,
@@ -467,7 +467,7 @@ begin
       wbs_rty_i => wb_s2m_dbg_mem_rty
       );
 
-  wb_arbiter_mem : mpsoc_msi_wb_arbiter
+  wb_arbiter_mem : peripheral_msi_arbiter_wb
     generic map (
       DW => DW,
       AW => AW,
@@ -516,7 +516,7 @@ begin
   wb_s2m_or1k_i_err_o <= (wb_s2m_or1k_i_mem_err, wb_s2m_or1k_d_mem_err, wb_s2m_dbg_mem_err);
   wb_s2m_or1k_i_rty_o <= (wb_s2m_or1k_i_mem_rty, wb_s2m_or1k_d_mem_rty, wb_s2m_dbg_mem_rty);
 
-  wb_data_resize_uart : mpsoc_msi_wb_data_resize
+  wb_data_resize_uart : peripheral_msi_data_resize_wb
     generic map (
       AW  => 32,
       MDW => 32,

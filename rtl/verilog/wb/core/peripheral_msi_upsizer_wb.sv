@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_upsizer #(
+module peripheral_msi_upsizer_wb #(
   parameter DW_IN = 0,
   parameter SCALE = 0,
   parameter AW    = 32

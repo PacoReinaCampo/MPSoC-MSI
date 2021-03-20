@@ -40,7 +40,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_ahb3_interface #(
+module peripheral_msi_interface_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
   parameter MASTERS = 5, //number of AHB Masters
@@ -48,8 +48,8 @@ module mpsoc_msi_ahb3_interface #(
 )
   (
     //Common signals
-    input                   HRESETn,
-                            HCLK,
+    input                          HRESETn,
+    input                          HCLK,
 
     //Master Ports; AHB masters connect to these
     // thus these are actually AHB Slave Interfaces
@@ -144,7 +144,7 @@ module mpsoc_msi_ahb3_interface #(
   //Hookup Master Interfaces
   generate
     for (m=0;m < MASTERS; m=m+1) begin: gen_master_ports
-      mpsoc_msi_ahb3_master_port #(
+      peripheral_msi_master_port_ahb3 #(
         .PLEN    ( PLEN    ),
         .XLEN    ( XLEN    ),
         .MASTERS ( MASTERS ),
@@ -235,7 +235,7 @@ module mpsoc_msi_ahb3_interface #(
   //Hookup Slave Interfaces
   generate
     for (s=0;s < SLAVES; s=s+1) begin: gen_slave_ports
-      mpsoc_msi_ahb3_slave_port #(
+      peripheral_msi_slave_port_ahb3 #(
         .PLEN    ( PLEN    ),
         .XLEN    ( XLEN    ),
         .MASTERS ( MASTERS ),

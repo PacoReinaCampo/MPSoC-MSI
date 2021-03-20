@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_wb_cdc #(
+module peripheral_msi_cdc_wb #(
   parameter AW = 32
 )
   (
@@ -83,7 +83,7 @@ module mpsoc_msi_wb_cdc #(
   //
   // Module Body
   //
-  mpsoc_msi_wb_cc561 #(
+  peripheral_msi_cc561_wb #(
     .DW (AW+32+4+1)
   )
   cdc_m2s (
@@ -116,7 +116,7 @@ module mpsoc_msi_wb_cdc #(
   assign wbs_cyc_o = wbs_m2s_en | wbs_cs;
   assign wbs_stb_o = wbs_m2s_en | wbs_cs;
 
-  mpsoc_msi_wb_cc561 #(
+  peripheral_msi_cc561_wb #(
     .DW (32)
   )
   cdc_s2m (

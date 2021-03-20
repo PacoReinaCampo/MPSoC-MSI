@@ -1,4 +1,4 @@
--- Converted from cdc_utils/mpsoc_msi_wb_cc561.v
+-- Converted from cdc_utils/peripheral_msi_cc561_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity mpsoc_msi_wb_cc561 is
+entity peripheral_msi_cc561_wb is
   generic (
     DW : integer := 0
   );
@@ -60,17 +60,17 @@ entity mpsoc_msi_wb_cc561 is
     bclk  : in  std_logic;
     bdata : out std_logic_vector(DW-1 downto 0);
     ben   : out std_logic
-    );
-end mpsoc_msi_wb_cc561;
+  );
+end peripheral_msi_cc561_wb;
 
-architecture RTL of mpsoc_msi_wb_cc561 is
-  component mpsoc_msi_wb_sync2_pgen
+architecture RTL of peripheral_msi_cc561_wb is
+  component peripheral_msi_sync2_pgen_wb
     port (
       c : in  std_logic;
       d : in  std_logic;
       p : out std_logic;
       q : out std_logic
-      );
+    );
   end component;
 
   --////////////////////////////////////////////////////////////////
@@ -111,11 +111,11 @@ begin
     end if;
   end process;
 
-  sync2_pgen : mpsoc_msi_wb_sync2_pgen
+  sync2_pgen : peripheral_msi_sync2_pgen_wb
     port map (
       c => bclk,
       d => aen_r,  --CDC
       p => bpulse,
       q => open
-      );
+    );
 end RTL;
