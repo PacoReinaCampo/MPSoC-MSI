@@ -40,7 +40,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_testbench;
+module peripheral_msi_testbench;
 
   //////////////////////////////////////////////////////////////////
   //
@@ -95,13 +95,13 @@ module mpsoc_msi_testbench;
   //
 
   //DUT AHB3
-  mpsoc_msi_ahb3_interface #(
+  peripheral_msi_interface_ahb3 #(
     .PLEN    ( PLEN    ),
     .XLEN    ( XLEN    ),
     .MASTERS ( MASTERS ),
     .SLAVES  ( SLAVES  )
   )
-  peripheral_ahb3_interface (
+  peripheral_interface_ahb3 (
     //Common signals
     .HRESETn       ( HRESETn ),
     .HCLK          ( HCLK    ),

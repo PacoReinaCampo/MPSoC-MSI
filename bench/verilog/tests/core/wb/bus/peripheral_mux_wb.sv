@@ -42,7 +42,8 @@
  */
 
 `default_nettype none
-module wb_mux_tb #(
+
+module peripheral_mux_wb #(
   parameter AUTORUN = 1
 );
 
@@ -144,7 +145,7 @@ module wb_mux_tb #(
   //
   // Module Body
   //
-  mpsoc_msi_wb_bfm_transactor #(
+  peripheral_msi_bfm_transactor_wb #(
     .NUM_SEGMENTS (NUM_SLAVES),
     .AUTORUN (0),
     .VERBOSE (0),
@@ -169,7 +170,7 @@ module wb_mux_tb #(
     .done()
   );
 
-  mpsoc_msi_wb_mux #(
+  peripheral_msi_mux_wb #(
     .NUM_SLAVES (NUM_SLAVES),
     .MATCH_ADDR (MATCH_ADDR),
     .MATCH_MASK (MATCH_MASK)
@@ -211,7 +212,7 @@ module wb_mux_tb #(
       assign slave_writes[i] = wb_mem_model.writes;
       assign slave_reads[i]  = wb_mem_model.reads;
 
-      mpsoc_msi_wb_bfm_memory #(
+      peripheral_msi_bfm_memory_wb #(
         .DEBUG (0),
         .MEM_SIZE_BYTES (SEGMENT_SIZE)
       )

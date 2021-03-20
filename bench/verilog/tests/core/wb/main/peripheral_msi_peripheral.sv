@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module wb_msi_tb;
+module peripheral_msi_wb;
   //////////////////////////////////////////////////////////////////
   //
   // Module Body
@@ -49,16 +49,16 @@ module wb_msi_tb;
    vlog_tb_utils vlog_tb_utils0();
    vlog_tap_generator #("wb_msi_tb.tap", 3) vtg();
 
-   wb_mux_tb     #(.AUTORUN (0)) wb_mux_tb();
-   wb_arbiter_tb #(.AUTORUN (0)) wb_arb_tb();
-   wb_cdc_tb     #(.AUTORUN (0)) wb_cdc_tb();
+   peripheral_mux_wb     #(.AUTORUN (0)) peripheral_mux_wb();
+   peripheral_arbiter_wb #(.AUTORUN (0)) peripheral_arbiter_wb();
+   peripheral_cdc_wb     #(.AUTORUN (0)) peripheral_cdc_wb();
 
    initial begin
-      wb_mux_tb.run;
+      peripheral_mux_wb.run;
       vtg.ok("wb_mux: All tests passed!");
-      wb_arb_tb.run;
+      peripheral_arbiter_wb.run;
       vtg.ok("wb_arbiter: All tests passed!");
-      wb_cdc_tb.run;
+      peripheral_cdc_wb.run;
       vtg.ok("wb_cdc: All tests passed!");
 
       #3 $finish;

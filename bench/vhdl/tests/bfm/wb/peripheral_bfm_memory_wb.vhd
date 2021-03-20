@@ -1,4 +1,4 @@
--- Converted from core/mpsoc_msi_wb_bfm_memory.v
+-- Converted from core/peripheral_msi_wb_bfm_memory.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-entity mpsoc_msi_wb_bfm_memory is
+entity peripheral_msi_bfm_memory_wb is
   generic (
     --Wishbone parameters
     DW : integer := 32;
@@ -83,9 +83,9 @@ entity mpsoc_msi_wb_bfm_memory is
     wb_rty_o : out std_logic;
     wb_dat_o : out std_logic_vector(DW-1 downto 0)
     );
-end mpsoc_msi_wb_bfm_memory;
+end peripheral_msi_bfm_memory_wb;
 
-architecture RTL of mpsoc_msi_wb_bfm_memory is
+architecture RTL of peripheral_msi_bfm_memory_wb is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

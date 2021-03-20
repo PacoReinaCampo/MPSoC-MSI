@@ -1,4 +1,4 @@
--- Converted from core/mpsoc_msi_wb_bfm_slave.v
+-- Converted from core/peripheral_msi_bfm_slave_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity mpsoc_msi_wb_bfm_slave is
+entity peripheral_msi_bfm_slave_wb is
   generic (
     DW : integer := 32;
     AW : integer := 32;
@@ -71,9 +71,9 @@ entity mpsoc_msi_wb_bfm_slave is
     wb_err_o : out std_logic;
     wb_rty_o : out std_logic
     );
-end mpsoc_msi_wb_bfm_slave;
+end peripheral_msi_bfm_slave_wb;
 
-architecture RTL of mpsoc_msi_wb_bfm_slave is
+architecture RTL of peripheral_msi_bfm_slave_wb is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

@@ -42,7 +42,8 @@
  */
 
 `default_nettype none
-module wb_arbiter_tb #(
+
+module peripheral_arbiter_wb #(
   parameter NUM_MASTERS = 5,
   parameter AUTORUN     = 1
 );
@@ -149,7 +150,7 @@ module wb_arbiter_tb #(
         transactor.display_stats;
       end
 
-      mpsoc_msi_wb_bfm_transactor #(
+      peripheral_msi_bfm_transactor_wb #(
         .MEM_HIGH ((i+1)*MEMORY_SIZE_WORDS-1),
         .AUTORUN  (0),
         .MEM_LOW  (i*MEMORY_SIZE_WORDS)
@@ -177,7 +178,7 @@ module wb_arbiter_tb #(
 
   assign done = &done_int;
 
-  mpsoc_msi_wb_arbiter #(
+  peripheral_msi_arbiter_wb #(
     .NUM_MASTERS (NUM_MASTERS)
   )
   wb_arbiter (
@@ -231,7 +232,7 @@ module wb_arbiter_tb #(
     end
   endgenerate
 
-  mpsoc_msi_wb_bfm_memory #(
+  peripheral_msi_bfm_memory_wb #(
     .DEBUG (0),
     .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW/8)*NUM_MASTERS)
   )

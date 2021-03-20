@@ -1,4 +1,4 @@
--- Converted from bench/verilog/regression/mpsoc_msi_testbench.sv
+-- Converted from bench/verilog/regression/peripheral_msi_testbench.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -47,11 +47,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity mpsoc_msi_testbench is
-end mpsoc_msi_testbench;
+entity peripheral_msi_testbench is
+end peripheral_msi_testbench;
 
-architecture RTL of mpsoc_msi_testbench is
-  component mpsoc_msi_wb_interface
+architecture RTL of peripheral_msi_testbench is
+  component peripheral_msi_interface_wb
     port (
       wb_clk_i        : in  std_logic;
       wb_rst_i        : in  std_logic;
@@ -197,7 +197,7 @@ begin
   --
 
   --DUT WB
-  msi_wb_interface : mpsoc_msi_wb_interface
+  msi_wb_interface : peripheral_msi_interface_wb
     port map (
       wb_clk_i => clk,
       wb_rst_i => rst,

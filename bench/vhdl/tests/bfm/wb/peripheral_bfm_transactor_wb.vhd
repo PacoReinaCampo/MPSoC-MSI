@@ -1,4 +1,4 @@
--- Converted from mpsoc_msi_wb_bfm_transactor.v
+-- Converted from peripheral_msi_wb_bfm_transactor.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -49,9 +49,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.mpsoc_msi_wb_pkg.all;
+use work.peripheral_wb_pkg.all;
 
-entity mpsoc_msi_wb_bfm_transactor is
+entity peripheral_msi_bfm_transactor_wb is
   generic (
     AW : integer := 32;
     DW : integer := 32;
@@ -90,9 +90,9 @@ entity mpsoc_msi_wb_bfm_transactor is
     wb_rty_i : in  std_logic;
     done     : out std_logic
     );
-end mpsoc_msi_wb_bfm_transactor;
+end peripheral_msi_bfm_transactor_wb;
 
-architecture RTL of mpsoc_msi_wb_bfm_transactor is
+architecture RTL of peripheral_msi_bfm_transactor_wb is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

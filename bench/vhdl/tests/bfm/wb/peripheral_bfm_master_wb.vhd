@@ -1,4 +1,4 @@
--- Converted from mpsoc_msi_wb_bfm_master.v
+-- Converted from peripheral_msi_bfm_master_wb.v
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -50,9 +50,9 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use std.textio.all;
 
-use work.mpsoc_msi_wb_pkg.all;
+use work.peripheral_wb_pkg.all;
 
-entity mpsoc_msi_wb_bfm_master is
+entity peripheral_msi_bfm_master_wb is
   generic (
     AW : integer := 32;
     DW : integer := 32;
@@ -80,9 +80,9 @@ entity mpsoc_msi_wb_bfm_master is
     wb_err_i : in  std_logic;
     wb_rty_i : in  std_logic
     );
-end mpsoc_msi_wb_bfm_master;
+end peripheral_msi_bfm_master_wb;
 
-architecture RTL of mpsoc_msi_wb_bfm_master is
+architecture RTL of peripheral_msi_bfm_master_wb is
   --////////////////////////////////////////////////////////////////
   --
   -- Constants

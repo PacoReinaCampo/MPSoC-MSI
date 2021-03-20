@@ -42,7 +42,8 @@
  */
 
 `default_nettype none
-module wb_cdc_tb #(
+
+module peripheral_cdc_wb #(
   parameter AUTORUN = 1
 );
 
@@ -124,7 +125,7 @@ module wb_cdc_tb #(
   always #5 wbm_clk <= ~wbm_clk;
   always #3 wbs_clk <= ~wbs_clk;
 
-  mpsoc_msi_wb_bfm_transactor #(
+  peripheral_msi_bfm_transactor_wb #(
     .MEM_HIGH (MEM_SIZE-1),
     .AUTORUN  (0),
     .VERBOSE  (0)
@@ -148,7 +149,7 @@ module wb_cdc_tb #(
     .done()
   );
 
-  mpsoc_msi_wb_cdc #(
+  peripheral_msi_cdc_wb #(
     .AW (AW)
   )
   dut (
@@ -177,7 +178,7 @@ module wb_cdc_tb #(
     .wbs_ack_i (wbs_s2m_ack & !wbs_rst)
   );
 
-  mpsoc_msi_wb_bfm_memory #(
+  peripheral_msi_bfm_memory_wb #(
     .DEBUG (0),
     .MEM_SIZE_BYTES (MEM_SIZE)
   )

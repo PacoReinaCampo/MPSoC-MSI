@@ -40,7 +40,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module mpsoc_msi_testbench;
+module peripheral_msi_testbench;
 
   //////////////////////////////////////////////////////////////////
   //
@@ -119,7 +119,7 @@ module mpsoc_msi_testbench;
   //
 
   //DUT WB
-  mpsoc_msi_wb_interface wb_interface0 (
+  peripheral_msi_interface_wb wb_interface0 (
     .wb_clk_i        (clk),
     .wb_rst_i        (rst),
 

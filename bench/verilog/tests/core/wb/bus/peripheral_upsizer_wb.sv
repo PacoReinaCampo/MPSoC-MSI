@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module wb_upsizer_tb (
+module peripheral_upsizer_wb (
   input wb_clk_i,
   input wb_rst_i,
   output done
@@ -101,7 +101,7 @@ module wb_upsizer_tb (
   //
   // Module Body
   //
-  mpsoc_msi_wb_bfm_transactor #(
+  peripheral_msi_bfm_transactor_wb #(
     .MEM_HIGH(MEMORY_SIZE_WORDS-1),
     .MEM_LOW (0),
     .VERBOSE (0)
@@ -133,7 +133,7 @@ module wb_upsizer_tb (
     end
   end
 
-  mpsoc_msi_wb_upsizer #(
+  peripheral_msi_upsizer_wb #(
     .DW_IN (DW_IN),
     .SCALE (SCALE)
   )
@@ -183,7 +183,7 @@ module wb_upsizer_tb (
     end
   end
 
-  mpsoc_msi_wb_bfm_memory #(
+  peripheral_msi_bfm_memory_wb #(
     .DEBUG (0),
     .DW (DW_OUT),
     .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW_IN/8))

@@ -1,4 +1,4 @@
--- Converted from bench/verilog/regression/mpsoc_msi_testbench.sv
+-- Converted from bench/verilog/regression/peripheral_msi_testbench.sv
 -- by verilog2vhdl - QueenField
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -47,13 +47,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.mpsoc_msi_ahb3_pkg.all;
+use work.peripheral_ahb3_pkg.all;
 
-entity mpsoc_msi_testbench is
-end mpsoc_msi_testbench;
+entity peripheral_msi_testbench is
+end peripheral_msi_testbench;
 
-architecture RTL of mpsoc_msi_testbench is
-  component mpsoc_msi_ahb3_interface
+architecture RTL of peripheral_msi_testbench is
+  component peripheral_msi_interface_ahb3
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -160,7 +160,7 @@ begin
   --
 
   --DUT AHB3
-  peripheral_ahb3_interface : mpsoc_msi_ahb3_interface
+  peripheral_interface_ahb3 : peripheral_msi_interface_ahb3
     generic map (
       PLEN    => PLEN,
       XLEN    => XLEN,
