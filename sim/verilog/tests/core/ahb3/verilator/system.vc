@@ -1,7 +1,7 @@
 +incdir+../../../../../../rtl/verilog/ahb3/pkg
 
-../../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_interface.sv
-../../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_master_port.sv
-../../../../../../rtl/verilog/ahb3/core/mpsoc_msi_ahb3_slave_port.sv
+../../../../../../rtl/verilog/ahb3/core/peripheral_msi_interface_ahb3.sv
+../../../../../../rtl/verilog/ahb3/core/peripheral_msi_master_port_ahb3.sv
+../../../../../../rtl/verilog/ahb3/core/peripheral_msi_slave_port_ahb3.sv
 
-../../../../../../bench/verilog/tests/core/ahb3/mpsoc_msi_testbench.sv
+../../../../../../bench/verilog/tests/core/ahb3/peripheral_msi_testbench.sv

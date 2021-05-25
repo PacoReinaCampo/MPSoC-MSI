@@ -1,11 +1,10 @@
-../../../../../../rtl/vhdl/wb/pkg/mpsoc_msi_wb_pkg.vhd
+../../../../../../rtl/vhdl/wb/pkg/peripheral_msi_wb_pkg.vhd
 
-../../../../../../rtl/vhdl/wb/arbiter/mpsoc_msi_arbiter.vhd
-../../../../../../rtl/vhdl/wb/cdc/mpsoc_msi_wb_cc561.vhd
-../../../../../../rtl/vhdl/wb/cdc/mpsoc_msi_wb_cdc.vhd
-../../../../../../rtl/vhdl/wb/cdc/mpsoc_msi_wb_sync2_pgen.vhd
-../../../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_arbiter.vhd
-../../../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_data_resize.vhd
-../../../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_interface.vhd
-../../../../../../rtl/vhdl/wb/core/mpsoc_msi_wb_mux.vhd
-
+../../../../../../rtl/vhdl/wb/arbiter/peripheral_msi_arbiter.vhd
+../../../../../../rtl/vhdl/wb/cdc/peripheral_msi_cc561_wb.vhd
+../../../../../../rtl/vhdl/wb/cdc/peripheral_msi_cdc_wb.vhd
+../../../../../../rtl/vhdl/wb/cdc/peripheral_msi_sync2_pgen_wb.vhd
+../../../../../../rtl/vhdl/wb/core/peripheral_msi_arbiter_wb.vhd
+../../../../../../rtl/vhdl/wb/core/peripheral_msi_data_resize_wb.vhd
+../../../../../../rtl/vhdl/wb/core/peripheral_msi_interface_wb.vhd
+../../../../../../rtl/vhdl/wb/core/peripheral_msi_mux_wb.vhd
