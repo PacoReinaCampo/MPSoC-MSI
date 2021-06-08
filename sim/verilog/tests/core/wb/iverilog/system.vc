@@ -1,4 +1,4 @@
-+incdir+../../../../../../rtl/verilog/wb/pkg
+../../../../../../rtl/verilog/wb/pkg/peripheral_wb_pkg.vhd
 
 ../../../../../../bench/verilog/tests/bfm/wb/peripheral_bfm_master_wb.sv
 ../../../../../../bench/verilog/tests/bfm/wb/peripheral_bfm_memory_wb.sv

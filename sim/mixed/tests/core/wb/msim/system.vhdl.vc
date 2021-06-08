@@ -1,4 +1,4 @@
-../../../../../../rtl/vhdl/wb/pkg/peripheral_msi_wb_pkg.vhd
+../../../../../../rtl/vhdl/wb/pkg/peripheral_wb_pkg.vhd
 
 ../../../../../../rtl/vhdl/wb/arbiter/peripheral_msi_arbiter.vhd
 ../../../../../../rtl/vhdl/wb/cdc/peripheral_msi_cc561_wb.vhd

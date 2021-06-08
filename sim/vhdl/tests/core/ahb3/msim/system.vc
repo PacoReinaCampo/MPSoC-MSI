@@ -1,4 +1,4 @@
-../../../../../../rtl/vhdl/ahb3/pkg/peripheral_msi_ahb3_pkg.vhd
+../../../../../../rtl/vhdl/ahb3/pkg/peripheral_ahb3_pkg.vhd
 
 ../../../../../../rtl/vhdl/ahb3/core/peripheral_msi_interface_ahb3.vhd
 ../../../../../../rtl/vhdl/ahb3/core/peripheral_msi_slave_port_ahb3.vhd

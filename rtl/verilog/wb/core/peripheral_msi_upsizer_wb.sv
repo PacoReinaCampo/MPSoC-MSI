@@ -82,7 +82,7 @@ module peripheral_msi_upsizer_wb #(
   //
   // Constants
   //
-  `include "mpsoc_bfm_wb_pkg.sv"
+  import peripheral_wb_pkg::*;
 
   localparam SELW = DW_IN/8; //sel width
 

@@ -41,26 +41,26 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module peripheral_msi_wb;
+module peripheral_msi_testbench;
   //////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
-   vlog_tb_utils vlog_tb_utils0();
-   vlog_tap_generator #("wb_msi_tb.tap", 3) vtg();
+  peripheral_testbench_utils testbench_utils();
+  peripheral_tap_generator #("wb_msi_tb.tap", 3) vtg();
 
-   peripheral_mux_wb     #(.AUTORUN (0)) peripheral_mux_wb();
-   peripheral_arbiter_wb #(.AUTORUN (0)) peripheral_arbiter_wb();
-   peripheral_cdc_wb     #(.AUTORUN (0)) peripheral_cdc_wb();
+  peripheral_mux_wb     #(.AUTORUN (0)) peripheral_mux_wb();
+  peripheral_arbiter_wb #(.AUTORUN (0)) peripheral_arbiter_wb();
+  peripheral_cdc_wb     #(.AUTORUN (0)) peripheral_cdc_wb();
 
-   initial begin
-      peripheral_mux_wb.run;
-      vtg.ok("wb_mux: All tests passed!");
-      peripheral_arbiter_wb.run;
-      vtg.ok("wb_arbiter: All tests passed!");
-      peripheral_cdc_wb.run;
-      vtg.ok("wb_cdc: All tests passed!");
+  initial begin
+    peripheral_mux_wb.run;
+    vtg.ok("wb_mux: All tests passed!");
+    peripheral_arbiter_wb.run;
+    vtg.ok("wb_arbiter: All tests passed!");
+    peripheral_cdc_wb.run;
+    vtg.ok("wb_cdc: All tests passed!");
 
-      #3 $finish;
-   end
+    #3 $finish;
+  end
 endmodule

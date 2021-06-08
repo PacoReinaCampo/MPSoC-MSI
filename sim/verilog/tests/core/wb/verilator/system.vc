@@ -1,4 +1,4 @@
-+incdir+../../../../../../rtl/verilog/wb/pkg
+../../../../../../rtl/verilog/wb/pkg/peripheral_wb_pkg.vhd
 
 ../../../../../../bench/verilog/tests/core/wb/peripheral_msi_testbench.sv
 
