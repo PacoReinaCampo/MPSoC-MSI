@@ -1,0 +1,25 @@
+├── ahb3
+│   ├── core
+│   │   ├── peripheral_msi_interface_ahb3.sv
+│   │   ├── peripheral_msi_master_port_ahb3.sv
+│   │   └── peripheral_msi_slave_port_ahb3.sv
+│   └── pkg
+│       └── peripheral_ahb3_pkg.sv
+├── axi4
+│   └── pkg
+│       └── peripheral_axi4_pkg.sv
+└── wb
+    ├── arbiter
+    │   └── peripheral_msi_arbiter.sv
+    ├── cdc
+    │   ├── peripheral_msi_cc561_wb.sv
+    │   ├── peripheral_msi_cdc_wb.sv
+    │   └── peripheral_msi_sync2_pgen_wb.sv
+    ├── core
+    │   ├── peripheral_msi_arbiter_wb.sv
+    │   ├── peripheral_msi_data_resize_wb.sv
+    │   ├── peripheral_msi_interface_wb.sv
+    │   ├── peripheral_msi_mux_wb.sv
+    │   └── peripheral_msi_upsizer_wb.sv
+    └── pkg
+        └── peripheral_wb_pkg.sv

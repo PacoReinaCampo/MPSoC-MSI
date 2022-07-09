@@ -1,0 +1,21 @@
+├── ahb3
+│   ├── core
+│   │   ├── peripheral_msi_interface_ahb3.vhd
+│   │   ├── peripheral_msi_master_port_ahb3.vhd
+│   │   └── peripheral_msi_slave_port_ahb3.vhd
+│   └── pkg
+│       └── vhdl_pkg.vhd
+└── wb
+    ├── arbiter
+    │   └── peripheral_msi_arbiter.vhd
+    ├── cdc
+    │   ├── peripheral_msi_cc561_wb.vhd
+    │   ├── peripheral_msi_cdc_wb.vhd
+    │   └── peripheral_msi_sync2_pgen_wb.vhd
+    ├── core
+    │   ├── peripheral_msi_arbiter_wb.vhd
+    │   ├── peripheral_msi_data_resize_wb.vhd
+    │   ├── peripheral_msi_interface_wb.vhd
+    │   └── peripheral_msi_mux_wb.vhd
+    └── pkg
+        └── vhdl_pkg.vhd
