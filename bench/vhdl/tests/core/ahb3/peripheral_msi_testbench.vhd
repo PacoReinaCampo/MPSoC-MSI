@@ -47,6 +47,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.vhdl_pkg.all;
 use work.peripheral_ahb3_pkg.all;
 
 entity peripheral_msi_testbench is
@@ -106,8 +107,11 @@ architecture RTL of peripheral_msi_testbench is
 
   --////////////////////////////////////////////////////////////////
   --
-  -- Variables
+  -- Constants
   --
+
+  constant PLEN : integer := 64;
+  constant XLEN : integer := 64;
 
   constant MASTERS : integer := 3;
   constant SLAVES  : integer := 5;

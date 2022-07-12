@@ -48,6 +48,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.vhdl_pkg.all;
 use work.peripheral_wb_pkg.all;
 
 entity peripheral_msi_interface_wb is

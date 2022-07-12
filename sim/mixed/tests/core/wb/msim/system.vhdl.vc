@@ -1,3 +1,4 @@
+../../../../../../rtl/vhdl/wb/pkg/vhdl_pkg.vhd
 ../../../../../../rtl/vhdl/wb/pkg/peripheral_wb_pkg.vhd
 
 ../../../../../../rtl/vhdl/wb/arbiter/peripheral_msi_arbiter.vhd
