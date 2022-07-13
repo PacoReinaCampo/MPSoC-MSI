@@ -4,6 +4,7 @@
 │   │   ├── peripheral_msi_master_port_ahb3.vhd
 │   │   └── peripheral_msi_slave_port_ahb3.vhd
 │   └── pkg
+│       ├── peripheral_ahb3_pkg.vhd
 │       └── vhdl_pkg.vhd
 └── wb
     ├── arbiter
@@ -18,4 +19,5 @@
     │   ├── peripheral_msi_interface_wb.vhd
     │   └── peripheral_msi_mux_wb.vhd
     └── pkg
+        ├── peripheral_wb_pkg.vhd
         └── vhdl_pkg.vhd
