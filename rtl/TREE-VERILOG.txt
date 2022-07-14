@@ -5,9 +5,6 @@
 │   │   └── peripheral_msi_slave_port_ahb3.sv
 │   └── pkg
 │       └── peripheral_ahb3_pkg.sv
-├── axi4
-│   └── pkg
-│       └── peripheral_axi4_pkg.sv
 └── wb
     ├── arbiter
     │   └── peripheral_msi_arbiter.sv
