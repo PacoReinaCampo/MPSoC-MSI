@@ -1,5 +1,8 @@
-# Master Slave Interface for a Multi-Processor System on Chip
-## QueenField
+---
+title: Master Slave Interface for a Multi-Processor System on Chip
+author: QueenField
+geometry: "left=3cm,right=2cm,top=3cm,bottom=2cm"
+---
 
 ![QueenField](../icon.jpg)
 
