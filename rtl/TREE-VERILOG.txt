@@ -1,3 +1,4 @@
+verilog
 ├── ahb3
 │   ├── core
 │   │   ├── peripheral_msi_interface_ahb3.sv
@@ -20,3 +21,5 @@
     │   └── peripheral_msi_upsizer_wb.sv
     └── pkg
         └── peripheral_wb_pkg.sv
+
+8 directories, 14 files
