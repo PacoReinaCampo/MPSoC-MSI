@@ -1,6 +1,6 @@
 ---
 title: 'MPSoC-MSI'
-subtitle: 'QueenField ![](../../icon.jpg)'
+subtitle: 'QueenField ![](../../mpsoc-msi.svg){width=17cm}'
 
 author: Paco Reina Campo
 
