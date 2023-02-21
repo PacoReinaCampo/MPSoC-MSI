@@ -1,47 +1,46 @@
 -- Converted from rtl/vhdl/peripheral_msi_master_port_ahb3.sv
 -- by verilog2vhdl - QueenField
 
---//////////////////////////////////////////////////////////////////////////////
---                                            __ _      _     _               //
---                                           / _(_)    | |   | |              //
---                __ _ _   _  ___  ___ _ __ | |_ _  ___| | __| |              //
---               / _` | | | |/ _ \/ _ \ '_ \|  _| |/ _ \ |/ _` |              //
---              | (_| | |_| |  __/  __/ | | | | | |  __/ | (_| |              //
---               \__, |\__,_|\___|\___|_| |_|_| |_|\___|_|\__,_|              //
---                  | |                                                       //
---                  |_|                                                       //
---                                                                            //
---                                                                            //
---              MPSoC-RISCV CPU                                               //
---              Master Slave Interface Master Port                            //
---              AMBA3 AHB-Lite Bus Interface                                  //
---                                                                            //
---//////////////////////////////////////////////////////////////////////////////
+--------------------------------------------------------------------------------
+--                                            __ _      _     _               --
+--                                           / _(_)    | |   | |              --
+--                __ _ _   _  ___  ___ _ __ | |_ _  ___| | __| |              --
+--               / _` | | | |/ _ \/ _ \ '_ \|  _| |/ _ \ |/ _` |              --
+--              | (_| | |_| |  __/  __/ | | | | | |  __/ | (_| |              --
+--               \__, |\__,_|\___|\___|_| |_|_| |_|\___|_|\__,_|              --
+--                  | |                                                       --
+--                  |_|                                                       --
+--                                                                            --
+--                                                                            --
+--              MPSoC-RISCV CPU                                               --
+--              Master Slave Interface Master Port                            --
+--              AMBA3 AHB-Lite Bus Interface                                  --
+--                                                                            --
+--------------------------------------------------------------------------------
 
 -- Copyright (c) 2018-2019 by the author(s)
--- *
--- * Permission is hereby granted, free of charge, to any person obtaining a copy
--- * of this software and associated documentation files (the "Software"), to deal
--- * in the Software without restriction, including without limitation the rights
--- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- * copies of the Software, and to permit persons to whom the Software is
--- * furnished to do so, subject to the following conditions:
--- *
--- * The above copyright notice and this permission notice shall be included in
--- * all copies or substantial portions of the Software.
--- *
--- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- * THE SOFTWARE.
--- *
--- * =============================================================================
--- * Author(s):
--- *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
--- */
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-- THE SOFTWARE.
+--
+--------------------------------------------------------------------------------
+-- Author(s):
+--   Paco Reina Campo <pacoreinacampo@queenfield.tech>
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -105,21 +104,19 @@ entity peripheral_msi_master_port_ahb3 is
     );
 end peripheral_msi_master_port_ahb3;
 
-architecture RTL of peripheral_msi_master_port_ahb3 is
-  --////////////////////////////////////////////////////////////////
-  --
+architecture rtl of peripheral_msi_master_port_ahb3 is
+  ------------------------------------------------------------------------------
   -- Constants
-  --
+  ------------------------------------------------------------------------------
   constant SLAVES_BITS : integer := integer(log2(real(SLAVES)));
 
   constant NO_ACCESS      : std_logic_vector(1 downto 0) := "00";
   constant ACCESS_PENDING : std_logic_vector(1 downto 0) := "01";
   constant ACCESS_GRANTED : std_logic_vector(1 downto 0) := "10";
 
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Variables
-  --
+  ------------------------------------------------------------------------------
   signal access_state : std_logic_vector(1 downto 0);
 
   signal no_access_s      : std_logic;
@@ -150,13 +147,11 @@ architecture RTL of peripheral_msi_master_port_ahb3 is
 
   signal slvHSEL_sgn : std_logic_vector(SLAVES-1 downto 0);
 
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Tasks
   --
 
-  --//////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- functions
   --
   function onehot2int (
@@ -174,10 +169,9 @@ architecture RTL of peripheral_msi_master_port_ahb3 is
   end onehot2int;  --onehot2int
 
 begin
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Module Body
-  --
+  ------------------------------------------------------------------------------
 
   --Register Address Phase Signals
   processing_0 : process (HCLK, HRESETn)
@@ -370,4 +364,4 @@ begin
                    when access_granted_s = '1' else local_HREADYOUT;  --master's HREADYOUT is driven by slave's HREADY (slv_HREADY -> mst_HREADYOUT)
   mst_HRESP <= slvHRESP(to_integer(unsigned(slave_sel)))
                when access_granted_s = '1' else HRESP_OKAY;
-end RTL;
+end rtl;

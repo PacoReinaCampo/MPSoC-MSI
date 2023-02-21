@@ -1,48 +1,47 @@
 -- Converted from peripheral_msi_wb_bfm_transactor.v
 -- by verilog2vhdl - QueenField
 
---//////////////////////////////////////////////////////////////////////////////
---                                            __ _      _     _               //
---                                           / _(_)    | |   | |              //
---                __ _ _   _  ___  ___ _ __ | |_ _  ___| | __| |              //
---               / _` | | | |/ _ \/ _ \ '_ \|  _| |/ _ \ |/ _` |              //
---              | (_| | |_| |  __/  __/ | | | | | |  __/ | (_| |              //
---               \__, |\__,_|\___|\___|_| |_|_| |_|\___|_|\__,_|              //
---                  | |                                                       //
---                  |_|                                                       //
---                                                                            //
---                                                                            //
---              MPSoC-RISCV CPU                                               //
---              Master Slave Interface                                        //
---              Wishbone Bus Interface                                        //
---                                                                            //
---//////////////////////////////////////////////////////////////////////////////
+--------------------------------------------------------------------------------
+--                                            __ _      _     _               --
+--                                           / _(_)    | |   | |              --
+--                __ _ _   _  ___  ___ _ __ | |_ _  ___| | __| |              --
+--               / _` | | | |/ _ \/ _ \ '_ \|  _| |/ _ \ |/ _` |              --
+--              | (_| | |_| |  __/  __/ | | | | | |  __/ | (_| |              --
+--               \__, |\__,_|\___|\___|_| |_|_| |_|\___|_|\__,_|              --
+--                  | |                                                       --
+--                  |_|                                                       --
+--                                                                            --
+--                                                                            --
+--              MPSoC-RISCV CPU                                               --
+--              Master Slave Interface                                        --
+--              Wishbone Bus Interface                                        --
+--                                                                            --
+--------------------------------------------------------------------------------
 
 -- Copyright (c) 2018-2019 by the author(s)
--- *
--- * Permission is hereby granted, free of charge, to any person obtaining a copy
--- * of this software and associated documentation files (the "Software"), to deal
--- * in the Software without restriction, including without limitation the rights
--- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- * copies of the Software, and to permit persons to whom the Software is
--- * furnished to do so, subject to the following conditions:
--- *
--- * The above copyright notice and this permission notice shall be included in
--- * all copies or substantial portions of the Software.
--- *
--- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- * THE SOFTWARE.
--- *
--- * =============================================================================
--- * Author(s):
--- *   Olof Kindgren <olof.kindgren@gmail.com>
--- *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
--- */
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-- THE SOFTWARE.
+--
+--------------------------------------------------------------------------------
+-- Author(s):
+--   Olof Kindgren <olof.kindgren@gmail.com>
+--   Paco Reina Campo <pacoreinacampo@queenfield.tech>
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -92,11 +91,10 @@ entity peripheral_msi_bfm_transactor_wb is
     );
 end peripheral_msi_bfm_transactor_wb;
 
-architecture RTL of peripheral_msi_bfm_transactor_wb is
-  --////////////////////////////////////////////////////////////////
-  --
-  -- Constants
-  --
+architecture rtl of peripheral_msi_bfm_transactor_wb is
+  ------------------------------------------------------------------------------
+  --  Constants
+  ------------------------------------------------------------------------------
   constant ADR_LSB : integer := integer(log2(real(DW/8)));
 
   constant BROKEN_CLOG2 : std_logic := '1';
@@ -111,10 +109,9 @@ architecture RTL of peripheral_msi_bfm_transactor_wb is
   constant BTE_WRAP_8  : std_logic_vector(1 downto 0) := "10";
   constant BTE_WRAP_16 : std_logic_vector(1 downto 0) := "11";
 
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Variables
-  --
+  ------------------------------------------------------------------------------
   signal SEED            : integer;
   signal TRANSACTIONS    : integer;
   signal SUBTRANSACTIONS : integer;
@@ -152,8 +149,7 @@ architecture RTL of peripheral_msi_bfm_transactor_wb is
 
   signal wait_states : std_logic_vector(integer(log2(real(MAX_WAIT_STATES))) downto 0);
 
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Functions
   --
   function gen_adr (
@@ -273,8 +269,7 @@ architecture RTL of peripheral_msi_bfm_transactor_wb is
     return gen_cycle_params_return;
   end gen_cycle_params;
 
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Procedures
   --
 
@@ -547,10 +542,9 @@ architecture RTL of peripheral_msi_bfm_transactor_wb is
   end run;
 
 begin
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Module Body
-  --
+  ------------------------------------------------------------------------------
 
   -- Check Cycle Probability values add up to 100
   processing_0 : process
@@ -592,4 +586,4 @@ begin
       done <= '1';
     end if;
   end process;
-end RTL;
+end rtl;

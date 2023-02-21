@@ -1,48 +1,47 @@
 -- Converted from arbiter/peripheral_msi_arbiter.v
 -- by verilog2vhdl - QueenField
 
---//////////////////////////////////////////////////////////////////////////////
---                                            __ _      _     _               //
---                                           / _(_)    | |   | |              //
---                __ _ _   _  ___  ___ _ __ | |_ _  ___| | __| |              //
---               / _` | | | |/ _ \/ _ \ '_ \|  _| |/ _ \ |/ _` |              //
---              | (_| | |_| |  __/  __/ | | | | | |  __/ | (_| |              //
---               \__, |\__,_|\___|\___|_| |_|_| |_|\___|_|\__,_|              //
---                  | |                                                       //
---                  |_|                                                       //
---                                                                            //
---                                                                            //
---              MPSoC-RISCV CPU                                               //
---              Master Slave Interface                                        //
---              Wishbone Bus Interface                                        //
---                                                                            //
---//////////////////////////////////////////////////////////////////////////////
+--------------------------------------------------------------------------------
+--                                            __ _      _     _               --
+--                                           / _(_)    | |   | |              --
+--                __ _ _   _  ___  ___ _ __ | |_ _  ___| | __| |              --
+--               / _` | | | |/ _ \/ _ \ '_ \|  _| |/ _ \ |/ _` |              --
+--              | (_| | |_| |  __/  __/ | | | | | |  __/ | (_| |              --
+--               \__, |\__,_|\___|\___|_| |_|_| |_|\___|_|\__,_|              --
+--                  | |                                                       --
+--                  |_|                                                       --
+--                                                                            --
+--                                                                            --
+--              MPSoC-RISCV CPU                                               --
+--              Master Slave Interface                                        --
+--              Wishbone Bus Interface                                        --
+--                                                                            --
+--------------------------------------------------------------------------------
 
 -- Copyright (c) 2018-2019 by the author(s)
--- *
--- * Permission is hereby granted, free of charge, to any person obtaining a copy
--- * of this software and associated documentation files (the "Software"), to deal
--- * in the Software without restriction, including without limitation the rights
--- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- * copies of the Software, and to permit persons to whom the Software is
--- * furnished to do so, subject to the following conditions:
--- *
--- * The above copyright notice and this permission notice shall be included in
--- * all copies or substantial portions of the Software.
--- *
--- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- * THE SOFTWARE.
--- *
--- * =============================================================================
--- * Author(s):
--- *   Olof Kindgren <olof.kindgren@gmail.com>
--- *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
--- */
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-- THE SOFTWARE.
+--
+--------------------------------------------------------------------------------
+-- Author(s):
+--   Olof Kindgren <olof.kindgren@gmail.com>
+--   Paco Reina Campo <pacoreinacampo@queenfield.tech>
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -66,17 +65,15 @@ entity peripheral_msi_arbiter is
   );
 end peripheral_msi_arbiter;
 
-architecture RTL of peripheral_msi_arbiter is
-  --////////////////////////////////////////////////////////////////
-  --
+architecture rtl of peripheral_msi_arbiter is
+  ------------------------------------------------------------------------------
   -- Constants
-  --
+  ------------------------------------------------------------------------------
   constant WRAP_LENGTH : integer := NUM_PORTS*NUM_PORTS;
 
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Variables
-  --
+  ------------------------------------------------------------------------------
   signal next_s : std_logic;
   signal order  : std_logic_vector(NUM_PORTS-1 downto 0);
 
@@ -84,8 +81,7 @@ architecture RTL of peripheral_msi_arbiter is
   signal token           : std_logic_vector(NUM_PORTS-1 downto 0);
   signal token_wrap      : std_logic_vector(WRAP_LENGTH-1 downto 0);
 
-  --//////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- functions
   --
 
@@ -106,10 +102,9 @@ architecture RTL of peripheral_msi_arbiter is
   end ff1;
 
 begin
-  --////////////////////////////////////////////////////////////////
-  --
+  ------------------------------------------------------------------------------
   -- Module Body
-  --
+  ------------------------------------------------------------------------------
   next_s <= reduce_nor(token and request);
 
   processing_0 : process (clk)
@@ -142,4 +137,4 @@ begin
     token_lookahead(i) <= token_wrap((i+1)*NUM_PORTS-1 downto i*NUM_PORTS);
     order(i)           <= reduce_or(token_lookahead(i) and request);
   end generate;
-end RTL;
+end rtl;
