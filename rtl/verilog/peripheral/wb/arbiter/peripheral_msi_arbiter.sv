@@ -41,111 +41,89 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module peripheral_msi_mux_wb #(
-  parameter DW = 32,         // Data width
-  parameter AW = 32,         // Address width
-  parameter NUM_SLAVES = 2,  // Number of slaves
-
-  parameter [NUM_SLAVES*AW-1:0] MATCH_ADDR = 0,
-  parameter [NUM_SLAVES*AW-1:0] MATCH_MASK = 0
+module peripheral_msi_arbiter #(
+  parameter NUM_PORTS = 6
 )
   (
-    input                      wb_clk_i,
-    input                      wb_rst_i,
-
-    // Master Interface
-    input  [AW-1:0]            wbm_adr_i,
-    input  [DW-1:0]            wbm_dat_i,
-    input  [   3:0]            wbm_sel_i,
-    input                      wbm_we_i,
-    input                      wbm_cyc_i,
-    input                      wbm_stb_i,
-    input  [   2:0]            wbm_cti_i,
-    input  [   1:0]            wbm_bte_i,
-    output [DW-1:0]            wbm_dat_o,
-    output                     wbm_ack_o,
-    output                     wbm_err_o,
-    output                     wbm_rty_o,
-
-    // Wishbone Slave interface
-    output [NUM_SLAVES-1:0][AW-1:0] wbs_adr_o,
-    output [NUM_SLAVES-1:0][DW-1:0] wbs_dat_o,
-    output [NUM_SLAVES-1:0][   3:0] wbs_sel_o,
-    output [NUM_SLAVES-1:0]         wbs_we_o,
-    output [NUM_SLAVES-1:0]         wbs_cyc_o,
-    output [NUM_SLAVES-1:0]         wbs_stb_o,
-    output [NUM_SLAVES-1:0][   2:0] wbs_cti_o,
-    output [NUM_SLAVES-1:0][   1:0] wbs_bte_o,
-    input  [NUM_SLAVES-1:0][DW-1:0] wbs_dat_i,
-    input  [NUM_SLAVES-1:0]         wbs_ack_i,
-    input  [NUM_SLAVES-1:0]         wbs_err_i,
-    input  [NUM_SLAVES-1:0]         wbs_rty_i
+    input                               clk,
+    input                               rst,
+    input      [NUM_PORTS        -1:0]  request,
+    output reg [NUM_PORTS        -1:0]  grant,
+    output reg [$clog2(NUM_PORTS)-1:0]  selection,
+    output reg                          active
   );
 
-  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   //
   // Constants
   //
-  parameter SLAVE_SEL_BITS = NUM_SLAVES > 1 ? $clog2(NUM_SLAVES) : 1;
+  localparam WRAP_LENGTH = 2*NUM_PORTS;
 
-  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   //
-  // Variables
-  //
-  reg                       wbm_err;
-  wire [SLAVE_SEL_BITS-1:0] slave_sel;
-  wire [NUM_SLAVES    -1:0] match;
-
-  genvar idx;
-
-  //////////////////////////////////////////////////////////////////
-  //
-  // Functions
+  // Constants
   //
 
   // Find First 1
   // Start from MSB and count downwards, returns 0 when no bit set
-  function [SLAVE_SEL_BITS-1:0] ff1;
-    input [NUM_SLAVES-1:0] in;
+  function [$clog2(NUM_PORTS)-1:0] ff1;
+    input [NUM_PORTS-1:0] in;
     integer i;
-
     begin
       ff1 = 0;
-      for (i = NUM_SLAVES-1; i >= 0; i=i-1) begin
+      for (i = NUM_PORTS-1; i >= 0; i=i-1) begin
         if (in[i])
           ff1 = i;
       end
     end
   endfunction
 
-  //////////////////////////////////////////////////////////////////
+  `ifdef VERBOSE
+  initial $display("Bus arbiter with %d units", NUM_PORTS);
+  `endif
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // Variables
+  //
+  genvar                  xx;
+  integer                 yy;
+
+  wire                    next;
+  wire [NUM_PORTS  -1:0]  order;
+
+  reg  [NUM_PORTS  -1:0]  token;
+  wire [NUM_PORTS  -1:0]  token_lookahead [NUM_PORTS-1:0];
+  wire [WRAP_LENGTH-1:0]  token_wrap;
+
+  //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
+  assign token_wrap = {token, token};
+  assign next       = ~|(token & request);
+
+  always @(posedge clk) begin
+    grant     <= token & request;
+    selection <= ff1(token & request);
+    active    <= |(token & request);
+  end
+
+  always @(posedge clk) begin
+    if (rst) token <= 'b1;
+    else if (next) begin
+      for (yy = 0; yy < NUM_PORTS; yy = yy + 1) begin : TOKEN
+        if (order[yy]) begin
+          token <= token_lookahead[yy];
+        end
+      end
+    end
+  end
 
   generate
-    for(idx=0; idx<NUM_SLAVES ; idx=idx+1) begin
-      assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*AW+:AW]) == MATCH_ADDR[idx*AW+:AW];
+    for (xx = 0; xx < NUM_PORTS; xx = xx + 1) begin : ORDER
+      assign token_lookahead[xx] = token_wrap[xx +: NUM_PORTS];
+      assign order[xx]           = |(token_lookahead[xx] & request);
     end
   endgenerate
-
-  assign slave_sel = ff1(match);
-
-  always @(posedge wb_clk_i)
-    wbm_err <= wbm_cyc_i & !(|match);
-
-  assign wbs_adr_o = {NUM_SLAVES{wbm_adr_i}};
-  assign wbs_dat_o = {NUM_SLAVES{wbm_dat_i}};
-  assign wbs_sel_o = {NUM_SLAVES{wbm_sel_i}};
-  assign wbs_we_o  = {NUM_SLAVES{wbm_we_i}};
-  assign wbs_stb_o = {NUM_SLAVES{wbm_stb_i}};
-  assign wbs_cti_o = {NUM_SLAVES{wbm_cti_i}};
-  assign wbs_bte_o = {NUM_SLAVES{wbm_bte_i}};
-
-  assign wbs_cyc_o = match & (wbm_cyc_i << slave_sel);
-
-  assign wbm_dat_o = wbs_dat_i[slave_sel];
-  assign wbm_ack_o = wbs_ack_i[slave_sel];
-  assign wbm_err_o = wbs_err_i[slave_sel] | wbm_err;
-  assign wbm_rty_o = wbs_rty_i[slave_sel];
 endmodule

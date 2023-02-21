@@ -41,89 +41,91 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module peripheral_msi_arbiter #(
-  parameter NUM_PORTS = 6
+module peripheral_msi_cdc_wb #(
+  parameter AW = 32
 )
   (
-    input                               clk,
-    input                               rst,
-    input      [NUM_PORTS        -1:0]  request,
-    output reg [NUM_PORTS        -1:0]  grant,
-    output reg [$clog2(NUM_PORTS)-1:0]  selection,
-    output reg                          active
+    input           wbm_clk,
+    input           wbm_rst,
+    input  [AW-1:0] wbm_adr_i,
+    input  [  31:0] wbm_dat_i,
+    input  [   3:0] wbm_sel_i,
+    input           wbm_we_i,
+    input           wbm_cyc_i,
+    input           wbm_stb_i,
+    output [  31:0] wbm_dat_o,
+    output          wbm_ack_o,
+    input           wbs_clk,
+    input           wbs_rst,
+    output [AW-1:0] wbs_adr_o,
+    output [  31:0] wbs_dat_o,
+    output [   3:0] wbs_sel_o,
+    output          wbs_we_o,
+    output          wbs_cyc_o,
+    output          wbs_stb_o,
+    input [   31:0] wbs_dat_i,
+    input           wbs_ack_i
   );
 
-  //////////////////////////////////////////////////////////////////
-  //
-  // Constants
-  //
-  localparam WRAP_LENGTH = 2*NUM_PORTS;
-
-  //////////////////////////////////////////////////////////////////
-  //
-  // Constants
-  //
-
-  // Find First 1
-  // Start from MSB and count downwards, returns 0 when no bit set
-  function [$clog2(NUM_PORTS)-1:0] ff1;
-    input [NUM_PORTS-1:0] in;
-    integer i;
-    begin
-      ff1 = 0;
-      for (i = NUM_PORTS-1; i >= 0; i=i-1) begin
-        if (in[i])
-          ff1 = i;
-      end
-    end
-  endfunction
-
-  `ifdef VERBOSE
-  initial $display("Bus arbiter with %d units", NUM_PORTS);
-  `endif
-
-  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   //
   // Variables
   //
-  genvar                  xx;
-  integer                 yy;
+  wire      wbm_m2s_en;
+  reg       wbm_busy = 1'b0;
+  wire      wbm_cs;
+  wire      wbm_done;
 
-  wire                    next;
-  wire [NUM_PORTS  -1:0]  order;
+  wire      wbs_m2s_en;
+  reg       wbs_cs = 1'b0;
 
-  reg  [NUM_PORTS  -1:0]  token;
-  wire [NUM_PORTS  -1:0]  token_lookahead [NUM_PORTS-1:0];
-  wire [WRAP_LENGTH-1:0]  token_wrap;
-
-  //////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
-  assign token_wrap = {token, token};
-  assign next       = ~|(token & request);
+  peripheral_msi_cc561_wb #(
+    .DW (AW+32+4+1)
+  )
+  cdc_m2s (
+    .aclk  (wbm_clk),
+    .arst  (wbm_rst),
+    .adata ({wbm_adr_i, wbm_dat_i, wbm_sel_i, wbm_we_i}),
+    .aen   (wbm_m2s_en),
+    .bclk  (wbs_clk),
+    .bdata ({wbs_adr_o, wbs_dat_o, wbs_sel_o, wbs_we_o}),
+    .ben   (wbs_m2s_en)
+  );
 
-  always @(posedge clk) begin
-    grant     <= token & request;
-    selection <= ff1(token & request);
-    active    <= |(token & request);
+  assign wbm_cs = wbm_cyc_i & wbm_stb_i;
+  assign wbm_m2s_en = wbm_cs & ~wbm_busy;
+
+  always @(posedge wbm_clk) begin
+    if (wbm_ack_o | wbm_rst)
+      wbm_busy <= 1'b0;
+    else if (wbm_cs)
+      wbm_busy <= 1'b1;
   end
 
-  always @(posedge clk) begin
-    if (rst) token <= 'b1;
-    else if (next) begin
-      for (yy = 0; yy < NUM_PORTS; yy = yy + 1) begin : TOKEN
-        if (order[yy]) begin
-          token <= token_lookahead[yy];
-        end
-      end
-    end
+  always @(posedge wbs_clk) begin
+    if (wbs_ack_i)
+      wbs_cs <= 1'b0;
+    else if (wbs_m2s_en)
+      wbs_cs <= 1'b1;
   end
 
-  generate
-    for (xx = 0; xx < NUM_PORTS; xx = xx + 1) begin : ORDER
-      assign token_lookahead[xx] = token_wrap[xx +: NUM_PORTS];
-      assign order[xx]           = |(token_lookahead[xx] & request);
-    end
-  endgenerate
+  assign wbs_cyc_o = wbs_m2s_en | wbs_cs;
+  assign wbs_stb_o = wbs_m2s_en | wbs_cs;
+
+  peripheral_msi_cc561_wb #(
+    .DW (32)
+  )
+  cdc_s2m (
+   .aclk  (wbs_clk),
+   .arst  (wbs_rst),
+   .adata (wbs_dat_i),
+   .aen   (wbs_ack_i),
+   .bclk  (wbm_clk),
+   .bdata (wbm_dat_o),
+   .ben   (wbm_ack_o)
+  );
 endmodule

@@ -1,25 +1,26 @@
 verilog
-├── ahb3
-│   ├── core
+├── peripheral
+│   ├── ahb3
 │   │   ├── peripheral_msi_interface_ahb3.sv
 │   │   ├── peripheral_msi_master_port_ahb3.sv
 │   │   └── peripheral_msi_slave_port_ahb3.sv
-│   └── pkg
-│       └── peripheral_ahb3_pkg.sv
-└── wb
-    ├── arbiter
-    │   └── peripheral_msi_arbiter.sv
-    ├── cdc
-    │   ├── peripheral_msi_cc561_wb.sv
-    │   ├── peripheral_msi_cdc_wb.sv
-    │   └── peripheral_msi_sync2_pgen_wb.sv
-    ├── core
-    │   ├── peripheral_msi_arbiter_wb.sv
-    │   ├── peripheral_msi_data_resize_wb.sv
-    │   ├── peripheral_msi_interface_wb.sv
-    │   ├── peripheral_msi_mux_wb.sv
-    │   └── peripheral_msi_upsizer_wb.sv
-    └── pkg
+│   └── wb
+│       ├── arbiter
+│       │   └── peripheral_msi_arbiter.sv
+│       ├── cdc
+│       │   ├── peripheral_msi_cc561_wb.sv
+│       │   ├── peripheral_msi_cdc_wb.sv
+│       │   └── peripheral_msi_sync2_pgen_wb.sv
+│       └── main
+│           ├── peripheral_msi_arbiter_wb.sv
+│           ├── peripheral_msi_data_resize_wb.sv
+│           ├── peripheral_msi_interface_wb.sv
+│           ├── peripheral_msi_mux_wb.sv
+│           └── peripheral_msi_upsizer_wb.sv
+└── pkg
+    ├── ahb3
+    │   └── peripheral_ahb3_pkg.sv
+    └── wb
         └── peripheral_wb_pkg.sv
 
-8 directories, 14 files
+9 directories, 14 files

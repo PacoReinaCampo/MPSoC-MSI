@@ -41,94 +41,111 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module peripheral_tap_generator #(
-  parameter TAPFILE          = "",
-  parameter NUM_TESTS        = 0,
-  parameter MAX_STRING_LEN   = 80,
-  parameter MAX_FILENAME_LEN = 1024
-);
+module peripheral_msi_mux_wb #(
+  parameter DW = 32,         // Data width
+  parameter AW = 32,         // Address width
+  parameter NUM_SLAVES = 2,  // Number of slaves
+
+  parameter [NUM_SLAVES*AW-1:0] MATCH_ADDR = 0,
+  parameter [NUM_SLAVES*AW-1:0] MATCH_MASK = 0
+)
+  (
+    input                      wb_clk_i,
+    input                      wb_rst_i,
+
+    // Master Interface
+    input  [AW-1:0]            wbm_adr_i,
+    input  [DW-1:0]            wbm_dat_i,
+    input  [   3:0]            wbm_sel_i,
+    input                      wbm_we_i,
+    input                      wbm_cyc_i,
+    input                      wbm_stb_i,
+    input  [   2:0]            wbm_cti_i,
+    input  [   1:0]            wbm_bte_i,
+    output [DW-1:0]            wbm_dat_o,
+    output                     wbm_ack_o,
+    output                     wbm_err_o,
+    output                     wbm_rty_o,
+
+    // Wishbone Slave interface
+    output [NUM_SLAVES-1:0][AW-1:0] wbs_adr_o,
+    output [NUM_SLAVES-1:0][DW-1:0] wbs_dat_o,
+    output [NUM_SLAVES-1:0][   3:0] wbs_sel_o,
+    output [NUM_SLAVES-1:0]         wbs_we_o,
+    output [NUM_SLAVES-1:0]         wbs_cyc_o,
+    output [NUM_SLAVES-1:0]         wbs_stb_o,
+    output [NUM_SLAVES-1:0][   2:0] wbs_cti_o,
+    output [NUM_SLAVES-1:0][   1:0] wbs_bte_o,
+    input  [NUM_SLAVES-1:0][DW-1:0] wbs_dat_i,
+    input  [NUM_SLAVES-1:0]         wbs_ack_i,
+    input  [NUM_SLAVES-1:0]         wbs_err_i,
+    input  [NUM_SLAVES-1:0]         wbs_rty_i
+  );
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // Constants
+  //
+  parameter SLAVE_SEL_BITS = NUM_SLAVES > 1 ? $clog2(NUM_SLAVES) : 1;
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Variables
   //
-  integer f; //File handle
-  integer cur_tc = 0; //Current testcase index
-  integer numtests = NUM_TESTS; //Total number of testcases
+  reg                       wbm_err;
+  wire [SLAVE_SEL_BITS-1:0] slave_sel;
+  wire [NUM_SLAVES    -1:0] match;
 
-  reg [MAX_FILENAME_LEN*8-1:0] tapfile; //TAP file to write
+  genvar idx;
 
   //////////////////////////////////////////////////////////////////////////////
   //
-  // Tasks
+  // Functions
   //
-  task set_file;
-    input [MAX_FILENAME_LEN*8-1:0] f;
+
+  // Find First 1
+  // Start from MSB and count downwards, returns 0 when no bit set
+  function [SLAVE_SEL_BITS-1:0] ff1;
+    input [NUM_SLAVES-1:0] in;
+    integer i;
+
     begin
-      if (cur_tc)
-        $display("Error: Can't change file. Already started writing to %0s", tapfile);
-      else
-        tapfile = f;
-    end
-  endtask
-
-  task set_numtests;
-    input integer i;
-    begin
-      if (cur_tc)
-        $display("Error: Can't change number of tests. Already started writing to %0s", tapfile);
-      else
-        numtests = i;
-    end
-  endtask
-
-  task write_tc;
-    input [MAX_STRING_LEN*8-1:0] description;
-
-    input ok_i;
-    begin
-      if (f === 32'dx) begin
-        if(tapfile == 0)
-          $display("No TAP file specified");
-        else if (numtests == 0)
-          $display("Number of tests must be specified");
-        else begin
-          f = $fopen(tapfile,"w");
-          $fwrite(f, "1..%0d\n", numtests);
-        end
-      end
-
-      if (f) begin
-        cur_tc=cur_tc+1;
-
-        if (!ok_i)
-          $fwrite(f, "not ");
-        $fwrite(f, "ok %0d - %0s\n", cur_tc, description);
+      ff1 = 0;
+      for (i = NUM_SLAVES-1; i >= 0; i=i-1) begin
+        if (in[i])
+          ff1 = i;
       end
     end
-  endtask
-
-  task ok;
-    input [MAX_STRING_LEN*8-1:0] description;
-    begin
-      write_tc(description, 1);
-    end
-  endtask
-
-  task nok;
-    input [MAX_STRING_LEN*8-1:0] description;
-    begin
-      write_tc(description, 0);
-    end
-  endtask
+  endfunction
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
-  initial begin
-    //Grab CLI parameters and use parameters for default values
-    if(!$value$plusargs("tapfile=%s", tapfile))
-      tapfile = TAPFILE;
-  end
+
+  generate
+    for(idx=0; idx<NUM_SLAVES ; idx=idx+1) begin
+      assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*AW+:AW]) == MATCH_ADDR[idx*AW+:AW];
+    end
+  endgenerate
+
+  assign slave_sel = ff1(match);
+
+  always @(posedge wb_clk_i)
+    wbm_err <= wbm_cyc_i & !(|match);
+
+  assign wbs_adr_o = {NUM_SLAVES{wbm_adr_i}};
+  assign wbs_dat_o = {NUM_SLAVES{wbm_dat_i}};
+  assign wbs_sel_o = {NUM_SLAVES{wbm_sel_i}};
+  assign wbs_we_o  = {NUM_SLAVES{wbm_we_i}};
+  assign wbs_stb_o = {NUM_SLAVES{wbm_stb_i}};
+  assign wbs_cti_o = {NUM_SLAVES{wbm_cti_i}};
+  assign wbs_bte_o = {NUM_SLAVES{wbm_bte_i}};
+
+  assign wbs_cyc_o = match & (wbm_cyc_i << slave_sel);
+
+  assign wbm_dat_o = wbs_dat_i[slave_sel];
+  assign wbm_ack_o = wbs_ack_i[slave_sel];
+  assign wbm_err_o = wbs_err_i[slave_sel] | wbm_err;
+  assign wbm_rty_o = wbs_rty_i[slave_sel];
 endmodule
