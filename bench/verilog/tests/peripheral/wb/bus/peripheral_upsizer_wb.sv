@@ -101,7 +101,7 @@ module peripheral_upsizer_wb (
   //
   // Module Body
   //
-  peripheral_msi_bfm_transactor_wb #(
+  peripheral_bfm_transactor_wb #(
     .MEM_HIGH(MEMORY_SIZE_WORDS-1),
     .MEM_LOW (0),
     .VERBOSE (0)
@@ -183,7 +183,7 @@ module peripheral_upsizer_wb (
     end
   end
 
-  peripheral_msi_bfm_memory_wb #(
+  peripheral_bfm_memory_wb #(
     .DEBUG (0),
     .DW (DW_OUT),
     .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW_IN/8))

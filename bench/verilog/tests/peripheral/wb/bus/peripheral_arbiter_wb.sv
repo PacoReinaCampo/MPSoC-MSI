@@ -150,7 +150,7 @@ module peripheral_arbiter_wb #(
         transactor.display_stats;
       end
 
-      peripheral_msi_bfm_transactor_wb #(
+      peripheral_bfm_transactor_wb #(
         .MEM_HIGH ((i+1)*MEMORY_SIZE_WORDS-1),
         .AUTORUN  (0),
         .MEM_LOW  (i*MEMORY_SIZE_WORDS)
@@ -232,7 +232,7 @@ module peripheral_arbiter_wb #(
     end
   endgenerate
 
-  peripheral_msi_bfm_memory_wb #(
+  peripheral_bfm_memory_wb #(
     .DEBUG (0),
     .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW/8)*NUM_MASTERS)
   )

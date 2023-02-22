@@ -145,7 +145,7 @@ module peripheral_mux_wb #(
   //
   // Module Body
   //
-  peripheral_msi_bfm_transactor_wb #(
+  peripheral_bfm_transactor_wb #(
     .NUM_SEGMENTS (NUM_SLAVES),
     .AUTORUN (0),
     .VERBOSE (0),
@@ -212,7 +212,7 @@ module peripheral_mux_wb #(
       assign slave_writes[i] = wb_mem_model.writes;
       assign slave_reads[i]  = wb_mem_model.reads;
 
-      peripheral_msi_bfm_memory_wb #(
+      peripheral_bfm_memory_wb #(
         .DEBUG (0),
         .MEM_SIZE_BYTES (SEGMENT_SIZE)
       )

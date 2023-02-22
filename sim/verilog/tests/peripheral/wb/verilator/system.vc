@@ -1,13 +1,13 @@
-../../../../../../rtl/verilog/wb/pkg/peripheral_wb_pkg.vhd
+../../../../../../rtl/verilog/pkg/peripheral/wb/peripheral_wb_pkg.vhd
 
-../../../../../../bench/verilog/tests/core/wb/peripheral_msi_testbench.sv
+../../../../../../bench/verilog/tests/peripheral/wb/peripheral_msi_testbench.sv
 
-../../../../../../rtl/verilog/wb/arbiter/peripheral_msi_arbiter.sv
-../../../../../../rtl/verilog/wb/cdc/peripheral_msi_cc561_wb.sv
-../../../../../../rtl/verilog/wb/cdc/peripheral_msi_cdc_wb.sv
-../../../../../../rtl/verilog/wb/cdc/peripheral_msi_sync2_pgen_wb.sv
-../../../../../../rtl/verilog/wb/core/peripheral_msi_arbiter_wb.sv
-../../../../../../rtl/verilog/wb/core/peripheral_msi_data_resize_wb.sv
-../../../../../../rtl/verilog/wb/core/peripheral_msi_interface_wb.sv
-../../../../../../rtl/verilog/wb/core/peripheral_msi_mux_wb.sv
-../../../../../../rtl/verilog/wb/core/peripheral_msi_upsizer_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/arbiter/peripheral_msi_arbiter.sv
+../../../../../../rtl/verilog/peripheral/wb/cdc/peripheral_msi_cc561_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/cdc/peripheral_msi_cdc_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/cdc/peripheral_msi_sync2_pgen_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/main/peripheral_msi_arbiter_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/main/peripheral_msi_data_resize_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/main/peripheral_msi_interface_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/main/peripheral_msi_mux_wb.sv
+../../../../../../rtl/verilog/peripheral/wb/main/peripheral_msi_upsizer_wb.sv

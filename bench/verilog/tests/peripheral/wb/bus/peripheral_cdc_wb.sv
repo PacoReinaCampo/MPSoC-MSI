@@ -93,7 +93,7 @@ module peripheral_cdc_wb #(
   //
   task run;
     begin
-      transactor.bfm.reset;
+      transactor.bfm_master_wb.reset;
       @(posedge wbs_clk) wbs_rst = 1'b0;
       @(posedge wbm_clk) wbm_rst = 1'b0;
 
@@ -125,7 +125,7 @@ module peripheral_cdc_wb #(
   always #5 wbm_clk <= ~wbm_clk;
   always #3 wbs_clk <= ~wbs_clk;
 
-  peripheral_msi_bfm_transactor_wb #(
+  peripheral_bfm_transactor_wb #(
     .MEM_HIGH (MEM_SIZE-1),
     .AUTORUN  (0),
     .VERBOSE  (0)
@@ -178,7 +178,7 @@ module peripheral_cdc_wb #(
     .wbs_ack_i (wbs_s2m_ack & !wbs_rst)
   );
 
-  peripheral_msi_bfm_memory_wb #(
+  peripheral_bfm_memory_wb #(
     .DEBUG (0),
     .MEM_SIZE_BYTES (MEM_SIZE)
   )
