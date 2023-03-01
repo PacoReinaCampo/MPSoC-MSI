@@ -1,4 +1,4 @@
-../../../../../../rtl/verilog/pkg/peripheral/ahb3/peripheral_ahb3_pkg.vhd
+../../../../../../rtl/verilog/pkg/peripheral/ahb3/peripheral_ahb3_pkg.sv
 
 ../../../../../../rtl/verilog/peripheral/ahb3/peripheral_msi_interface_ahb3.sv
 ../../../../../../rtl/verilog/peripheral/ahb3/peripheral_msi_master_port_ahb3.sv
