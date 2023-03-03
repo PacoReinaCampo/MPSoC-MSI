@@ -42,9 +42,7 @@
 ##                                                                               ##
 ###################################################################################
 
-../../../../../../rtl/vhdl/pkg/core/vhdl_pkg.vhd
-../../../../../../rtl/vhdl/pkg/peripheral/ahb3/peripheral_ahb3_pkg.vhd
+source ../../../../../../settings64_vivado.sh
 
-../../../../../../rtl/vhdl/peripheral/ahb3/peripheral_msi_interface_ahb3.vhd
-../../../../../../rtl/vhdl/peripheral/ahb3/peripheral_msi_master_port_ahb3.vhd
-../../../../../../rtl/vhdl/peripheral/ahb3/peripheral_msi_slave_port_ahb3.vhd
+make clean
+make

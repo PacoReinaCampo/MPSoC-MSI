@@ -42,14 +42,8 @@
 ##                                                                               ##
 ###################################################################################
 
-../../../../../../rtl/vhdl/pkg/core/vhdl_pkg.vhd
-../../../../../../rtl/vhdl/pkg/peripheral/wb/peripheral_wb_pkg.vhd
+../../../../../../bench/verilog/tests/bfm/apb4/peripheral_gpio_apb4.sv
 
-../../../../../../rtl/vhdl/peripheral/wb/arbiter/peripheral_msi_arbiter.vhd
-../../../../../../rtl/vhdl/peripheral/wb/cdc/peripheral_msi_cc561_wb.vhd
-../../../../../../rtl/vhdl/peripheral/wb/cdc/peripheral_msi_cdc_wb.vhd
-../../../../../../rtl/vhdl/peripheral/wb/cdc/peripheral_msi_sync2_pgen_wb.vhd
-../../../../../../rtl/vhdl/peripheral/wb/main/peripheral_msi_arbiter_wb.vhd
-../../../../../../rtl/vhdl/peripheral/wb/main/peripheral_msi_data_resize_wb.vhd
-../../../../../../rtl/vhdl/peripheral/wb/main/peripheral_msi_interface_wb.vhd
-../../../../../../rtl/vhdl/peripheral/wb/main/peripheral_msi_mux_wb.vhd
+../../../../../../bench/verilog/tests/bfm/apb4/peripheral_bfm_apb4.sv
+../../../../../../bench/verilog/tests/bfm/apb4/peripheral_bfm_master_apb4.sv
+../../../../../../bench/verilog/tests/bfm/apb4/peripheral_bfm_testbench.sv

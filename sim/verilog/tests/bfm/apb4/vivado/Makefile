@@ -45,12 +45,11 @@
 all: build simulate
 
 build:
-	if [ ! -e work ]; then vlib work; fi
-	vlog -sv -f system.verilog.vc
-	vcom -2008 -f system.vhdl.vc
+	xvlog -prj system.prj
 
 simulate:
-	vsim -c -do run.do work.peripheral_msi_testbench
+	xelab peripheral_bfm_testbench
+	xsim -R peripheral_bfm_testbench
 
 clean:
-	rm -rf work transcript
+	rm -rf *.dir *.jou *.log *.pb .Xil

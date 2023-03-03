@@ -42,6 +42,4 @@
 ##                                                                               ##
 ###################################################################################
 
-../../../../../../rtl/verilog/pkg/peripheral/wb/peripheral_wb_pkg.sv
-
-../../../../../../bench/verilog/tests/peripheral/wb/peripheral_msi_testbench.sv
+make clean
