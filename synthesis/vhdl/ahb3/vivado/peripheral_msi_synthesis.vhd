@@ -145,9 +145,8 @@ architecture rtl of peripheral_msi_synthesis is
   end component;
 
   ------------------------------------------------------------------------------
-  --
   -- Variables
-  --
+  ------------------------------------------------------------------------------
 
   signal msi_PADDR   : std_logic_vector(APB_ADDR_WIDTH-1 downto 0);
   signal msi_PWDATA  : std_logic_vector(APB_DATA_WIDTH-1 downto 0);
@@ -165,9 +164,8 @@ architecture rtl of peripheral_msi_synthesis is
 
 begin
   ------------------------------------------------------------------------------
-  --
   -- Module Body
-  --
+  ------------------------------------------------------------------------------
 
   --DUT AHB3
   bridge_apb2ahb : peripheral_bridge_apb2ahb
