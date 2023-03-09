@@ -78,6 +78,11 @@ entity peripheral_msi_synthesis is
 end peripheral_msi_synthesis;
 
 architecture rtl of peripheral_msi_synthesis is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component peripheral_bridge_apb2ahb
     generic (
       HADDR_SIZE : integer := 32;

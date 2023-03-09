@@ -76,6 +76,11 @@ entity peripheral_msi_cdc_wb is
 end peripheral_msi_cdc_wb;
 
 architecture rtl of peripheral_msi_cdc_wb is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component peripheral_msi_cc561_wb
     generic (
       DW : integer := 0

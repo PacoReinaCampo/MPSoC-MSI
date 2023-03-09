@@ -101,6 +101,11 @@ entity peripheral_msi_interface_ahb3 is
 end peripheral_msi_interface_ahb3;
 
 architecture rtl of peripheral_msi_interface_ahb3 is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component peripheral_msi_master_port_ahb3
     generic (
       PLEN    : integer := 64;

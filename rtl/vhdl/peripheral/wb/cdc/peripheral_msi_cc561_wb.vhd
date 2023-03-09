@@ -63,6 +63,11 @@ entity peripheral_msi_cc561_wb is
 end peripheral_msi_cc561_wb;
 
 architecture rtl of peripheral_msi_cc561_wb is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component peripheral_msi_sync2_pgen_wb
     port (
       c : in  std_logic;

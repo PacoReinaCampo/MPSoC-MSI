@@ -93,6 +93,11 @@ entity peripheral_msi_arbiter_wb is
 end peripheral_msi_arbiter_wb;
 
 architecture rtl of peripheral_msi_arbiter_wb is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component peripheral_msi_arbiter
     generic (
       NUM_PORTS : integer := 6

@@ -75,6 +75,11 @@ entity peripheral_msi_synthesis is
 end peripheral_msi_synthesis;
 
 architecture rtl of peripheral_msi_synthesis is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component bb_msi
     port (
       mclk     : in  std_logic;

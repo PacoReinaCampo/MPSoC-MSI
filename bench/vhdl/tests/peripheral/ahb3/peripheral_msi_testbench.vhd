@@ -53,6 +53,11 @@ entity peripheral_msi_testbench is
 end peripheral_msi_testbench;
 
 architecture rtl of peripheral_msi_testbench is
+
+  ------------------------------------------------------------------------------
+  -- Components
+  ------------------------------------------------------------------------------
+
   component peripheral_msi_interface_ahb3
     generic (
       PLEN    : integer := 64;
