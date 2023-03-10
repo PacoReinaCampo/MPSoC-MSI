@@ -18,9 +18,12 @@ verilog
 │           ├── peripheral_msi_mux_wb.sv
 │           └── peripheral_msi_upsizer_wb.sv
 └── pkg
-    ├── ahb3
-    │   └── peripheral_ahb3_pkg.sv
-    └── wb
-        └── peripheral_wb_pkg.sv
+    └── peripheral
+        ├── ahb3
+        │   └── peripheral_ahb3_pkg.sv
+        ├── axi4
+        │   └── peripheral_axi4_pkg.sv
+        └── wb
+            └── peripheral_wb_pkg.sv
 
-9 directories, 14 files
+11 directories, 15 files
