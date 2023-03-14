@@ -42,11 +42,10 @@
  */
 
 module peripheral_msi_arbiter_wb #(
-  parameter DW = 32,
-  parameter AW = 32,
+  parameter DW          = 32,
+  parameter AW          = 32,
   parameter NUM_MASTERS = 0
-)
-  (
+) (
   input wb_clk_i,
   input wb_rst_i,
 
@@ -98,22 +97,21 @@ module peripheral_msi_arbiter_wb #(
   // Module Body
   //
   peripheral_msi_arbiter #(
-  .NUM_PORTS (NUM_MASTERS)
-  )
-  arbiter0 (
-    .clk       (wb_clk_i),
-    .rst       (wb_rst_i),
-    .request   (wbm_cyc_i),
-    .grant     (grant),
-    .selection (master_sel),
-    .active    (active)
+    .NUM_PORTS(NUM_MASTERS)
+  ) arbiter0 (
+    .clk      (wb_clk_i),
+    .rst      (wb_rst_i),
+    .request  (wbm_cyc_i),
+    .grant    (grant),
+    .selection(master_sel),
+    .active   (active)
   );
 
   //Mux active master
   assign wbs_adr_o = wbm_adr_i[master_sel];
   assign wbs_dat_o = wbm_dat_i[master_sel];
   assign wbs_sel_o = wbm_sel_i[master_sel];
-  assign wbs_we_o  = wbm_we_i [master_sel];
+  assign wbs_we_o  = wbm_we_i[master_sel];
   assign wbs_cyc_o = wbm_cyc_i[master_sel] & active;
   assign wbs_stb_o = wbm_stb_i[master_sel];
   assign wbs_cti_o = wbm_cti_i[master_sel];
@@ -123,4 +121,4 @@ module peripheral_msi_arbiter_wb #(
   assign wbm_ack_o = ((wbs_ack_i & active) << master_sel);
   assign wbm_err_o = ((wbs_err_i & active) << master_sel);
   assign wbm_rty_o = ((wbs_rty_i & active) << master_sel);
-endmodule // wb_arbiter
+endmodule  // wb_arbiter

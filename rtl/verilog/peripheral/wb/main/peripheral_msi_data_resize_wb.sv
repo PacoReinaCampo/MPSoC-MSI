@@ -42,11 +42,10 @@
  */
 
 module periphral_msi_data_resize_wb #(
-  parameter AW  = 32, //Address width
-  parameter MDW = 32, //Master Data Width
-  parameter SDW = 8 //Slave Data Width
-)
-  (
+  parameter AW  = 32,  //Address width
+  parameter MDW = 32,  //Master Data Width
+  parameter SDW = 8    //Slave Data Width
+) (
   // WishBone Master Interface
   input  [AW- 1:0] wbm_adr_i,
   input  [MDW-1:0] wbm_dat_i,
@@ -80,28 +79,21 @@ module periphral_msi_data_resize_wb #(
   // Module Body
   //
   assign wbs_adr_o[AW-1:2] = wbm_adr_i[AW-1:2];
-  assign wbs_adr_o[1:0] = wbm_sel_i[3] ? 2'd0 :
-  wbm_sel_i[2] ? 2'd1 :
-  wbm_sel_i[1] ? 2'd2 : 2'd3;
+  assign wbs_adr_o[1:0]    = wbm_sel_i[3] ? 2'd0 : wbm_sel_i[2] ? 2'd1 : wbm_sel_i[1] ? 2'd2 : 2'd3;
 
-  assign wbs_dat_o = wbm_sel_i[3] ? wbm_dat_i[31:24] :
-  wbm_sel_i[2] ? wbm_dat_i[23:16] :
-  wbm_sel_i[1] ? wbm_dat_i[15:8]  :
-  wbm_sel_i[0] ? wbm_dat_i[7:0]   : 8'b0;
+  assign wbs_dat_o         = wbm_sel_i[3] ? wbm_dat_i[31:24] : wbm_sel_i[2] ? wbm_dat_i[23:16] : wbm_sel_i[1] ? wbm_dat_i[15:8] : wbm_sel_i[0] ? wbm_dat_i[7:0] : 8'b0;
 
-  assign wbs_we_o  = wbm_we_i;
+  assign wbs_we_o          = wbm_we_i;
 
-  assign wbs_cyc_o = wbm_cyc_i;
-  assign wbs_stb_o = wbm_stb_i;
+  assign wbs_cyc_o         = wbm_cyc_i;
+  assign wbs_stb_o         = wbm_stb_i;
 
-  assign wbs_cti_o = wbm_cti_i;
-  assign wbs_bte_o = wbm_bte_i;
+  assign wbs_cti_o         = wbm_cti_i;
+  assign wbs_bte_o         = wbm_bte_i;
 
-  assign wbm_dat_o = (wbm_sel_i[3]) ? {wbs_dat_i, 24'd0} :
-  (wbm_sel_i[2]) ? {8'd0 , wbs_dat_i, 16'd0} :
-  (wbm_sel_i[1]) ? {16'd0, wbs_dat_i,  8'd0} : {24'd0, wbs_dat_i};
+  assign wbm_dat_o         = (wbm_sel_i[3]) ? {wbs_dat_i, 24'd0} : (wbm_sel_i[2]) ? {8'd0, wbs_dat_i, 16'd0} : (wbm_sel_i[1]) ? {16'd0, wbs_dat_i, 8'd0} : {24'd0, wbs_dat_i};
 
-  assign wbm_ack_o = wbs_ack_i;
-  assign wbm_err_o = wbs_err_i;
-  assign wbm_rty_o = wbs_rty_i;
+  assign wbm_ack_o         = wbs_ack_i;
+  assign wbm_err_o         = wbs_err_i;
+  assign wbm_rty_o         = wbs_rty_i;
 endmodule

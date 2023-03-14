@@ -43,8 +43,7 @@
 
 module peripheral_msi_cdc_wb #(
   parameter AW = 32
-)
-  (
+) (
   input           wbm_clk,
   input           wbm_rst,
   input  [AW-1:0] wbm_adr_i,
@@ -63,7 +62,7 @@ module peripheral_msi_cdc_wb #(
   output          wbs_we_o,
   output          wbs_cyc_o,
   output          wbs_stb_o,
-  input [   31:0] wbs_dat_i,
+  input  [  31:0] wbs_dat_i,
   input           wbs_ack_i
 );
 
@@ -71,61 +70,55 @@ module peripheral_msi_cdc_wb #(
   //
   // Variables
   //
-  wire      wbm_m2s_en;
-  reg       wbm_busy = 1'b0;
-  wire      wbm_cs;
-  wire      wbm_done;
+  wire wbm_m2s_en;
+  reg  wbm_busy = 1'b0;
+  wire wbm_cs;
+  wire wbm_done;
 
-  wire      wbs_m2s_en;
-  reg       wbs_cs = 1'b0;
+  wire wbs_m2s_en;
+  reg  wbs_cs = 1'b0;
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
   peripheral_msi_cc561_wb #(
-  .DW (AW+32+4+1)
-  )
-  cdc_m2s (
-    .aclk  (wbm_clk),
-    .arst  (wbm_rst),
-    .adata ({wbm_adr_i, wbm_dat_i, wbm_sel_i, wbm_we_i}),
-    .aen   (wbm_m2s_en),
-    .bclk  (wbs_clk),
-    .bdata ({wbs_adr_o, wbs_dat_o, wbs_sel_o, wbs_we_o}),
-    .ben   (wbs_m2s_en)
+    .DW(AW + 32 + 4 + 1)
+  ) cdc_m2s (
+    .aclk (wbm_clk),
+    .arst (wbm_rst),
+    .adata({wbm_adr_i, wbm_dat_i, wbm_sel_i, wbm_we_i}),
+    .aen  (wbm_m2s_en),
+    .bclk (wbs_clk),
+    .bdata({wbs_adr_o, wbs_dat_o, wbs_sel_o, wbs_we_o}),
+    .ben  (wbs_m2s_en)
   );
 
-  assign wbm_cs = wbm_cyc_i & wbm_stb_i;
+  assign wbm_cs     = wbm_cyc_i & wbm_stb_i;
   assign wbm_m2s_en = wbm_cs & ~wbm_busy;
 
   always @(posedge wbm_clk) begin
-    if (wbm_ack_o | wbm_rst)
-      wbm_busy <= 1'b0;
-    else if (wbm_cs)
-      wbm_busy <= 1'b1;
+    if (wbm_ack_o | wbm_rst) wbm_busy <= 1'b0;
+    else if (wbm_cs) wbm_busy <= 1'b1;
   end
 
   always @(posedge wbs_clk) begin
-    if (wbs_ack_i)
-      wbs_cs <= 1'b0;
-    else if (wbs_m2s_en)
-      wbs_cs <= 1'b1;
+    if (wbs_ack_i) wbs_cs <= 1'b0;
+    else if (wbs_m2s_en) wbs_cs <= 1'b1;
   end
 
   assign wbs_cyc_o = wbs_m2s_en | wbs_cs;
   assign wbs_stb_o = wbs_m2s_en | wbs_cs;
 
   peripheral_msi_cc561_wb #(
-  .DW (32)
-  )
-  cdc_s2m (
-    .aclk  (wbs_clk),
-    .arst  (wbs_rst),
-    .adata (wbs_dat_i),
-    .aen   (wbs_ack_i),
-    .bclk  (wbm_clk),
-    .bdata (wbm_dat_o),
-    .ben   (wbm_ack_o)
+    .DW(32)
+  ) cdc_s2m (
+    .aclk (wbs_clk),
+    .arst (wbs_rst),
+    .adata(wbs_dat_i),
+    .aen  (wbs_ack_i),
+    .bclk (wbm_clk),
+    .bdata(wbm_dat_o),
+    .ben  (wbm_ack_o)
   );
 endmodule

@@ -46,12 +46,12 @@ module peripheral_msi_testbench;
   //
   // Module Body
   //
-  peripheral_testbench_utils testbench_utils();
-  peripheral_tap_generator #("wb_msi_tb.tap", 3) vtg();
+  peripheral_testbench_utils testbench_utils ();
+  peripheral_tap_generator #("wb_msi_tb.tap", 3) vtg ();
 
-  peripheral_mux_wb     #(.AUTORUN (0)) peripheral_mux_wb();
-  peripheral_arbiter_wb #(.AUTORUN (0)) peripheral_arbiter_wb();
-  peripheral_cdc_wb     #(.AUTORUN (0)) peripheral_cdc_wb();
+  peripheral_mux_wb #(.AUTORUN(0)) peripheral_mux_wb ();
+  peripheral_arbiter_wb #(.AUTORUN(0)) peripheral_arbiter_wb ();
+  peripheral_cdc_wb #(.AUTORUN(0)) peripheral_cdc_wb ();
 
   initial begin
     peripheral_mux_wb.run;

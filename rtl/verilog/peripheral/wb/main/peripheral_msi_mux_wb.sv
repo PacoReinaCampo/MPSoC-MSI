@@ -42,30 +42,29 @@
  */
 
 module peripheral_msi_mux_wb #(
-  parameter DW = 32, // Data width
-  parameter AW = 32, // Address width
-  parameter NUM_SLAVES = 2, // Number of slaves
+  parameter DW         = 32,  // Data width
+  parameter AW         = 32,  // Address width
+  parameter NUM_SLAVES = 2,   // Number of slaves
 
   parameter [NUM_SLAVES*AW-1:0] MATCH_ADDR = 0,
   parameter [NUM_SLAVES*AW-1:0] MATCH_MASK = 0
-)
-  (
-  input                      wb_clk_i,
-  input                      wb_rst_i,
+) (
+  input wb_clk_i,
+  input wb_rst_i,
 
   // Master Interface
-  input  [AW-1:0]            wbm_adr_i,
-  input  [DW-1:0]            wbm_dat_i,
-  input  [   3:0]            wbm_sel_i,
-  input                      wbm_we_i,
-  input                      wbm_cyc_i,
-  input                      wbm_stb_i,
-  input  [   2:0]            wbm_cti_i,
-  input  [   1:0]            wbm_bte_i,
-  output [DW-1:0]            wbm_dat_o,
-  output                     wbm_ack_o,
-  output                     wbm_err_o,
-  output                     wbm_rty_o,
+  input  [AW-1:0] wbm_adr_i,
+  input  [DW-1:0] wbm_dat_i,
+  input  [   3:0] wbm_sel_i,
+  input           wbm_we_i,
+  input           wbm_cyc_i,
+  input           wbm_stb_i,
+  input  [   2:0] wbm_cti_i,
+  input  [   1:0] wbm_bte_i,
+  output [DW-1:0] wbm_dat_o,
+  output          wbm_ack_o,
+  output          wbm_err_o,
+  output          wbm_rty_o,
 
   // Wishbone Slave interface
   output [NUM_SLAVES-1:0][AW-1:0] wbs_adr_o,
@@ -111,9 +110,8 @@ module peripheral_msi_mux_wb #(
 
     begin
       ff1 = 0;
-      for (i = NUM_SLAVES-1; i >= 0; i=i-1) begin
-        if (in[i])
-          ff1 = i;
+      for (i = NUM_SLAVES - 1; i >= 0; i = i - 1) begin
+        if (in[i]) ff1 = i;
       end
     end
   endfunction
@@ -124,15 +122,14 @@ module peripheral_msi_mux_wb #(
   //
 
   generate
-    for(idx=0; idx<NUM_SLAVES ; idx=idx+1) begin
+    for (idx = 0; idx < NUM_SLAVES; idx = idx + 1) begin
       assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*AW+:AW]) == MATCH_ADDR[idx*AW+:AW];
     end
   endgenerate
 
   assign slave_sel = ff1(match);
 
-  always @(posedge wb_clk_i)
-  wbm_err <= wbm_cyc_i & !(|match);
+  always @(posedge wb_clk_i) wbm_err <= wbm_cyc_i & !(|match);
 
   assign wbs_adr_o = {NUM_SLAVES{wbm_adr_i}};
   assign wbs_dat_o = {NUM_SLAVES{wbm_dat_i}};

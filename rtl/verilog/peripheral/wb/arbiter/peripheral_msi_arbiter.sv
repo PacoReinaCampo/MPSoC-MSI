@@ -43,21 +43,20 @@
 
 module peripheral_msi_arbiter #(
   parameter NUM_PORTS = 6
-)
-  (
-  input                               clk,
-  input                               rst,
-  input      [NUM_PORTS        -1:0]  request,
-  output reg [NUM_PORTS        -1:0]  grant,
-  output reg [$clog2(NUM_PORTS)-1:0]  selection,
-  output reg                          active
+) (
+  input                              clk,
+  input                              rst,
+  input      [NUM_PORTS        -1:0] request,
+  output reg [NUM_PORTS        -1:0] grant,
+  output reg [$clog2(NUM_PORTS)-1:0] selection,
+  output reg                         active
 );
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Constants
   //
-  localparam WRAP_LENGTH = 2*NUM_PORTS;
+  localparam WRAP_LENGTH = 2 * NUM_PORTS;
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -71,30 +70,29 @@ module peripheral_msi_arbiter #(
     integer i;
     begin
       ff1 = 0;
-      for (i = NUM_PORTS-1; i >= 0; i=i-1) begin
-        if (in[i])
-          ff1 = i;
+      for (i = NUM_PORTS - 1; i >= 0; i = i - 1) begin
+        if (in[i]) ff1 = i;
       end
     end
   endfunction
 
-  `ifdef VERBOSE
+`ifdef VERBOSE
   initial $display("Bus arbiter with %d units", NUM_PORTS);
-  `endif
+`endif
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Variables
   //
-  genvar                  xx;
-  integer                 yy;
+  genvar xx;
+  integer                   yy;
 
-  wire                    next;
-  wire [NUM_PORTS  -1:0]  order;
+  wire                      next;
+  wire    [NUM_PORTS  -1:0] order;
 
-  reg  [NUM_PORTS  -1:0]  token;
-  wire [NUM_PORTS  -1:0]  token_lookahead [NUM_PORTS-1:0];
-  wire [WRAP_LENGTH-1:0]  token_wrap;
+  reg     [NUM_PORTS  -1:0] token;
+  wire    [NUM_PORTS  -1:0] token_lookahead[NUM_PORTS-1:0];
+  wire    [WRAP_LENGTH-1:0] token_wrap;
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -122,7 +120,7 @@ module peripheral_msi_arbiter #(
 
   generate
     for (xx = 0; xx < NUM_PORTS; xx = xx + 1) begin : ORDER
-      assign token_lookahead[xx] = token_wrap[xx +: NUM_PORTS];
+      assign token_lookahead[xx] = token_wrap[xx+:NUM_PORTS];
       assign order[xx]           = |(token_lookahead[xx] & request);
     end
   endgenerate

@@ -42,9 +42,8 @@
  */
 
 module peripheral_msi_cc561_wb #(
-  parameter DW=0
-)
-  (
+  parameter DW = 0
+) (
   input               aclk,
   input               arst,
   input      [DW-1:0] adata,
@@ -58,33 +57,30 @@ module peripheral_msi_cc561_wb #(
   //
   // Variables
   //
-  reg [DW-1:0] adata_r;
-  reg          aen_r = 1'b0;
-  wire         bpulse;
+  reg  [DW-1:0] adata_r;
+  reg           aen_r = 1'b0;
+  wire          bpulse;
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
   always @(posedge aclk) begin
-    if (aen)
-      adata_r <= adata;
+    if (aen) adata_r <= adata;
 
     aen_r <= aen ^ aen_r;
-    if (arst)
-      aen_r <= 1'b0;
+    if (arst) aen_r <= 1'b0;
   end
 
   always @(posedge bclk) begin
-    if (bpulse)
-      bdata <= adata_r; //CDC
+    if (bpulse) bdata <= adata_r;  //CDC
     ben <= bpulse;
   end
 
   peripheral_msi_sync2_pgen_wb sync2_pgen (
-    .c (bclk),
-    .d (aen_r), //CDC
-    .p (bpulse),
-    .q ()
+    .c(bclk),
+    .d(aen_r),   //CDC
+    .p(bpulse),
+    .q()
   );
 endmodule

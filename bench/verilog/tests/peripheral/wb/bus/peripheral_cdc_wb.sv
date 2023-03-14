@@ -60,32 +60,32 @@ module peripheral_cdc_wb #(
   //
   // Variables
   //
-  reg wbm_clk = 1'b1;
-  reg wbm_rst = 1'b1;
-  reg wbs_clk = 1'b1;
-  reg wbs_rst = 1'b1;
+  reg              wbm_clk = 1'b1;
+  reg              wbm_rst = 1'b1;
+  reg              wbs_clk = 1'b1;
+  reg              wbs_rst = 1'b1;
 
-  wire [AW-1:0] wbm_m2s_adr;
-  wire [DW-1:0] wbm_m2s_dat;
-  wire [   3:0] wbm_m2s_sel;
-  wire          wbm_m2s_we;
-  wire          wbm_m2s_cyc;
-  wire          wbm_m2s_stb;
-  wire [DW-1:0] wbm_s2m_dat;
-  wire          wbm_s2m_ack;
+  wire    [AW-1:0] wbm_m2s_adr;
+  wire    [DW-1:0] wbm_m2s_dat;
+  wire    [   3:0] wbm_m2s_sel;
+  wire             wbm_m2s_we;
+  wire             wbm_m2s_cyc;
+  wire             wbm_m2s_stb;
+  wire    [DW-1:0] wbm_s2m_dat;
+  wire             wbm_s2m_ack;
 
-  wire [AW-1:0] wbs_m2s_adr;
-  wire [DW-1:0] wbs_m2s_dat;
-  wire [   3:0] wbs_m2s_sel;
-  wire          wbs_m2s_we;
-  wire          wbs_m2s_cyc;
-  wire          wbs_m2s_stb;
-  wire [DW-1:0] wbs_s2m_dat;
-  wire          wbs_s2m_ack;
+  wire    [AW-1:0] wbs_m2s_adr;
+  wire    [DW-1:0] wbs_m2s_dat;
+  wire    [   3:0] wbs_m2s_sel;
+  wire             wbs_m2s_we;
+  wire             wbs_m2s_cyc;
+  wire             wbs_m2s_stb;
+  wire    [DW-1:0] wbs_s2m_dat;
+  wire             wbs_s2m_ack;
 
-  wire done;
+  wire             done;
 
-  integer TRANSACTIONS;
+  integer          TRANSACTIONS;
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -97,8 +97,7 @@ module peripheral_cdc_wb #(
       @(posedge wbs_clk) wbs_rst = 1'b0;
       @(posedge wbm_clk) wbm_rst = 1'b0;
 
-      if($value$plusargs("transactions=%d", TRANSACTIONS))
-        transactor.set_transactions(TRANSACTIONS);
+      if ($value$plusargs("transactions=%d", TRANSACTIONS)) transactor.set_transactions(TRANSACTIONS);
       transactor.display_settings;
       transactor.run();
       transactor.display_stats;
@@ -111,8 +110,8 @@ module peripheral_cdc_wb #(
   //
   generate
     if (AUTORUN) begin
-      vlog_tb_utils vtu();
-      vlog_tap_generator #("wb_cdc.tap", 1) vtg();
+      vlog_tb_utils vtu ();
+      vlog_tap_generator #("wb_cdc.tap", 1) vtg ();
 
       initial begin
         run;
@@ -126,76 +125,73 @@ module peripheral_cdc_wb #(
   always #3 wbs_clk <= ~wbs_clk;
 
   peripheral_bfm_transactor_wb #(
-  .MEM_HIGH (MEM_SIZE-1),
-  .AUTORUN  (0),
-  .VERBOSE  (0)
-  )
-  transactor (
-    .wb_clk_i (wbm_clk),
-    .wb_rst_i (1'b0),
-    .wb_adr_o (wbm_m2s_adr),
-    .wb_dat_o (wbm_m2s_dat),
-    .wb_sel_o (wbm_m2s_sel),
-    .wb_we_o  (wbm_m2s_we),
-    .wb_cyc_o (wbm_m2s_cyc),
-    .wb_stb_o (wbm_m2s_stb),
-    .wb_cti_o (),
-    .wb_bte_o (),
-    .wb_dat_i (wbm_s2m_dat),
-    .wb_ack_i (wbm_s2m_ack),
-    .wb_err_i (1'b0),
-    .wb_rty_i (1'b0),
+    .MEM_HIGH(MEM_SIZE - 1),
+    .AUTORUN (0),
+    .VERBOSE (0)
+  ) transactor (
+    .wb_clk_i(wbm_clk),
+    .wb_rst_i(1'b0),
+    .wb_adr_o(wbm_m2s_adr),
+    .wb_dat_o(wbm_m2s_dat),
+    .wb_sel_o(wbm_m2s_sel),
+    .wb_we_o (wbm_m2s_we),
+    .wb_cyc_o(wbm_m2s_cyc),
+    .wb_stb_o(wbm_m2s_stb),
+    .wb_cti_o(),
+    .wb_bte_o(),
+    .wb_dat_i(wbm_s2m_dat),
+    .wb_ack_i(wbm_s2m_ack),
+    .wb_err_i(1'b0),
+    .wb_rty_i(1'b0),
     //Test Control
-    .done()
+    .done    ()
   );
 
   peripheral_msi_cdc_wb #(
-  .AW (AW)
-  )
-  dut (
-    .wbm_clk    (wbm_clk),
-    .wbm_rst    (wbm_rst),
+    .AW(AW)
+  ) dut (
+    .wbm_clk(wbm_clk),
+    .wbm_rst(wbm_rst),
 
     // Master Interface
-    .wbm_adr_i (wbm_m2s_adr),
-    .wbm_dat_i (wbm_m2s_dat),
-    .wbm_sel_i (wbm_m2s_sel),
-    .wbm_we_i  (wbm_m2s_we ),
-    .wbm_cyc_i (wbm_m2s_cyc),
-    .wbm_stb_i (wbm_m2s_stb),
-    .wbm_dat_o (wbm_s2m_dat),
-    .wbm_ack_o (wbm_s2m_ack),
+    .wbm_adr_i(wbm_m2s_adr),
+    .wbm_dat_i(wbm_m2s_dat),
+    .wbm_sel_i(wbm_m2s_sel),
+    .wbm_we_i (wbm_m2s_we),
+    .wbm_cyc_i(wbm_m2s_cyc),
+    .wbm_stb_i(wbm_m2s_stb),
+    .wbm_dat_o(wbm_s2m_dat),
+    .wbm_ack_o(wbm_s2m_ack),
     // Wishbone Slave interface
-    .wbs_clk   (wbs_clk),
-    .wbs_rst   (wbs_rst),
-    .wbs_adr_o (wbs_m2s_adr),
-    .wbs_dat_o (wbs_m2s_dat),
-    .wbs_sel_o (wbs_m2s_sel),
-    .wbs_we_o  (wbs_m2s_we),
-    .wbs_cyc_o (wbs_m2s_cyc),
-    .wbs_stb_o (wbs_m2s_stb),
-    .wbs_dat_i (wbs_s2m_dat),
-    .wbs_ack_i (wbs_s2m_ack & !wbs_rst)
+    .wbs_clk  (wbs_clk),
+    .wbs_rst  (wbs_rst),
+    .wbs_adr_o(wbs_m2s_adr),
+    .wbs_dat_o(wbs_m2s_dat),
+    .wbs_sel_o(wbs_m2s_sel),
+    .wbs_we_o (wbs_m2s_we),
+    .wbs_cyc_o(wbs_m2s_cyc),
+    .wbs_stb_o(wbs_m2s_stb),
+    .wbs_dat_i(wbs_s2m_dat),
+    .wbs_ack_i(wbs_s2m_ack & !wbs_rst)
   );
 
   peripheral_bfm_memory_wb #(
-  .DEBUG (0),
-  .MEM_SIZE_BYTES (MEM_SIZE)
-  )
-  mem (
-    .wb_clk_i (wbs_clk),
-    .wb_rst_i (wbs_rst),
-    .wb_adr_i (wbs_m2s_adr),
-    .wb_dat_i (wbs_m2s_dat),
-    .wb_sel_i (wbs_m2s_sel),
-    .wb_we_i  (wbs_m2s_we),
-    .wb_cyc_i (wbs_m2s_cyc),
-    .wb_stb_i (wbs_m2s_stb),
-    .wb_cti_i (3'b000),
-    .wb_bte_i (2'b00),
-    .wb_dat_o (wbs_s2m_dat),
-    .wb_ack_o (wbs_s2m_ack),
-    .wb_err_o (),
-    .wb_rty_o ()
+    .DEBUG         (0),
+    .MEM_SIZE_BYTES(MEM_SIZE)
+  ) mem (
+    .wb_clk_i(wbs_clk),
+    .wb_rst_i(wbs_rst),
+    .wb_adr_i(wbs_m2s_adr),
+    .wb_dat_i(wbs_m2s_dat),
+    .wb_sel_i(wbs_m2s_sel),
+    .wb_we_i (wbs_m2s_we),
+    .wb_cyc_i(wbs_m2s_cyc),
+    .wb_stb_i(wbs_m2s_stb),
+    .wb_cti_i(3'b000),
+    .wb_bte_i(2'b00),
+    .wb_dat_o(wbs_s2m_dat),
+    .wb_ack_o(wbs_s2m_ack),
+    .wb_err_o(),
+    .wb_rty_o()
   );
 endmodule

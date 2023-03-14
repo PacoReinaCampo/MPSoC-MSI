@@ -41,16 +41,15 @@
  */
 
 module peripheral_msi_synthesis #(
-  parameter HADDR_SIZE =  8,
-  parameter HDATA_SIZE = 32,
-  parameter APB_ADDR_WIDTH =  8,
+  parameter HADDR_SIZE     = 8,
+  parameter HDATA_SIZE     = 32,
+  parameter APB_ADDR_WIDTH = 8,
   parameter APB_DATA_WIDTH = 32,
-  parameter SYNC_DEPTH =  3
-)
-  (
+  parameter SYNC_DEPTH     = 3
+) (
   //Common signals
-  input                         HRESETn,
-  input                         HCLK,
+  input HRESETn,
+  input HCLK,
 
   //UART AHB3
   input                         msi_HSEL,
@@ -83,8 +82,8 @@ module peripheral_msi_synthesis #(
   logic                       msi_PREADY;
   logic                       msi_PSLVERR;
 
-  logic                       msi_rx_i; // Receiver input
-  logic                       msi_tx_o; // Transmitter output
+  logic                       msi_rx_i;  // Receiver input
+  logic                       msi_tx_o;  // Transmitter output
 
   logic                       msi_event_o;
 
@@ -95,67 +94,65 @@ module peripheral_msi_synthesis #(
 
   //DUT AHB3
   peripheral_bridge_apb2ahb #(
-  .HADDR_SIZE ( HADDR_SIZE     ),
-  .HDATA_SIZE ( HDATA_SIZE     ),
-  .PADDR_SIZE ( APB_ADDR_WIDTH ),
-  .PDATA_SIZE ( APB_DATA_WIDTH ),
-  .SYNC_DEPTH ( SYNC_DEPTH     )
-  )
-  bridge_apb2ahb (
+    .HADDR_SIZE(HADDR_SIZE),
+    .HDATA_SIZE(HDATA_SIZE),
+    .PADDR_SIZE(APB_ADDR_WIDTH),
+    .PDATA_SIZE(APB_DATA_WIDTH),
+    .SYNC_DEPTH(SYNC_DEPTH)
+  ) bridge_apb2ahb (
     //AHB Slave Interface
-    .HRESETn   ( HRESETn ),
-    .HCLK      ( HCLK    ),
+    .HRESETn(HRESETn),
+    .HCLK   (HCLK),
 
-    .HSEL      ( msi_HSEL      ),
-    .HADDR     ( msi_HADDR     ),
-    .HWDATA    ( msi_HWDATA    ),
-    .HRDATA    ( msi_HRDATA    ),
-    .HWRITE    ( msi_HWRITE    ),
-    .HSIZE     ( msi_HSIZE     ),
-    .HBURST    ( msi_HBURST    ),
-    .HPROT     ( msi_HPROT     ),
-    .HTRANS    ( msi_HTRANS    ),
-    .HMASTLOCK ( msi_HMASTLOCK ),
-    .HREADYOUT ( msi_HREADYOUT ),
-    .HREADY    ( msi_HREADY    ),
-    .HRESP     ( msi_HRESP     ),
+    .HSEL     (msi_HSEL),
+    .HADDR    (msi_HADDR),
+    .HWDATA   (msi_HWDATA),
+    .HRDATA   (msi_HRDATA),
+    .HWRITE   (msi_HWRITE),
+    .HSIZE    (msi_HSIZE),
+    .HBURST   (msi_HBURST),
+    .HPROT    (msi_HPROT),
+    .HTRANS   (msi_HTRANS),
+    .HMASTLOCK(msi_HMASTLOCK),
+    .HREADYOUT(msi_HREADYOUT),
+    .HREADY   (msi_HREADY),
+    .HRESP    (msi_HRESP),
 
     //APB Master Interface
-    .PRESETn ( HRESETn ),
-    .PCLK    ( HCLK    ),
+    .PRESETn(HRESETn),
+    .PCLK   (HCLK),
 
-    .PSEL    ( msi_PSEL    ),
-    .PENABLE ( msi_PENABLE ),
-    .PPROT   (              ),
-    .PWRITE  ( msi_PWRITE  ),
-    .PSTRB   (              ),
-    .PADDR   ( msi_PADDR   ),
-    .PWDATA  ( msi_PWDATA  ),
-    .PRDATA  ( msi_PRDATA  ),
-    .PREADY  ( msi_PREADY  ),
-    .PSLVERR ( msi_PSLVERR )
+    .PSEL   (msi_PSEL),
+    .PENABLE(msi_PENABLE),
+    .PPROT  (),
+    .PWRITE (msi_PWRITE),
+    .PSTRB  (),
+    .PADDR  (msi_PADDR),
+    .PWDATA (msi_PWDATA),
+    .PRDATA (msi_PRDATA),
+    .PREADY (msi_PREADY),
+    .PSLVERR(msi_PSLVERR)
   );
 
   peripheral_apb4_msi #(
-  .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
-  .APB_DATA_WIDTH ( APB_DATA_WIDTH )
-  )
-  apb4_msi (
-    .RSTN ( HRESETn ),
-    .CLK  ( HCLK    ),
+    .APB_ADDR_WIDTH(APB_ADDR_WIDTH),
+    .APB_DATA_WIDTH(APB_DATA_WIDTH)
+  ) apb4_msi (
+    .RSTN(HRESETn),
+    .CLK (HCLK),
 
-    .PADDR   ( msi_PADDR   ),
-    .PWDATA  ( msi_PWDATA  ),
-    .PWRITE  ( msi_PWRITE  ),
-    .PSEL    ( msi_PSEL    ),
-    .PENABLE ( msi_PENABLE ),
-    .PRDATA  ( msi_PRDATA  ),
-    .PREADY  ( msi_PREADY  ),
-    .PSLVERR ( msi_PSLVERR ),
+    .PADDR  (msi_PADDR),
+    .PWDATA (msi_PWDATA),
+    .PWRITE (msi_PWRITE),
+    .PSEL   (msi_PSEL),
+    .PENABLE(msi_PENABLE),
+    .PRDATA (msi_PRDATA),
+    .PREADY (msi_PREADY),
+    .PSLVERR(msi_PSLVERR),
 
-    .rx_i ( msi_rx_i ),
-    .tx_o ( msi_tx_o ),
+    .rx_i(msi_rx_i),
+    .tx_o(msi_tx_o),
 
-    .event_o ( msi_event_o )
+    .event_o(msi_event_o)
   );
 endmodule
