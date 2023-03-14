@@ -45,14 +45,14 @@ module peripheral_msi_cc561_wb #(
   parameter DW=0
 )
   (
-    input               aclk,
-    input               arst,
-    input      [DW-1:0] adata,
-    input               aen,
-    input               bclk,
-    output reg [DW-1:0] bdata,
-    output reg          ben
-  );
+  input               aclk,
+  input               arst,
+  input      [DW-1:0] adata,
+  input               aen,
+  input               bclk,
+  output reg [DW-1:0] bdata,
+  output reg          ben
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //

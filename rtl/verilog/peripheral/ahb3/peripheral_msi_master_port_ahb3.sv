@@ -46,53 +46,53 @@ module peripheral_msi_master_port_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
   parameter MASTERS = 5, //number of AHB masters
-  parameter SLAVES  = 5  //number of AHB slaves
+  parameter SLAVES  = 5 //number of AHB slaves
 )
   (
-    //Common signals
-    input                          HRESETn,
-    input                          HCLK,
+  //Common signals
+  input                          HRESETn,
+  input                          HCLK,
 
-    //AHB Slave Interfaces (receive data from AHB Masters)
-    //AHB Masters connect to these ports
-    input [      2:0]              mst_priority,
+  //AHB Slave Interfaces (receive data from AHB Masters)
+  //AHB Masters connect to these ports
+  input [      2:0]              mst_priority,
 
-    input                          mst_HSEL,
-    input  [PLEN-1:0]              mst_HADDR,
-    input  [XLEN-1:0]              mst_HWDATA,
-    output [XLEN-1:0]              mst_HRDATA,
-    input                          mst_HWRITE,
-    input  [     2:0]              mst_HSIZE,
-    input  [     2:0]              mst_HBURST,
-    input  [     3:0]              mst_HPROT,
-    input  [     1:0]              mst_HTRANS,
-    input                          mst_HMASTLOCK,
-    output                         mst_HREADYOUT,
-    input                          mst_HREADY,
-    output                         mst_HRESP,
+  input                          mst_HSEL,
+  input  [PLEN-1:0]              mst_HADDR,
+  input  [XLEN-1:0]              mst_HWDATA,
+  output [XLEN-1:0]              mst_HRDATA,
+  input                          mst_HWRITE,
+  input  [     2:0]              mst_HSIZE,
+  input  [     2:0]              mst_HBURST,
+  input  [     3:0]              mst_HPROT,
+  input  [     1:0]              mst_HTRANS,
+  input                          mst_HMASTLOCK,
+  output                         mst_HREADYOUT,
+  input                          mst_HREADY,
+  output                         mst_HRESP,
 
-    //AHB Master Interfaces; send data to AHB slaves
-    input  [SLAVES-1:0][PLEN -1:0] slvHADDRmask,
-    input  [SLAVES-1:0][PLEN -1:0] slvHADDRbase,
-    output [SLAVES-1:0]            slvHSEL,
-    output             [PLEN -1:0] slvHADDR,
-    output             [XLEN -1:0] slvHWDATA,
-    input  [SLAVES-1:0][XLEN -1:0] slvHRDATA,
-    output                         slvHWRITE,
-    output             [      2:0] slvHSIZE,
-    output             [      2:0] slvHBURST,
-    output             [      3:0] slvHPROT,
-    output             [      1:0] slvHTRANS,
-    output                         slvHMASTLOCK,
-    input  [SLAVES-1:0]            slvHREADY,
-    output                         slvHREADYOUT,
-    input  [SLAVES-1:0]            slvHRESP,
+  //AHB Master Interfaces; send data to AHB slaves
+  input  [SLAVES-1:0][PLEN -1:0] slvHADDRmask,
+  input  [SLAVES-1:0][PLEN -1:0] slvHADDRbase,
+  output [SLAVES-1:0]            slvHSEL,
+  output             [PLEN -1:0] slvHADDR,
+  output             [XLEN -1:0] slvHWDATA,
+  input  [SLAVES-1:0][XLEN -1:0] slvHRDATA,
+  output                         slvHWRITE,
+  output             [      2:0] slvHSIZE,
+  output             [      2:0] slvHBURST,
+  output             [      3:0] slvHPROT,
+  output             [      1:0] slvHTRANS,
+  output                         slvHMASTLOCK,
+  input  [SLAVES-1:0]            slvHREADY,
+  output                         slvHREADYOUT,
+  input  [SLAVES-1:0]            slvHRESP,
 
-    //Internal signals
-    output reg                     can_switch,
-    output             [      2:0] slvpriority,
-    input  [SLAVES-1:0]            master_granted
-  );
+  //Internal signals
+  output reg                     can_switch,
+  output             [      2:0] slvpriority,
+  input  [SLAVES-1:0]            master_granted
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -109,11 +109,11 @@ module peripheral_msi_master_port_ahb3 #(
   enum logic [1:0] {NO_ACCESS,ACCESS_PENDING,ACCESS_GRANTED} access_state;
 
   logic                   no_access,
-                          access_pending,
-                          access_granted;
+  access_pending,
+  access_granted;
 
   logic [SLAVES     -1:0] current_HSEL,
-                          pending_HSEL;
+  pending_HSEL;
 
   logic                   local_HREADYOUT;
 
@@ -171,7 +171,7 @@ module peripheral_msi_master_port_ahb3 #(
       regHBURST    <= mst_HBURST;
       regHPROT     <= mst_HPROT;
       regHMASTLOCK <= mst_HMASTLOCK;
-    end 
+    end
   end
 
   //Generate local HREADY response
@@ -195,14 +195,14 @@ module peripheral_msi_master_port_ahb3 #(
 
   always @(posedge HCLK,negedge HRESETn) begin
     if (!HRESETn) access_state <= NO_ACCESS;
-    else 
+    else
       case (access_state)
         NO_ACCESS     : if      (~|current_HSEL && ~|pending_HSEL  ) access_state <= NO_ACCESS;
         else if ( |(current_HSEL & master_granted) ) access_state <= ACCESS_GRANTED;
         else                                         access_state <= ACCESS_PENDING;
 
         ACCESS_PENDING: if ( |(pending_HSEL & master_granted)  &&
-                               slvHREADY[slave_sel]                                          ) access_state <= ACCESS_GRANTED;
+        slvHREADY[slave_sel]                                          ) access_state <= ACCESS_GRANTED;
 
         ACCESS_GRANTED: if      (mst_HREADY && ~|current_HSEL                                ) access_state <= NO_ACCESS;
         else if (mst_HREADY && ~|(current_HSEL & master_granted & slvHREADY) ) access_state <= ACCESS_PENDING;
@@ -237,13 +237,13 @@ module peripheral_msi_master_port_ahb3 #(
   always @(*) begin
     case (access_state)
       NO_ACCESS     : can_switch = ~|(current_HSEL & master_granted);
-      ACCESS_PENDING: can_switch = ~|(pending_HSEL & master_granted); 
+      ACCESS_PENDING: can_switch = ~|(pending_HSEL & master_granted);
       ACCESS_GRANTED: can_switch = ~mst_HSEL |
-        (mst_HSEL & ~mst_HMASTLOCK & mst_HREADY & 
-          ( (mst_HTRANS == HTRANS_IDLE                                              ) |
-            (mst_HTRANS == HTRANS_NONSEQ & mst_HBURST == HBURST_SINGLE              ) |
-            (mst_HTRANS == HTRANS_SEQ    & mst_HBURST != HBURST_INCR   & ~|burst_cnt) )
-        );
+      (mst_HSEL & ~mst_HMASTLOCK & mst_HREADY &
+      ( (mst_HTRANS == HTRANS_IDLE                                              ) |
+      (mst_HTRANS == HTRANS_NONSEQ & mst_HBURST == HBURST_SINGLE              ) |
+      (mst_HTRANS == HTRANS_SEQ    & mst_HBURST != HBURST_INCR   & ~|burst_cnt) )
+      );
     endcase
   end
 
@@ -286,5 +286,5 @@ module peripheral_msi_master_port_ahb3 #(
   //Incoming data (to masters)
   assign mst_HRDATA    =                  slvHRDATA [slave_sel];
   assign mst_HREADYOUT = access_granted ? slvHREADY [slave_sel] : local_HREADYOUT; //master's HREADYOUT is driven by slave's HREADY (slv_HREADY -> mst_HREADYOUT)
-  assign mst_HRESP     = access_granted ? slvHRESP  [slave_sel] : HRESP_OKAY; 
+  assign mst_HRESP     = access_granted ? slvHRESP  [slave_sel] : HRESP_OKAY;
 endmodule

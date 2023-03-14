@@ -48,25 +48,25 @@ module peripheral_msi_synthesis #(
   parameter SYNC_DEPTH =  3
 )
   (
-    //Common signals
-    input                         HRESETn,
-    input                         HCLK,
-								  
-    //UART AHB3
-    input                         msi_HSEL,
-    input      [HADDR_SIZE  -1:0] msi_HADDR,
-    input      [HDATA_SIZE  -1:0] msi_HWDATA,
-    output reg [HDATA_SIZE  -1:0] msi_HRDATA,
-    input                         msi_HWRITE,
-    input      [             2:0] msi_HSIZE,
-    input      [             2:0] msi_HBURST,
-    input      [             3:0] msi_HPROT,
-    input      [             1:0] msi_HTRANS,
-    input                         msi_HMASTLOCK,
-    output reg                    msi_HREADYOUT,
-    input                         msi_HREADY,
-    output reg                    msi_HRESP
-  );
+  //Common signals
+  input                         HRESETn,
+  input                         HCLK,
+
+  //UART AHB3
+  input                         msi_HSEL,
+  input      [HADDR_SIZE  -1:0] msi_HADDR,
+  input      [HDATA_SIZE  -1:0] msi_HWDATA,
+  output reg [HDATA_SIZE  -1:0] msi_HRDATA,
+  input                         msi_HWRITE,
+  input      [             2:0] msi_HSIZE,
+  input      [             2:0] msi_HBURST,
+  input      [             3:0] msi_HPROT,
+  input      [             1:0] msi_HTRANS,
+  input                         msi_HMASTLOCK,
+  output reg                    msi_HREADYOUT,
+  input                         msi_HREADY,
+  output reg                    msi_HRESP
+);
 
   //////////////////////////////////////////////////////////////////
   //
@@ -83,8 +83,8 @@ module peripheral_msi_synthesis #(
   logic                       msi_PREADY;
   logic                       msi_PSLVERR;
 
-  logic                       msi_rx_i;  // Receiver input
-  logic                       msi_tx_o;  // Transmitter output
+  logic                       msi_rx_i; // Receiver input
+  logic                       msi_tx_o; // Transmitter output
 
   logic                       msi_event_o;
 
@@ -95,11 +95,11 @@ module peripheral_msi_synthesis #(
 
   //DUT AHB3
   peripheral_bridge_apb2ahb #(
-    .HADDR_SIZE ( HADDR_SIZE     ),
-    .HDATA_SIZE ( HDATA_SIZE     ),
-    .PADDR_SIZE ( APB_ADDR_WIDTH ),
-    .PDATA_SIZE ( APB_DATA_WIDTH ),
-    .SYNC_DEPTH ( SYNC_DEPTH     )
+  .HADDR_SIZE ( HADDR_SIZE     ),
+  .HDATA_SIZE ( HDATA_SIZE     ),
+  .PADDR_SIZE ( APB_ADDR_WIDTH ),
+  .PDATA_SIZE ( APB_DATA_WIDTH ),
+  .SYNC_DEPTH ( SYNC_DEPTH     )
   )
   bridge_apb2ahb (
     //AHB Slave Interface
@@ -137,8 +137,8 @@ module peripheral_msi_synthesis #(
   );
 
   peripheral_apb4_msi #(
-    .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
-    .APB_DATA_WIDTH ( APB_DATA_WIDTH )
+  .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
+  .APB_DATA_WIDTH ( APB_DATA_WIDTH )
   )
   apb4_msi (
     .RSTN ( HRESETn ),

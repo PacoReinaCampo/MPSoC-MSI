@@ -102,9 +102,9 @@ module peripheral_upsizer_wb (
   // Module Body
   //
   peripheral_bfm_transactor_wb #(
-    .MEM_HIGH(MEMORY_SIZE_WORDS-1),
-    .MEM_LOW (0),
-    .VERBOSE (0)
+  .MEM_HIGH(MEMORY_SIZE_WORDS-1),
+  .MEM_LOW (0),
+  .VERBOSE (0)
   )
   wb_bfm_transactor (
     .wb_clk_i (wb_clk_i),
@@ -134,8 +134,8 @@ module peripheral_upsizer_wb (
   end
 
   peripheral_msi_upsizer_wb #(
-    .DW_IN (DW_IN),
-    .SCALE (SCALE)
+  .DW_IN (DW_IN),
+  .SCALE (SCALE)
   )
   dut (
     .wb_clk_i  (wb_clk_i),
@@ -184,9 +184,9 @@ module peripheral_upsizer_wb (
   end
 
   peripheral_bfm_memory_wb #(
-    .DEBUG (0),
-    .DW (DW_OUT),
-    .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW_IN/8))
+  .DEBUG (0),
+  .DW (DW_OUT),
+  .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW_IN/8))
   )
   mem (
     .wb_clk_i (wb_clk_i),

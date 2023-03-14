@@ -45,27 +45,27 @@ module peripheral_msi_cdc_wb #(
   parameter AW = 32
 )
   (
-    input           wbm_clk,
-    input           wbm_rst,
-    input  [AW-1:0] wbm_adr_i,
-    input  [  31:0] wbm_dat_i,
-    input  [   3:0] wbm_sel_i,
-    input           wbm_we_i,
-    input           wbm_cyc_i,
-    input           wbm_stb_i,
-    output [  31:0] wbm_dat_o,
-    output          wbm_ack_o,
-    input           wbs_clk,
-    input           wbs_rst,
-    output [AW-1:0] wbs_adr_o,
-    output [  31:0] wbs_dat_o,
-    output [   3:0] wbs_sel_o,
-    output          wbs_we_o,
-    output          wbs_cyc_o,
-    output          wbs_stb_o,
-    input [   31:0] wbs_dat_i,
-    input           wbs_ack_i
-  );
+  input           wbm_clk,
+  input           wbm_rst,
+  input  [AW-1:0] wbm_adr_i,
+  input  [  31:0] wbm_dat_i,
+  input  [   3:0] wbm_sel_i,
+  input           wbm_we_i,
+  input           wbm_cyc_i,
+  input           wbm_stb_i,
+  output [  31:0] wbm_dat_o,
+  output          wbm_ack_o,
+  input           wbs_clk,
+  input           wbs_rst,
+  output [AW-1:0] wbs_adr_o,
+  output [  31:0] wbs_dat_o,
+  output [   3:0] wbs_sel_o,
+  output          wbs_we_o,
+  output          wbs_cyc_o,
+  output          wbs_stb_o,
+  input [   31:0] wbs_dat_i,
+  input           wbs_ack_i
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -84,7 +84,7 @@ module peripheral_msi_cdc_wb #(
   // Module Body
   //
   peripheral_msi_cc561_wb #(
-    .DW (AW+32+4+1)
+  .DW (AW+32+4+1)
   )
   cdc_m2s (
     .aclk  (wbm_clk),
@@ -117,15 +117,15 @@ module peripheral_msi_cdc_wb #(
   assign wbs_stb_o = wbs_m2s_en | wbs_cs;
 
   peripheral_msi_cc561_wb #(
-    .DW (32)
+  .DW (32)
   )
   cdc_s2m (
-   .aclk  (wbs_clk),
-   .arst  (wbs_rst),
-   .adata (wbs_dat_i),
-   .aen   (wbs_ack_i),
-   .bclk  (wbm_clk),
-   .bdata (wbm_dat_o),
-   .ben   (wbm_ack_o)
+    .aclk  (wbs_clk),
+    .arst  (wbs_rst),
+    .adata (wbs_dat_i),
+    .aen   (wbs_ack_i),
+    .bclk  (wbm_clk),
+    .bdata (wbm_dat_o),
+    .ben   (wbm_ack_o)
   );
 endmodule

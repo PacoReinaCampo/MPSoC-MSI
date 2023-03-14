@@ -164,9 +164,9 @@ module peripheral_msi_interface_wb (
   // Module Body
   //
   peripheral_msi_mux_wb #(
-    .NUM_SLAVES (2),
-    .MATCH_ADDR ({32'h00000000, 32'h90000000}),
-    .MATCH_MASK ({32'hfe000000, 32'hfffffff8})
+  .NUM_SLAVES (2),
+  .MATCH_ADDR ({32'h00000000, 32'h90000000}),
+  .MATCH_MASK ({32'hfe000000, 32'hfffffff8})
   )
   wb_mux_or1k_d (
     .wb_clk_i  (wb_clk_i),
@@ -198,9 +198,9 @@ module peripheral_msi_interface_wb (
   );
 
   peripheral_msi_mux_wb #(
-    .NUM_SLAVES (1),
-    .MATCH_ADDR ({32'h00000000}),
-    .MATCH_MASK ({32'hfe000000})
+  .NUM_SLAVES (1),
+  .MATCH_ADDR ({32'h00000000}),
+  .MATCH_MASK ({32'hfe000000})
   )
   wb_mux_or1k_i (
     .wb_clk_i  (wb_clk_i),
@@ -232,9 +232,9 @@ module peripheral_msi_interface_wb (
   );
 
   peripheral_msi_mux_wb #(
-    .NUM_SLAVES (1),
-    .MATCH_ADDR ({32'h00000000}),
-    .MATCH_MASK ({32'hfe000000})
+  .NUM_SLAVES (1),
+  .MATCH_ADDR ({32'h00000000}),
+  .MATCH_MASK ({32'hfe000000})
   )
   wb_mux_dbg (
     .wb_clk_i  (wb_clk_i),
@@ -266,7 +266,7 @@ module peripheral_msi_interface_wb (
   );
 
   peripheral_msi_arbiter_wb #(
-    .NUM_MASTERS (3)
+  .NUM_MASTERS (3)
   )
   wb_arbiter_mem (
     .wb_clk_i  (wb_clk_i),
@@ -298,9 +298,9 @@ module peripheral_msi_interface_wb (
   );
 
   peripheral_msi_data_resize_wb #(
-    .AW  (32),
-    .MDW (32),
-    .SDW (8)
+  .AW  (32),
+  .MDW (32),
+  .SDW (8)
   )
   wb_data_resize_uart (
     .wbm_adr_i (wb_m2s_resize_uart_adr),

@@ -96,10 +96,10 @@ module peripheral_msi_testbench;
 
   //DUT AHB3
   peripheral_msi_interface_ahb3 #(
-    .PLEN    ( PLEN    ),
-    .XLEN    ( XLEN    ),
-    .MASTERS ( MASTERS ),
-    .SLAVES  ( SLAVES  )
+  .PLEN    ( PLEN    ),
+  .XLEN    ( XLEN    ),
+  .MASTERS ( MASTERS ),
+  .SLAVES  ( SLAVES  )
   )
   peripheral_interface_ahb3 (
     //Common signals

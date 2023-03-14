@@ -43,49 +43,49 @@
 module peripheral_msi_slave_port_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
-  parameter MASTERS = 5,  //number of slave-ports
-  parameter SLAVES  = 5   //number of master-ports
+  parameter MASTERS = 5, //number of slave-ports
+  parameter SLAVES  = 5 //number of master-ports
 )
   (
-    input                               HRESETn,
-    input                               HCLK,
+  input                               HRESETn,
+  input                               HCLK,
 
-    //AHB Slave Interfaces (receive data from AHB Masters)
-    //AHB Masters conect to these ports
-    input      [MASTERS-1:0][      2:0] mstpriority,
-    input      [MASTERS-1:0]            mstHSEL,
-    input      [MASTERS-1:0][PLEN -1:0] mstHADDR,
-    input      [MASTERS-1:0][XLEN -1:0] mstHWDATA,
-    output                  [XLEN -1:0] mstHRDATA,
-    input      [MASTERS-1:0]            mstHWRITE,
-    input      [MASTERS-1:0][      2:0] mstHSIZE,
-    input      [MASTERS-1:0][      2:0] mstHBURST,
-    input      [MASTERS-1:0][      3:0] mstHPROT,
-    input      [MASTERS-1:0][      1:0] mstHTRANS,
-    input      [MASTERS-1:0]            mstHMASTLOCK,
-    input      [MASTERS-1:0]            mstHREADY,         //HREADY input from master-bus
-    output                              mstHREADYOUT,      //HREADYOUT output to master-bus
-    output                              mstHRESP,
+  //AHB Slave Interfaces (receive data from AHB Masters)
+  //AHB Masters conect to these ports
+  input      [MASTERS-1:0][      2:0] mstpriority,
+  input      [MASTERS-1:0]            mstHSEL,
+  input      [MASTERS-1:0][PLEN -1:0] mstHADDR,
+  input      [MASTERS-1:0][XLEN -1:0] mstHWDATA,
+  output                  [XLEN -1:0] mstHRDATA,
+  input      [MASTERS-1:0]            mstHWRITE,
+  input      [MASTERS-1:0][      2:0] mstHSIZE,
+  input      [MASTERS-1:0][      2:0] mstHBURST,
+  input      [MASTERS-1:0][      3:0] mstHPROT,
+  input      [MASTERS-1:0][      1:0] mstHTRANS,
+  input      [MASTERS-1:0]            mstHMASTLOCK,
+  input      [MASTERS-1:0]            mstHREADY, //HREADY input from master-bus
+  output                              mstHREADYOUT, //HREADYOUT output to master-bus
+  output                              mstHRESP,
 
-    //AHB Master Interfaces (send data to AHB slaves)
-    //AHB Slaves connect to these ports
-    output                              slv_HSEL,
-    output                   [PLEN-1:0] slv_HADDR,
-    output                   [XLEN-1:0] slv_HWDATA,
-    input                    [XLEN-1:0] slv_HRDATA,
-    output                              slv_HWRITE,
-    output                   [     2:0] slv_HSIZE,
-    output                   [     2:0] slv_HBURST,
-    output                   [     3:0] slv_HPROT,
-    output                   [     1:0] slv_HTRANS,
-    output                              slv_HMASTLOCK,
-    output                              slv_HREADYOUT,
-    input                               slv_HREADY,
-    input                               slv_HRESP,
+  //AHB Master Interfaces (send data to AHB slaves)
+  //AHB Slaves connect to these ports
+  output                              slv_HSEL,
+  output                   [PLEN-1:0] slv_HADDR,
+  output                   [XLEN-1:0] slv_HWDATA,
+  input                    [XLEN-1:0] slv_HRDATA,
+  output                              slv_HWRITE,
+  output                   [     2:0] slv_HSIZE,
+  output                   [     2:0] slv_HBURST,
+  output                   [     3:0] slv_HPROT,
+  output                   [     1:0] slv_HTRANS,
+  output                              slv_HMASTLOCK,
+  output                              slv_HREADYOUT,
+  input                               slv_HREADY,
+  input                               slv_HRESP,
 
-    input      [MASTERS-1:0]            can_switch,
-    output reg [MASTERS-1:0]            granted_master
-  );
+  input      [MASTERS-1:0]            can_switch,
+  output reg [MASTERS-1:0]            granted_master
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -99,17 +99,17 @@ module peripheral_msi_slave_port_ahb3 #(
   // Variables
   //
 
-  logic [            2:0]              requested_priority_lvl;  //requested priority level
-  logic [MASTERS    -1:0]              priority_masters;        //all masters at this priority level
+  logic [            2:0]              requested_priority_lvl; //requested priority level
+  logic [MASTERS    -1:0]              priority_masters; //all masters at this priority level
 
-  logic [MASTERS    -1:0]              pending_master,          //next master waiting to be served
-                                       last_granted_master;     //for requested priority level
-  logic [            2:0][MASTERS-1:0] last_granted_masters;    //per priority level, for round-robin
+  logic [MASTERS    -1:0]              pending_master, //next master waiting to be served
+  last_granted_master; //for requested priority level
+  logic [            2:0][MASTERS-1:0] last_granted_masters; //per priority level, for round-robin
 
-  logic [MASTER_BITS-1:0]              granted_master_idx,      //granted master as index
-                                       granted_master_idx_dly;  //deleayed granted master index (for HWDATA)
+  logic [MASTER_BITS-1:0]              granted_master_idx, //granted master as index
+  granted_master_idx_dly; //deleayed granted master index (for HWDATA)
 
-  logic                                can_switch_master;       //Slave may switch to a new master
+  logic                                can_switch_master; //Slave may switch to a new master
 
   genvar m;
 
@@ -149,9 +149,9 @@ module peripheral_msi_slave_port_ahb3 #(
   endfunction //requesters
 
   function [MASTERS-1:0] nxt_master;
-    input [MASTERS-1:0] pending_masters;  //pending masters for the requesed priority level
-    input [MASTERS-1:0] last_master;      //last granted master for the priority level
-    input [MASTERS-1:0] current_master;   //current granted master (indpendent of priority level)
+    input [MASTERS-1:0] pending_masters; //pending masters for the requesed priority level
+    input [MASTERS-1:0] last_master; //last granted master for the priority level
+    input [MASTERS-1:0] current_master; //current granted master (indpendent of priority level)
 
     integer offset;
     logic [MASTERS*2-1:0] sr;
@@ -196,7 +196,7 @@ module peripheral_msi_slave_port_ahb3 #(
   //select new master
   always @(posedge HCLK, negedge HRESETn) begin
     if      (!HRESETn       ) granted_master <= 'h1;
-  //else if (!slv_HSEL      ) granted_master <= pending_master;
+    //else if (!slv_HSEL      ) granted_master <= pending_master;
     else if ( slv_HREADY    )
       if (can_switch_master)  granted_master <= pending_master;
   end
@@ -204,7 +204,7 @@ module peripheral_msi_slave_port_ahb3 #(
   //store current master (for this priority level)
   always @(posedge HCLK, negedge HRESETn) begin
     if      (!HRESETn       ) last_granted_masters <= 'h1;
-  //else if (!slv_HSEL      ) last_granted_masters[requested_priority_lvl] <= pending_master;
+    //else if (!slv_HSEL      ) last_granted_masters[requested_priority_lvl] <= pending_master;
     else if ( slv_HREADY    )
       if (can_switch_master)  last_granted_masters[requested_priority_lvl] <= pending_master;
   end
@@ -212,7 +212,7 @@ module peripheral_msi_slave_port_ahb3 #(
   //Get signals from current requester
   always @(posedge HCLK, negedge HRESETn) begin
     if      (!HRESETn   ) granted_master_idx <= 'h0;
-  //else if (!slv_HSEL  ) granted_master_idx <= onehot2int( pending_master );
+    //else if (!slv_HSEL  ) granted_master_idx <= onehot2int( pending_master );
     else if ( slv_HREADY) granted_master_idx <= onehot2int( can_switch_master ? pending_master : granted_master );
   end
 

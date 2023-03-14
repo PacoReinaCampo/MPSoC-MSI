@@ -45,13 +45,13 @@ module peripheral_msi_arbiter #(
   parameter NUM_PORTS = 6
 )
   (
-    input                               clk,
-    input                               rst,
-    input      [NUM_PORTS        -1:0]  request,
-    output reg [NUM_PORTS        -1:0]  grant,
-    output reg [$clog2(NUM_PORTS)-1:0]  selection,
-    output reg                          active
-  );
+  input                               clk,
+  input                               rst,
+  input      [NUM_PORTS        -1:0]  request,
+  output reg [NUM_PORTS        -1:0]  grant,
+  output reg [$clog2(NUM_PORTS)-1:0]  selection,
+  output reg                          active
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //

@@ -146,10 +146,10 @@ module peripheral_mux_wb #(
   // Module Body
   //
   peripheral_bfm_transactor_wb #(
-    .NUM_SEGMENTS (NUM_SLAVES),
-    .AUTORUN (0),
-    .VERBOSE (0),
-    .SEGMENT_SIZE (SEGMENT_SIZE)
+  .NUM_SEGMENTS (NUM_SLAVES),
+  .AUTORUN (0),
+  .VERBOSE (0),
+  .SEGMENT_SIZE (SEGMENT_SIZE)
   )
   transactor (
     .wb_clk_i (wb_clk),
@@ -171,9 +171,9 @@ module peripheral_mux_wb #(
   );
 
   peripheral_msi_mux_wb #(
-    .NUM_SLAVES (NUM_SLAVES),
-    .MATCH_ADDR (MATCH_ADDR),
-    .MATCH_MASK (MATCH_MASK)
+  .NUM_SLAVES (NUM_SLAVES),
+  .MATCH_ADDR (MATCH_ADDR),
+  .MATCH_MASK (MATCH_MASK)
   )
   wb_mux (
     .wb_clk_i (wb_clk),
@@ -213,8 +213,8 @@ module peripheral_mux_wb #(
       assign slave_reads[i]  = wb_mem_model.reads;
 
       peripheral_bfm_memory_wb #(
-        .DEBUG (0),
-        .MEM_SIZE_BYTES (SEGMENT_SIZE)
+      .DEBUG (0),
+      .MEM_SIZE_BYTES (SEGMENT_SIZE)
       )
       wb_mem_model (
         .wb_clk_i (wb_clk),

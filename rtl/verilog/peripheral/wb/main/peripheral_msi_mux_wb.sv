@@ -42,45 +42,45 @@
  */
 
 module peripheral_msi_mux_wb #(
-  parameter DW = 32,         // Data width
-  parameter AW = 32,         // Address width
-  parameter NUM_SLAVES = 2,  // Number of slaves
+  parameter DW = 32, // Data width
+  parameter AW = 32, // Address width
+  parameter NUM_SLAVES = 2, // Number of slaves
 
   parameter [NUM_SLAVES*AW-1:0] MATCH_ADDR = 0,
   parameter [NUM_SLAVES*AW-1:0] MATCH_MASK = 0
 )
   (
-    input                      wb_clk_i,
-    input                      wb_rst_i,
+  input                      wb_clk_i,
+  input                      wb_rst_i,
 
-    // Master Interface
-    input  [AW-1:0]            wbm_adr_i,
-    input  [DW-1:0]            wbm_dat_i,
-    input  [   3:0]            wbm_sel_i,
-    input                      wbm_we_i,
-    input                      wbm_cyc_i,
-    input                      wbm_stb_i,
-    input  [   2:0]            wbm_cti_i,
-    input  [   1:0]            wbm_bte_i,
-    output [DW-1:0]            wbm_dat_o,
-    output                     wbm_ack_o,
-    output                     wbm_err_o,
-    output                     wbm_rty_o,
+  // Master Interface
+  input  [AW-1:0]            wbm_adr_i,
+  input  [DW-1:0]            wbm_dat_i,
+  input  [   3:0]            wbm_sel_i,
+  input                      wbm_we_i,
+  input                      wbm_cyc_i,
+  input                      wbm_stb_i,
+  input  [   2:0]            wbm_cti_i,
+  input  [   1:0]            wbm_bte_i,
+  output [DW-1:0]            wbm_dat_o,
+  output                     wbm_ack_o,
+  output                     wbm_err_o,
+  output                     wbm_rty_o,
 
-    // Wishbone Slave interface
-    output [NUM_SLAVES-1:0][AW-1:0] wbs_adr_o,
-    output [NUM_SLAVES-1:0][DW-1:0] wbs_dat_o,
-    output [NUM_SLAVES-1:0][   3:0] wbs_sel_o,
-    output [NUM_SLAVES-1:0]         wbs_we_o,
-    output [NUM_SLAVES-1:0]         wbs_cyc_o,
-    output [NUM_SLAVES-1:0]         wbs_stb_o,
-    output [NUM_SLAVES-1:0][   2:0] wbs_cti_o,
-    output [NUM_SLAVES-1:0][   1:0] wbs_bte_o,
-    input  [NUM_SLAVES-1:0][DW-1:0] wbs_dat_i,
-    input  [NUM_SLAVES-1:0]         wbs_ack_i,
-    input  [NUM_SLAVES-1:0]         wbs_err_i,
-    input  [NUM_SLAVES-1:0]         wbs_rty_i
-  );
+  // Wishbone Slave interface
+  output [NUM_SLAVES-1:0][AW-1:0] wbs_adr_o,
+  output [NUM_SLAVES-1:0][DW-1:0] wbs_dat_o,
+  output [NUM_SLAVES-1:0][   3:0] wbs_sel_o,
+  output [NUM_SLAVES-1:0]         wbs_we_o,
+  output [NUM_SLAVES-1:0]         wbs_cyc_o,
+  output [NUM_SLAVES-1:0]         wbs_stb_o,
+  output [NUM_SLAVES-1:0][   2:0] wbs_cti_o,
+  output [NUM_SLAVES-1:0][   1:0] wbs_bte_o,
+  input  [NUM_SLAVES-1:0][DW-1:0] wbs_dat_i,
+  input  [NUM_SLAVES-1:0]         wbs_ack_i,
+  input  [NUM_SLAVES-1:0]         wbs_err_i,
+  input  [NUM_SLAVES-1:0]         wbs_rty_i
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -132,7 +132,7 @@ module peripheral_msi_mux_wb #(
   assign slave_sel = ff1(match);
 
   always @(posedge wb_clk_i)
-    wbm_err <= wbm_cyc_i & !(|match);
+  wbm_err <= wbm_cyc_i & !(|match);
 
   assign wbs_adr_o = {NUM_SLAVES{wbm_adr_i}};
   assign wbs_dat_o = {NUM_SLAVES{wbm_dat_i}};

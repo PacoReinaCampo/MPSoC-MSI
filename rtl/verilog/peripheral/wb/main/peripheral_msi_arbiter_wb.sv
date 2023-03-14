@@ -47,37 +47,37 @@ module peripheral_msi_arbiter_wb #(
   parameter NUM_MASTERS = 0
 )
   (
-    input wb_clk_i,
-    input wb_rst_i,
+  input wb_clk_i,
+  input wb_rst_i,
 
-    // Wishbone Master Interface
-    input  [NUM_MASTERS-1:0][AW-1:0] wbm_adr_i,
-    input  [NUM_MASTERS-1:0][DW-1:0] wbm_dat_i,
-    input  [NUM_MASTERS-1:0][   3:0] wbm_sel_i,
-    input  [NUM_MASTERS-1:0]         wbm_we_i,
-    input  [NUM_MASTERS-1:0]         wbm_cyc_i,
-    input  [NUM_MASTERS-1:0]         wbm_stb_i,
-    input  [NUM_MASTERS-1:0][   2:0] wbm_cti_i,
-    input  [NUM_MASTERS-1:0][   1:0] wbm_bte_i,
-    output [NUM_MASTERS-1:0][DW-1:0] wbm_dat_o,
-    output [NUM_MASTERS-1:0]         wbm_ack_o,
-    output [NUM_MASTERS-1:0]         wbm_err_o,
-    output [NUM_MASTERS-1:0]         wbm_rty_o, 
+  // Wishbone Master Interface
+  input  [NUM_MASTERS-1:0][AW-1:0] wbm_adr_i,
+  input  [NUM_MASTERS-1:0][DW-1:0] wbm_dat_i,
+  input  [NUM_MASTERS-1:0][   3:0] wbm_sel_i,
+  input  [NUM_MASTERS-1:0]         wbm_we_i,
+  input  [NUM_MASTERS-1:0]         wbm_cyc_i,
+  input  [NUM_MASTERS-1:0]         wbm_stb_i,
+  input  [NUM_MASTERS-1:0][   2:0] wbm_cti_i,
+  input  [NUM_MASTERS-1:0][   1:0] wbm_bte_i,
+  output [NUM_MASTERS-1:0][DW-1:0] wbm_dat_o,
+  output [NUM_MASTERS-1:0]         wbm_ack_o,
+  output [NUM_MASTERS-1:0]         wbm_err_o,
+  output [NUM_MASTERS-1:0]         wbm_rty_o,
 
-    // Wishbone Slave interface
-    output [AW-1:0] wbs_adr_o,
-    output [DW-1:0] wbs_dat_o,
-    output [   3:0] wbs_sel_o, 
-    output          wbs_we_o,
-    output          wbs_cyc_o,
-    output          wbs_stb_o,
-    output [   2:0] wbs_cti_o,
-    output [   1:0] wbs_bte_o,
-    input  [DW-1:0] wbs_dat_i,
-    input           wbs_ack_i,
-    input           wbs_err_i,
-    input           wbs_rty_i
- );
+  // Wishbone Slave interface
+  output [AW-1:0] wbs_adr_o,
+  output [DW-1:0] wbs_dat_o,
+  output [   3:0] wbs_sel_o,
+  output          wbs_we_o,
+  output          wbs_cyc_o,
+  output          wbs_stb_o,
+  output [   2:0] wbs_cti_o,
+  output [   1:0] wbs_bte_o,
+  input  [DW-1:0] wbs_dat_i,
+  input           wbs_ack_i,
+  input           wbs_err_i,
+  input           wbs_rty_i
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -98,7 +98,7 @@ module peripheral_msi_arbiter_wb #(
   // Module Body
   //
   peripheral_msi_arbiter #(
-    .NUM_PORTS (NUM_MASTERS)
+  .NUM_PORTS (NUM_MASTERS)
   )
   arbiter0 (
     .clk       (wb_clk_i),
@@ -122,5 +122,5 @@ module peripheral_msi_arbiter_wb #(
   assign wbm_dat_o = {NUM_MASTERS{wbs_dat_i}};
   assign wbm_ack_o = ((wbs_ack_i & active) << master_sel);
   assign wbm_err_o = ((wbs_err_i & active) << master_sel);
-  assign wbm_rty_o = ((wbs_rty_i & active) << master_sel);   
+  assign wbm_rty_o = ((wbs_rty_i & active) << master_sel);
 endmodule // wb_arbiter

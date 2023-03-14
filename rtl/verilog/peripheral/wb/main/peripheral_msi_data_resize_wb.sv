@@ -42,38 +42,38 @@
  */
 
 module periphral_msi_data_resize_wb #(
-  parameter AW  = 32,  //Address width
-  parameter MDW = 32,  //Master Data Width
-  parameter SDW = 8    //Slave Data Width
+  parameter AW  = 32, //Address width
+  parameter MDW = 32, //Master Data Width
+  parameter SDW = 8 //Slave Data Width
 )
   (
-    // WishBone Master Interface
-    input  [AW- 1:0] wbm_adr_i,
-    input  [MDW-1:0] wbm_dat_i,
-    input  [    3:0] wbm_sel_i,
-    input            wbm_we_i,
-    input            wbm_cyc_i,
-    input            wbm_stb_i,
-    input  [    2:0] wbm_cti_i,
-    input  [    1:0] wbm_bte_i,
-    output [MDW-1:0] wbm_dat_o,
-    output           wbm_ack_o,
-    output           wbm_err_o,
-    output           wbm_rty_o,
+  // WishBone Master Interface
+  input  [AW- 1:0] wbm_adr_i,
+  input  [MDW-1:0] wbm_dat_i,
+  input  [    3:0] wbm_sel_i,
+  input            wbm_we_i,
+  input            wbm_cyc_i,
+  input            wbm_stb_i,
+  input  [    2:0] wbm_cti_i,
+  input  [    1:0] wbm_bte_i,
+  output [MDW-1:0] wbm_dat_o,
+  output           wbm_ack_o,
+  output           wbm_err_o,
+  output           wbm_rty_o,
 
-    // WishBone Slave Interface
-    output [ AW-1:0] wbs_adr_o,
-    output [SDW-1:0] wbs_dat_o,
-    output           wbs_we_o,
-    output           wbs_cyc_o,
-    output           wbs_stb_o,
-    output [    2:0] wbs_cti_o,
-    output [    1:0] wbs_bte_o,
-    input  [SDW-1:0] wbs_dat_i,
-    input            wbs_ack_i,
-    input            wbs_err_i,
-    input            wbs_rty_i
-  );
+  // WishBone Slave Interface
+  output [ AW-1:0] wbs_adr_o,
+  output [SDW-1:0] wbs_dat_o,
+  output           wbs_we_o,
+  output           wbs_cyc_o,
+  output           wbs_stb_o,
+  output [    2:0] wbs_cti_o,
+  output [    1:0] wbs_bte_o,
+  input  [SDW-1:0] wbs_dat_i,
+  input            wbs_ack_i,
+  input            wbs_err_i,
+  input            wbs_rty_i
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -81,13 +81,13 @@ module periphral_msi_data_resize_wb #(
   //
   assign wbs_adr_o[AW-1:2] = wbm_adr_i[AW-1:2];
   assign wbs_adr_o[1:0] = wbm_sel_i[3] ? 2'd0 :
-                          wbm_sel_i[2] ? 2'd1 :
-                          wbm_sel_i[1] ? 2'd2 : 2'd3;
+  wbm_sel_i[2] ? 2'd1 :
+  wbm_sel_i[1] ? 2'd2 : 2'd3;
 
   assign wbs_dat_o = wbm_sel_i[3] ? wbm_dat_i[31:24] :
-                     wbm_sel_i[2] ? wbm_dat_i[23:16] :
-                     wbm_sel_i[1] ? wbm_dat_i[15:8]  :
-                     wbm_sel_i[0] ? wbm_dat_i[7:0]   : 8'b0;
+  wbm_sel_i[2] ? wbm_dat_i[23:16] :
+  wbm_sel_i[1] ? wbm_dat_i[15:8]  :
+  wbm_sel_i[0] ? wbm_dat_i[7:0]   : 8'b0;
 
   assign wbs_we_o  = wbm_we_i;
 
@@ -98,8 +98,8 @@ module periphral_msi_data_resize_wb #(
   assign wbs_bte_o = wbm_bte_i;
 
   assign wbm_dat_o = (wbm_sel_i[3]) ? {wbs_dat_i, 24'd0} :
-                     (wbm_sel_i[2]) ? {8'd0 , wbs_dat_i, 16'd0} :
-                     (wbm_sel_i[1]) ? {16'd0, wbs_dat_i,  8'd0} : {24'd0, wbs_dat_i};
+  (wbm_sel_i[2]) ? {8'd0 , wbs_dat_i, 16'd0} :
+  (wbm_sel_i[1]) ? {16'd0, wbs_dat_i,  8'd0} : {24'd0, wbs_dat_i};
 
   assign wbm_ack_o = wbs_ack_i;
   assign wbm_err_o = wbs_err_i;

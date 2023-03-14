@@ -151,9 +151,9 @@ module peripheral_arbiter_wb #(
       end
 
       peripheral_bfm_transactor_wb #(
-        .MEM_HIGH ((i+1)*MEMORY_SIZE_WORDS-1),
-        .AUTORUN  (0),
-        .MEM_LOW  (i*MEMORY_SIZE_WORDS)
+      .MEM_HIGH ((i+1)*MEMORY_SIZE_WORDS-1),
+      .AUTORUN  (0),
+      .MEM_LOW  (i*MEMORY_SIZE_WORDS)
       )
       transactor (
         .wb_clk_i (wb_clk),
@@ -179,7 +179,7 @@ module peripheral_arbiter_wb #(
   assign done = &done_int;
 
   peripheral_msi_arbiter_wb #(
-    .NUM_MASTERS (NUM_MASTERS)
+  .NUM_MASTERS (NUM_MASTERS)
   )
   wb_arbiter (
     .wb_clk_i (wb_clk),
@@ -233,8 +233,8 @@ module peripheral_arbiter_wb #(
   endgenerate
 
   peripheral_bfm_memory_wb #(
-    .DEBUG (0),
-    .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW/8)*NUM_MASTERS)
+  .DEBUG (0),
+  .MEM_SIZE_BYTES (MEMORY_SIZE_WORDS*(DW/8)*NUM_MASTERS)
   )
   wb_mem_model (
     .wb_clk_i (wb_clk),

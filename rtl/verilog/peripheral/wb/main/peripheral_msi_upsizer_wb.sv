@@ -47,36 +47,36 @@ module peripheral_msi_upsizer_wb #(
   parameter AW    = 32
 )
   (
-    input wb_clk_i,
-    input wb_rst_i,
+  input wb_clk_i,
+  input wb_rst_i,
 
-    input [AW-1:0] wbs_adr_i,
+  input [AW-1:0] wbs_adr_i,
 
-    input [DW_IN  -1:0] wbs_dat_i,
-    input [DW_IN/8-1:0] wbs_sel_i,
-    input               wbs_we_i,
-    input               wbs_cyc_i,
-    input               wbs_stb_i,
-    input [        2:0] wbs_cti_i,
-    input [        1:0] wbs_bte_i,
-    output [DW_IN -1:0] wbs_dat_o,
-    output              wbs_ack_o,
-    output              wbs_err_o,
-    output              wbs_rty_o,
-    //Master port
-    output     [AW   -1:0]              wbm_adr_o,
-    output reg [DW_IN-1:0][  SCALE-1:0] wbm_dat_o,
-    output     [DW_IN-1:0][SCALE/8-1:0] wbm_sel_o,
-    output                              wbm_we_o,
-    output                              wbm_cyc_o,
-    output                              wbm_stb_o,
-    output     [                   2:0] wbm_cti_o,
-    output     [                   1:0] wbm_bte_o,
-    input      [DW_IN-1:0][  SCALE-1:0] wbm_dat_i,
-    input                               wbm_ack_i,
-    input                               wbm_err_i,
-    input                               wbm_rty_i
-  );
+  input [DW_IN  -1:0] wbs_dat_i,
+  input [DW_IN/8-1:0] wbs_sel_i,
+  input               wbs_we_i,
+  input               wbs_cyc_i,
+  input               wbs_stb_i,
+  input [        2:0] wbs_cti_i,
+  input [        1:0] wbs_bte_i,
+  output [DW_IN -1:0] wbs_dat_o,
+  output              wbs_ack_o,
+  output              wbs_err_o,
+  output              wbs_rty_o,
+  //Master port
+  output     [AW   -1:0]              wbm_adr_o,
+  output reg [DW_IN-1:0][  SCALE-1:0] wbm_dat_o,
+  output     [DW_IN-1:0][SCALE/8-1:0] wbm_sel_o,
+  output                              wbm_we_o,
+  output                              wbm_cyc_o,
+  output                              wbm_stb_o,
+  output     [                   2:0] wbm_cti_o,
+  output     [                   1:0] wbm_bte_o,
+  input      [DW_IN-1:0][  SCALE-1:0] wbm_dat_i,
+  input                               wbm_ack_i,
+  input                               wbm_err_i,
+  input                               wbm_rty_i
+);
 
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -158,7 +158,7 @@ module peripheral_msi_upsizer_wb #(
   assign wbm_cyc_o = wr ? wr_cyc : rd_cyc;
   assign wbm_stb_o = wr ? wr_stb : rd_cyc;
   assign wbm_cti_o = wr ? wr_cti : 3'b111;
-  assign wbm_bte_o = wr ? wr_bte : 2'b00;   
+  assign wbm_bte_o = wr ? wr_bte : 2'b00;
 
   always @(posedge wb_clk_i) begin
     if (wbs_ack_o & !wr) begin
