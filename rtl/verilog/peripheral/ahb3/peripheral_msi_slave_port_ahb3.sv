@@ -102,12 +102,12 @@ module peripheral_msi_slave_port_ahb3 #(
   logic [            2:0]              requested_priority_lvl; //requested priority level
   logic [MASTERS    -1:0]              priority_masters; //all masters at this priority level
 
-  logic [MASTERS    -1:0]              pending_master, //next master waiting to be served
-  last_granted_master; //for requested priority level
+  logic [MASTERS    -1:0]              pending_master; //next master waiting to be served
+  logic [MASTERS    -1:0]              last_granted_master; //for requested priority level
   logic [            2:0][MASTERS-1:0] last_granted_masters; //per priority level, for round-robin
 
-  logic [MASTER_BITS-1:0]              granted_master_idx, //granted master as index
-  granted_master_idx_dly; //deleayed granted master index (for HWDATA)
+  logic [MASTER_BITS-1:0]              granted_master_idx; //granted master as index
+  logic [MASTER_BITS-1:0]              granted_master_idx_dly; //deleayed granted master index (for HWDATA)
 
   logic                                can_switch_master; //Slave may switch to a new master
 

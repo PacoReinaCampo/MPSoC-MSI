@@ -51,30 +51,32 @@ module peripheral_msi_upsizer_wb #(
 
   input [AW-1:0] wbs_adr_i,
 
-  input      [DW_IN  -1:0]              wbs_dat_i,
-  input      [DW_IN/8-1:0]              wbs_sel_i,
-  input                                 wbs_we_i,
-  input                                 wbs_cyc_i,
-  input                                 wbs_stb_i,
-  input      [        2:0]              wbs_cti_i,
-  input      [        1:0]              wbs_bte_i,
-  output     [ DW_IN -1:0]              wbs_dat_o,
-  output                                wbs_ack_o,
-  output                                wbs_err_o,
-  output                                wbs_rty_o,
-  //Master port
-  output     [  AW   -1:0]              wbm_adr_o,
-  output reg [  DW_IN-1:0][  SCALE-1:0] wbm_dat_o,
-  output     [  DW_IN-1:0][SCALE/8-1:0] wbm_sel_o,
-  output                                wbm_we_o,
-  output                                wbm_cyc_o,
-  output                                wbm_stb_o,
-  output     [        2:0]              wbm_cti_o,
-  output     [        1:0]              wbm_bte_o,
-  input      [  DW_IN-1:0][  SCALE-1:0] wbm_dat_i,
-  input                                 wbm_ack_i,
-  input                                 wbm_err_i,
-  input                                 wbm_rty_i
+  // Slave Port
+  input  [DW_IN  -1:0] wbs_dat_i,
+  input  [DW_IN/8-1:0] wbs_sel_i,
+  input                wbs_we_i,
+  input                wbs_cyc_i,
+  input                wbs_stb_i,
+  input  [        2:0] wbs_cti_i,
+  input  [        1:0] wbs_bte_i,
+  output [ DW_IN -1:0] wbs_dat_o,
+  output               wbs_ack_o,
+  output               wbs_err_o,
+  output               wbs_rty_o,
+
+  // Master Port
+  output     [AW   -1:0]              wbm_adr_o,
+  output reg [DW_IN-1:0][  SCALE-1:0] wbm_dat_o,
+  output     [DW_IN-1:0][SCALE/8-1:0] wbm_sel_o,
+  output                              wbm_we_o,
+  output                              wbm_cyc_o,
+  output                              wbm_stb_o,
+  output     [      2:0]              wbm_cti_o,
+  output     [      1:0]              wbm_bte_o,
+  input      [DW_IN-1:0][  SCALE-1:0] wbm_dat_i,
+  input                               wbm_ack_i,
+  input                               wbm_err_i,
+  input                               wbm_rty_i
 );
 
   //////////////////////////////////////////////////////////////////////////////
@@ -100,52 +102,69 @@ module peripheral_msi_upsizer_wb #(
   //
   // Variables
   //
-  reg                                                                  [         1:0]                                                                                                       state;
+  reg  [         1:0]              state;
 
-  wire                                                                 [AW-1:ADR_LSB]                                                                                                       adr_i;
-  wire                                                                 [BUFW    -1:0]                                                                                                       idx_i;
+  wire [AW-1:ADR_LSB]              adr_i;
+  wire [BUFW    -1:0]              idx_i;
 
-  reg                                                                  [AW-1:ADR_LSB]                                                                                                       radr;
-  reg                                                                  [DW_OUT  -1:0]                                                                                                       rdat;
-  reg                                                                                                                                                                                       rdat_vld;
+  reg  [AW-1:ADR_LSB]              radr;
+  reg  [DW_OUT  -1:0]              rdat;
+  reg                              rdat_vld;
 
-  wire                                                                 [      AW-1:0] next_adr = wb_next_adr(wbs_adr_i, wbs_cti_i, wbs_bte_i, DW_IN) >> ($clog2(SELW) + BUFW);
+  wire [      AW-1:0]              next_adr;
 
-  wire req = wbs_cyc_i & wbs_stb_i;
-  wire wr_req = req & wbs_we_i;
+  wire                             req;
+  wire                             wr_req;
 
-  wire last = wbs_cyc_i & (wbs_cti_i == 3'b000 | wbs_cti_i == 3'b111);
-  wire last_in_batch = (adr_i != next_adr) | last;
-  wire bufhit = (adr_i == radr) & rdat_vld;
-  wire next_bufhit = (next_adr == radr);
+  wire                             last;
+  wire                             last_in_batch;
+  wire                             bufhit;
+  wire                             next_bufhit;
 
-  reg                                                                  [   AW   -1:0]                                                                                                       wr_adr;
-  reg                                                                  [   DW_IN-1:0]                                                                                         [SCALE/8-1:0] wr_sel;
-  reg                                                                                                                                                                                       wr_we;
-  reg                                                                                                                                                                                       wr_cyc;
-  reg                                                                                                                                                                                       wr_stb;
-  reg                                                                  [         2:0]                                                                                                       wr_cti;
-  reg                                                                  [         1:0]                                                                                                       wr_bte;
+  reg  [   AW   -1:0]              wr_adr;
+  reg  [   DW_IN-1:0][SCALE/8-1:0] wr_sel;
+  reg                              wr_we;
+  reg                              wr_cyc;
+  reg                              wr_stb;
+  reg  [         2:0]              wr_cti;
+  reg  [         1:0]              wr_bte;
 
-  reg                                                                  [DW_OUT  -1:0]                                                                                                       wdat;
-  reg                                                                  [DW_OUT/8-1:0]                                                                                                       sel;
-  reg                                                                                                                                                                                       write_ack;
-  reg                                                                                                                                                                                       first_ack;
+  reg  [DW_OUT  -1:0]              wdat;
+  reg  [DW_OUT/8-1:0]              sel;
+  reg                              write_ack;
+  reg                              first_ack;
 
-  reg                                                                  [      AW-1:0]                                                                                                       next_radr;
+  reg  [      AW-1:0]              next_radr;
 
-  reg                                                                                                                                                                                       wbm_stb_o_r;
+  reg                              wbm_stb_o_r;
 
-  wire rd_cyc = wbs_cyc_i & !(last & bufhit);
+  wire                             rd_cyc;
 
-  wire wr = (wr_req | wr_cyc);
+  wire                             wr;
 
-  wire                                                                 [      AW-1:0] rd_adr = (first_ack ? next_adr : adr_i) << ($clog2(SELW) + BUFW);
+  wire [      AW-1:0]              rd_adr;
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
+
+  assign next_adr       = wb_next_adr(wbs_adr_i, wbs_cti_i, wbs_bte_i, DW_IN) >> ($clog2(SELW) + BUFW);
+
+  assign req            = wbs_cyc_i & wbs_stb_i;
+  assign wr_req         = req & wbs_we_i;
+
+  assign last           = wbs_cyc_i & (wbs_cti_i == 3'b000 | wbs_cti_i == 3'b111);
+  assign last_in_batch  = (adr_i != next_adr) | last;
+  assign bufhit         = (adr_i == radr) & rdat_vld;
+  assign next_bufhit    = (next_adr == radr);
+
+  assign rd_cyc         = wbs_cyc_i & !(last & bufhit);
+
+  assign wr             = (wr_req | wr_cyc);
+
+  assign rd_adr         = (first_ack ? next_adr : adr_i) << ($clog2(SELW) + BUFW);
+
   assign {adr_i, idx_i} = wbs_adr_i >> $clog2(SELW);
 
   assign wbs_dat_o      = rdat_vld ? rdat[idx_i] : wbm_dat_i[idx_i];
