@@ -186,7 +186,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     bte_i : std_logic_vector(1 downto 0);
     len_i : std_logic_vector(integer(log2(real(MAX_BURST_LEN+1))) downto 0)
     ) return std_logic_vector is
-    constant BPW : integer := DW/8;  --Bytes per word
+    constant BPW : integer := DW/8;     --Bytes per word
 
     variable adr      : std_logic_vector(AW-1 downto 0);
     variable adr_high : std_logic_vector(AW-1 downto 0);
@@ -442,7 +442,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     variable mem_lo : integer;
     variable mem_hi : integer;
 
-    variable t_address  : std_logic_vector(AW-1 downto 0);
+    variable t_address : std_logic_vector(AW-1 downto 0);
 
     variable t_adr_high : std_logic_vector(AW-1 downto 0);
     variable t_adr_low  : std_logic_vector(AW-1 downto 0);

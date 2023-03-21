@@ -55,7 +55,7 @@ entity peripheral_msi_interface_ahb3 is
     XLEN    : integer := 64;
     MASTERS : integer := 5;
     SLAVES  : integer := 5
-  );
+    );
   port (
     --Common signals
     HRESETn : in std_logic;
@@ -97,7 +97,7 @@ entity peripheral_msi_interface_ahb3 is
     slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
     slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  --combinatorial HREADY from all connected slaves
     slv_HRESP     : in  std_logic_vector(SLAVES-1 downto 0)
-  );
+    );
 end peripheral_msi_interface_ahb3;
 
 architecture rtl of peripheral_msi_interface_ahb3 is
@@ -112,7 +112,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       XLEN    : integer := 64;
       MASTERS : integer := 5;
       SLAVES  : integer := 5
-    );
+      );
     port (
       --Common signals
       HCLK    : in std_logic;
@@ -157,7 +157,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       can_switch     : out std_logic;
       slvpriority    : out std_logic_vector(2 downto 0);
       master_granted : in  std_logic_vector(SLAVES-1 downto 0)
-    );
+      );
   end component;
 
   component peripheral_msi_slave_port_ahb3
@@ -166,7 +166,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       XLEN    : integer := 64;
       MASTERS : integer := 5;
       SLAVES  : integer := 5
-    );
+      );
     port (
       HCLK    : in std_logic;
       HRESETn : in std_logic;
@@ -185,7 +185,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       mstHTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
       mstHMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
       mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  --HREADY input from master-bus
-      mstHREADYOUT : out std_logic;    --HREADYOUT output to master-bus
+      mstHREADYOUT : out std_logic;     --HREADYOUT output to master-bus
       mstHRESP     : out std_logic;
 
       --AHB Master Interfaces (send data to AHB slaves)
@@ -206,7 +206,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
 
       can_switch     : in  std_logic_vector(MASTERS-1 downto 0);
       granted_master : out std_logic_vector(MASTERS-1 downto 0)
-    );
+      );
   end component;
 
   ------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ begin
         XLEN    => XLEN,
         MASTERS => MASTERS,
         SLAVES  => SLAVES
-      )
+        )
       port map (
         HRESETn => HRESETn,
         HCLK    => HCLK,
@@ -306,7 +306,7 @@ begin
 
         can_switch     => frommst_canswitch(m),
         master_granted => tomstgrant(m)
-      );
+        );
   end generate;
 
   --wire mangling
@@ -349,7 +349,7 @@ begin
         XLEN    => XLEN,
         MASTERS => MASTERS,
         SLAVES  => SLAVES
-      )
+        )
       port map (
         HRESETn => HRESETn,
         HCLK    => HCLK,
@@ -390,6 +390,6 @@ begin
         --Internal signals
         can_switch     => toslv_canswitch(s),
         granted_master => fromslvgrant(s)
-      );
+        );
   end generate;
 end rtl;

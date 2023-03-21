@@ -49,9 +49,9 @@ use ieee.numeric_std.all;
 
 entity peripheral_msi_data_resize_wb is
   generic (
-    AW  : integer := 32;  --Address width
-    MDW : integer := 32;  --Master Data Width
-    SDW : integer := 8    --Slave Data Width
+    AW  : integer := 32;                --Address width
+    MDW : integer := 32;                --Master Data Width
+    SDW : integer := 8                  --Slave Data Width
     );
   port (
     --Wishbone Master interface
@@ -91,9 +91,9 @@ begin
   wbs_adr_o(AW-1 downto 2) <= wbm_adr_i(AW-1 downto 2);
 
   wbs_adr_o(1 downto 0) <= "00"
-                        when wbm_sel_i(3) = '1' else "01"
-                        when wbm_sel_i(2) = '1' else "10"
-                        when wbm_sel_i(1) = '1' else "11";
+                           when wbm_sel_i(3) = '1' else "01"
+                           when wbm_sel_i(2) = '1' else "10"
+                           when wbm_sel_i(1) = '1' else "11";
 
   wbs_dat_o <= wbm_dat_i(31 downto 24)
                when wbm_sel_i(3) = '1' else wbm_dat_i(23 downto 16)

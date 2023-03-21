@@ -50,7 +50,7 @@ use ieee.numeric_std.all;
 entity peripheral_msi_cdc_wb is
   generic (
     AW : integer := 32
-  );
+    );
   port (
     wbm_clk   : in  std_logic;
     wbm_rst   : in  std_logic;
@@ -72,7 +72,7 @@ entity peripheral_msi_cdc_wb is
     wbs_stb_o : out std_logic;
     wbs_dat_i : in  std_logic_vector(31 downto 0);
     wbs_ack_i : in  std_logic
-  );
+    );
 end peripheral_msi_cdc_wb;
 
 architecture rtl of peripheral_msi_cdc_wb is

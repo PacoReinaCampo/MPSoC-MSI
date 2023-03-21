@@ -129,10 +129,10 @@ architecture rtl of peripheral_msi_interface_wb is
   --
   component peripheral_msi_mux_wb
     generic (
-      DW : integer := 32;  -- Data width
-      AW : integer := 32;  -- Address width
+      DW : integer := 32;               -- Data width
+      AW : integer := 32;               -- Address width
 
-      NUM_SLAVES : integer := 2;  -- Number of slaves
+      NUM_SLAVES : integer := 2;        -- Number of slaves
 
       MATCH_ADDR : std_logic_vector(NUM_SLAVES*AW-1 downto 0) := (others => '0');
       MATCH_MASK : std_logic_vector(NUM_SLAVES*AW-1 downto 0) := (others => '0')
@@ -214,9 +214,9 @@ architecture rtl of peripheral_msi_interface_wb is
 
   component peripheral_msi_data_resize_wb
     generic (
-      AW  : integer := 32;  --Address width
-      MDW : integer := 32;  --Master Data Width
-      SDW : integer := 8   --Slave Data Width
+      AW  : integer := 32;              --Address width
+      MDW : integer := 32;              --Master Data Width
+      SDW : integer := 8                --Slave Data Width
       );
     port (
       --Wishbone Master interface
@@ -251,44 +251,44 @@ architecture rtl of peripheral_msi_interface_wb is
   ------------------------------------------------------------------------------
   -- Variables
   ------------------------------------------------------------------------------
-  signal wb_m2s_or1k_d_mem_adr  : std_logic_vector(31 downto 0);
-  signal wb_m2s_or1k_d_mem_dat  : std_logic_vector(31 downto 0);
-  signal wb_m2s_or1k_d_mem_sel  : std_logic_vector(3 downto 0);
-  signal wb_m2s_or1k_d_mem_we   : std_logic;
-  signal wb_m2s_or1k_d_mem_cyc  : std_logic;
-  signal wb_m2s_or1k_d_mem_stb  : std_logic;
-  signal wb_m2s_or1k_d_mem_cti  : std_logic_vector(2 downto 0);
-  signal wb_m2s_or1k_d_mem_bte  : std_logic_vector(1 downto 0);
-  signal wb_s2m_or1k_d_mem_dat  : std_logic_vector(31 downto 0);
-  signal wb_s2m_or1k_d_mem_ack  : std_logic;
-  signal wb_s2m_or1k_d_mem_err  : std_logic;
-  signal wb_s2m_or1k_d_mem_rty  : std_logic;
+  signal wb_m2s_or1k_d_mem_adr : std_logic_vector(31 downto 0);
+  signal wb_m2s_or1k_d_mem_dat : std_logic_vector(31 downto 0);
+  signal wb_m2s_or1k_d_mem_sel : std_logic_vector(3 downto 0);
+  signal wb_m2s_or1k_d_mem_we  : std_logic;
+  signal wb_m2s_or1k_d_mem_cyc : std_logic;
+  signal wb_m2s_or1k_d_mem_stb : std_logic;
+  signal wb_m2s_or1k_d_mem_cti : std_logic_vector(2 downto 0);
+  signal wb_m2s_or1k_d_mem_bte : std_logic_vector(1 downto 0);
+  signal wb_s2m_or1k_d_mem_dat : std_logic_vector(31 downto 0);
+  signal wb_s2m_or1k_d_mem_ack : std_logic;
+  signal wb_s2m_or1k_d_mem_err : std_logic;
+  signal wb_s2m_or1k_d_mem_rty : std_logic;
 
-  signal wb_m2s_or1k_i_mem_adr  : std_logic_matrix(0 downto 0)(31 downto 0);
-  signal wb_m2s_or1k_i_mem_dat  : std_logic_matrix(0 downto 0)(31 downto 0);
-  signal wb_m2s_or1k_i_mem_sel  : std_logic_matrix(0 downto 0)(3 downto 0);
-  signal wb_m2s_or1k_i_mem_we   : std_logic_vector(0 downto 0);
-  signal wb_m2s_or1k_i_mem_cyc  : std_logic_vector(0 downto 0);
-  signal wb_m2s_or1k_i_mem_stb  : std_logic_vector(0 downto 0);
-  signal wb_m2s_or1k_i_mem_cti  : std_logic_matrix(0 downto 0)(2 downto 0);
-  signal wb_m2s_or1k_i_mem_bte  : std_logic_matrix(0 downto 0)(1 downto 0);
-  signal wb_s2m_or1k_i_mem_dat  : std_logic_matrix(0 downto 0)(31 downto 0);
-  signal wb_s2m_or1k_i_mem_ack  : std_logic_vector(0 downto 0);
-  signal wb_s2m_or1k_i_mem_err  : std_logic_vector(0 downto 0);
-  signal wb_s2m_or1k_i_mem_rty  : std_logic_vector(0 downto 0);
+  signal wb_m2s_or1k_i_mem_adr : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_or1k_i_mem_dat : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_or1k_i_mem_sel : std_logic_matrix(0 downto 0)(3 downto 0);
+  signal wb_m2s_or1k_i_mem_we  : std_logic_vector(0 downto 0);
+  signal wb_m2s_or1k_i_mem_cyc : std_logic_vector(0 downto 0);
+  signal wb_m2s_or1k_i_mem_stb : std_logic_vector(0 downto 0);
+  signal wb_m2s_or1k_i_mem_cti : std_logic_matrix(0 downto 0)(2 downto 0);
+  signal wb_m2s_or1k_i_mem_bte : std_logic_matrix(0 downto 0)(1 downto 0);
+  signal wb_s2m_or1k_i_mem_dat : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_s2m_or1k_i_mem_ack : std_logic_vector(0 downto 0);
+  signal wb_s2m_or1k_i_mem_err : std_logic_vector(0 downto 0);
+  signal wb_s2m_or1k_i_mem_rty : std_logic_vector(0 downto 0);
 
-  signal wb_m2s_dbg_mem_adr     : std_logic_matrix(0 downto 0)(31 downto 0);
-  signal wb_m2s_dbg_mem_dat     : std_logic_matrix(0 downto 0)(31 downto 0);
-  signal wb_m2s_dbg_mem_sel     : std_logic_matrix(0 downto 0)(3 downto 0);
-  signal wb_m2s_dbg_mem_we      : std_logic_vector(0 downto 0);
-  signal wb_m2s_dbg_mem_cyc     : std_logic_vector(0 downto 0);
-  signal wb_m2s_dbg_mem_stb     : std_logic_vector(0 downto 0);
-  signal wb_m2s_dbg_mem_cti     : std_logic_matrix(0 downto 0)(2 downto 0);
-  signal wb_m2s_dbg_mem_bte     : std_logic_matrix(0 downto 0)(1 downto 0);
-  signal wb_s2m_dbg_mem_dat     : std_logic_matrix(0 downto 0)(31 downto 0);
-  signal wb_s2m_dbg_mem_ack     : std_logic_vector(0 downto 0);
-  signal wb_s2m_dbg_mem_err     : std_logic_vector(0 downto 0);
-  signal wb_s2m_dbg_mem_rty     : std_logic_vector(0 downto 0);
+  signal wb_m2s_dbg_mem_adr : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_dbg_mem_dat : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_m2s_dbg_mem_sel : std_logic_matrix(0 downto 0)(3 downto 0);
+  signal wb_m2s_dbg_mem_we  : std_logic_vector(0 downto 0);
+  signal wb_m2s_dbg_mem_cyc : std_logic_vector(0 downto 0);
+  signal wb_m2s_dbg_mem_stb : std_logic_vector(0 downto 0);
+  signal wb_m2s_dbg_mem_cti : std_logic_matrix(0 downto 0)(2 downto 0);
+  signal wb_m2s_dbg_mem_bte : std_logic_matrix(0 downto 0)(1 downto 0);
+  signal wb_s2m_dbg_mem_dat : std_logic_matrix(0 downto 0)(31 downto 0);
+  signal wb_s2m_dbg_mem_ack : std_logic_vector(0 downto 0);
+  signal wb_s2m_dbg_mem_err : std_logic_vector(0 downto 0);
+  signal wb_s2m_dbg_mem_rty : std_logic_vector(0 downto 0);
 
   signal wb_m2s_resize_uart_adr : std_logic_vector(31 downto 0);
   signal wb_m2s_resize_uart_dat : std_logic_vector(31 downto 0);
@@ -375,7 +375,7 @@ begin
   wb_m2s_or1k_d_adr_o <= (wb_m2s_or1k_d_mem_adr, wb_m2s_resize_uart_adr);
   wb_m2s_or1k_d_dat_o <= (wb_m2s_or1k_d_mem_dat, wb_m2s_resize_uart_dat);
   wb_m2s_or1k_d_sel_o <= (wb_m2s_or1k_d_mem_sel, wb_m2s_resize_uart_sel);
-  wb_m2s_or1k_d_we_o  <= (wb_m2s_or1k_d_mem_we,  wb_m2s_resize_uart_we);
+  wb_m2s_or1k_d_we_o  <= (wb_m2s_or1k_d_mem_we, wb_m2s_resize_uart_we);
   wb_m2s_or1k_d_cyc_o <= (wb_m2s_or1k_d_mem_cyc, wb_m2s_resize_uart_cyc);
   wb_m2s_or1k_d_stb_o <= (wb_m2s_or1k_d_mem_stb, wb_m2s_resize_uart_stb);
   wb_m2s_or1k_d_cti_o <= (wb_m2s_or1k_d_mem_cti, wb_m2s_resize_uart_cti);
@@ -502,7 +502,7 @@ begin
   wb_m2s_or1k_i_adr_i <= (wb_m2s_or1k_i_mem_adr, wb_m2s_or1k_d_mem_adr, wb_m2s_dbg_mem_adr);
   wb_m2s_or1k_i_dat_i <= (wb_m2s_or1k_i_mem_dat, wb_m2s_or1k_d_mem_dat, wb_m2s_dbg_mem_dat);
   wb_m2s_or1k_i_sel_i <= (wb_m2s_or1k_i_mem_sel, wb_m2s_or1k_d_mem_sel, wb_m2s_dbg_mem_sel);
-  wb_m2s_or1k_i_we_i  <= (wb_m2s_or1k_i_mem_we,  wb_m2s_or1k_d_mem_we,  wb_m2s_dbg_mem_we);
+  wb_m2s_or1k_i_we_i  <= (wb_m2s_or1k_i_mem_we, wb_m2s_or1k_d_mem_we, wb_m2s_dbg_mem_we);
   wb_m2s_or1k_i_cyc_i <= (wb_m2s_or1k_i_mem_cyc, wb_m2s_or1k_d_mem_cyc, wb_m2s_dbg_mem_cyc);
   wb_m2s_or1k_i_stb_i <= (wb_m2s_or1k_i_mem_stb, wb_m2s_or1k_d_mem_stb, wb_m2s_dbg_mem_stb);
   wb_m2s_or1k_i_cti_i <= (wb_m2s_or1k_i_mem_cti, wb_m2s_or1k_d_mem_cti, wb_m2s_dbg_mem_cti);

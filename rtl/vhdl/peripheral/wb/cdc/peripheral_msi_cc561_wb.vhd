@@ -50,7 +50,7 @@ use ieee.numeric_std.all;
 entity peripheral_msi_cc561_wb is
   generic (
     DW : integer := 0
-  );
+    );
   port (
     aclk  : in  std_logic;
     arst  : in  std_logic;
@@ -59,7 +59,7 @@ entity peripheral_msi_cc561_wb is
     bclk  : in  std_logic;
     bdata : out std_logic_vector(DW-1 downto 0);
     ben   : out std_logic
-  );
+    );
 end peripheral_msi_cc561_wb;
 
 architecture rtl of peripheral_msi_cc561_wb is
@@ -74,7 +74,7 @@ architecture rtl of peripheral_msi_cc561_wb is
       d : in  std_logic;
       p : out std_logic;
       q : out std_logic
-    );
+      );
   end component;
 
   ------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ begin
   begin
     if (rising_edge(bclk)) then
       if (bpulse) then
-        bdata <= adata_r;  --CDC
+        bdata <= adata_r;               --CDC
       end if;
       ben <= bpulse;
     end if;
@@ -116,8 +116,8 @@ begin
   sync2_pgen : peripheral_msi_sync2_pgen_wb
     port map (
       c => bclk,
-      d => aen_r,  --CDC
+      d => aen_r,                       --CDC
       p => bpulse,
       q => open
-    );
+      );
 end rtl;

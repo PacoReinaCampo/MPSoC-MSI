@@ -57,8 +57,8 @@ architecture rtl of peripheral_msi_testbench is
 
   component peripheral_msi_interface_wb
     port (
-      wb_clk_i        : in  std_logic;
-      wb_rst_i        : in  std_logic;
+      wb_clk_i : in std_logic;
+      wb_rst_i : in std_logic;
 
       wb_or1k_d_adr_i : in  std_logic_vector(31 downto 0);
       wb_or1k_d_dat_i : in  std_logic_vector(31 downto 0);

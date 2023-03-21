@@ -56,7 +56,7 @@ entity peripheral_msi_master_port_ahb3 is
     XLEN    : integer := 64;
     MASTERS : integer := 5;
     SLAVES  : integer := 5
-  );
+    );
   port (
     --Common signals
     HCLK    : in std_logic;

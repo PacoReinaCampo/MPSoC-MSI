@@ -200,7 +200,7 @@ architecture rtl of peripheral_msi_bfm_master_wb is
 
     wb_adr_o <= addr   after TP;
     wb_dat_o <= dat_op after TP;
-    wb_stb_o <= '0'    after TP;  --FIXME: Add wait states
+    wb_stb_o <= '0'    after TP;        --FIXME: Add wait states
 
     if ((index = to_integer(unsigned(burst_length))-1) and (cycle_type /= CTI_CLASSIC)) then
       wb_cti_o <= "111" after TP;
@@ -510,12 +510,12 @@ architecture rtl of peripheral_msi_bfm_master_wb is
         );
 
       ----data_compare (
-        ----addr      => addr,
-        ----read_data => data,
-        ----iteration => index,
+      ----addr      => addr,
+      ----read_data => data,
+      ----iteration => index,
 
-        ----buffer_addr => buffer_addr
-        ----);
+      ----buffer_addr => buffer_addr
+      ----);
 
       addr            := wb_next_adr(addr, cycle_type, burst_type, DW);
       buffer_addr_tmp := std_logic_vector(unsigned(addr)-unsigned(base_addr));

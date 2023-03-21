@@ -53,14 +53,14 @@ use work.peripheral_wb_pkg.all;
 
 entity peripheral_msi_mux_wb is
   generic (
-    DW : integer := 32;  -- Data width
-    AW : integer := 32;  -- Address width
+    DW : integer := 32;                 -- Data width
+    AW : integer := 32;                 -- Address width
 
-    NUM_SLAVES : integer := 2;  -- Number of slaves
+    NUM_SLAVES : integer := 2;          -- Number of slaves
 
     MATCH_ADDR : std_logic_vector(NUM_SLAVES*AW-1 downto 0) := (others => '0');
     MATCH_MASK : std_logic_vector(NUM_SLAVES*AW-1 downto 0) := (others => '0')
-  );
+    );
   port (
     wb_clk_i : in std_logic;
     wb_rst_i : in std_logic;
@@ -92,7 +92,7 @@ entity peripheral_msi_mux_wb is
     wbs_ack_i : in  std_logic_vector(NUM_SLAVES-1 downto 0);
     wbs_err_i : in  std_logic_vector(NUM_SLAVES-1 downto 0);
     wbs_rty_i : in  std_logic_vector(NUM_SLAVES-1 downto 0)
-  );
+    );
 end peripheral_msi_mux_wb;
 
 architecture rtl of peripheral_msi_mux_wb is

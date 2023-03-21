@@ -56,8 +56,8 @@ entity peripheral_msi_slave_port_ahb3 is
     XLEN    : integer := 64;
     MASTERS : integer := 5;
     SLAVES  : integer := 5
-  );
-  port (  
+    );
+  port (
     HCLK    : in std_logic;
     HRESETn : in std_logic;
 
@@ -75,7 +75,7 @@ entity peripheral_msi_slave_port_ahb3 is
     mstHTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
     mstHMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
     mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  --HREADY input from master-bus
-    mstHREADYOUT : out std_logic;  --HREADYOUT output to master-bus
+    mstHREADYOUT : out std_logic;       --HREADYOUT output to master-bus
     mstHRESP     : out std_logic;
 
     --AHB Master Interfaces (send data to AHB slaves)
@@ -96,7 +96,7 @@ entity peripheral_msi_slave_port_ahb3 is
 
     can_switch     : in  std_logic_vector(MASTERS-1 downto 0);
     granted_master : out std_logic_vector(MASTERS-1 downto 0)
-  );
+    );
 end peripheral_msi_slave_port_ahb3;
 
 architecture rtl of peripheral_msi_slave_port_ahb3 is
@@ -144,9 +144,9 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
   end onehot2int;  --onehot2int
 
   function highest_requested_priority (
-    hsel : std_logic_vector(MASTERS-1 downto 0);
+    hsel       : std_logic_vector(MASTERS-1 downto 0);
     priorities : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0)
-  ) return std_logic_vector is
+    ) return std_logic_vector is
     variable highest_requested_priority_return : std_logic_vector (2 downto 0);
   begin
     highest_requested_priority_return := (others => '0');
@@ -159,11 +159,11 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
   end highest_requested_priority;  --highest_requested_priority
 
   function requesters (
-    hsel: std_logic_vector(MASTERS-1 downto 0);
-    priorities : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
+    hsel            : std_logic_vector(MASTERS-1 downto 0);
+    priorities      : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
     priority_select : std_logic_vector(2 downto 0)
 
-  ) return std_logic_vector is
+    ) return std_logic_vector is
     variable requesters_return : std_logic_vector (MASTERS-1 downto 0);
   begin
     for n in 0 to MASTERS - 1 loop
@@ -175,10 +175,10 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
   function nxt_master (
     pending_masters : std_logic_vector(MASTERS-1 downto 0);  --pending masters for the requesed priority level
     last_master     : std_logic_vector(MASTERS-1 downto 0);  --last granted master for the priority level
-    current_master  : std_logic_vector(MASTERS-1 downto 0)   --current granted master (indpendent of priority level)
-  ) return std_logic_vector is
-    variable offset : integer;
-    variable sr : std_logic_vector(MASTERS*2-1 downto 0);
+    current_master  : std_logic_vector(MASTERS-1 downto 0)  --current granted master (indpendent of priority level)
+    ) return std_logic_vector is
+    variable offset            : integer;
+    variable sr                : std_logic_vector(MASTERS*2-1 downto 0);
     variable nxt_master_return : std_logic_vector (MASTERS-1 downto 0);
   begin
     --default value, don't switch if not needed
@@ -264,7 +264,7 @@ begin
         granted_master_idx <= std_logic_vector(to_unsigned(onehot2int(current_requester), MASTER_BITS));
         if (can_switch_master = '1') then
           current_requester := pending_master;
-        else 
+        else
           current_requester := granted_master_sgn;
         end if;
       end if;

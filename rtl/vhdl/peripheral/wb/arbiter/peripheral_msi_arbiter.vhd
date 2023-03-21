@@ -54,7 +54,7 @@ use work.peripheral_wb_pkg.all;
 entity peripheral_msi_arbiter is
   generic (
     NUM_PORTS : integer := 6
-  );
+    );
   port (
     clk       : in  std_logic;
     rst       : in  std_logic;
@@ -62,7 +62,7 @@ entity peripheral_msi_arbiter is
     grant     : out std_logic_vector(NUM_PORTS-1 downto 0);
     selection : out std_logic_vector(integer(log2(real(NUM_PORTS)))-1 downto 0);
     active    : out std_logic
-  );
+    );
 end peripheral_msi_arbiter;
 
 architecture rtl of peripheral_msi_arbiter is
