@@ -1,4 +1,4 @@
-vhdl
+code
 ├── peripheral
 │   ├── ahb3
 │   │   ├── peripheral_msi_interface_ahb3.vhd

@@ -42,10 +42,4 @@
 ##                                                                               ##
 ###################################################################################
 
-../../../../../../rtl/verilog/code/pkg/peripheral/ahb3/peripheral_ahb3_pkg.sv
-
-../../../../../../rtl/verilog/code/peripheral/ahb3/peripheral_msi_interface_ahb3.sv
-../../../../../../rtl/verilog/code/peripheral/ahb3/peripheral_msi_master_port_ahb3.sv
-../../../../../../rtl/verilog/code/peripheral/ahb3/peripheral_msi_slave_port_ahb3.sv
-
-../../../../../../bench/verilog/code/tests/peripheral/ahb3/peripheral_msi_testbench.sv
+tree -P '*.sv' code > TREE-VERILOG.txt
