@@ -41,7 +41,7 @@
  *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
  */
 
-module periphral_msi_data_resize_wb #(
+module periphreal_msi_data_resize_wb #(
   parameter AW  = 32,  //Address width
   parameter MDW = 32,  //Master Data Width
   parameter SDW = 8    //Slave Data Width
