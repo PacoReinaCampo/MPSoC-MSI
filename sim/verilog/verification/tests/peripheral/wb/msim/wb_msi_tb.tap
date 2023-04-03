@@ -1,4 +1,0 @@
-1..3
-ok 1 - wb_mux: All tests passed!
-ok 2 - wb_arbiter: All tests passed!
-ok 3 - wb_cdc: All tests passed!
