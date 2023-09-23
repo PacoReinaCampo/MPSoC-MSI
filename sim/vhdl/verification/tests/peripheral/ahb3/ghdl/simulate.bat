@@ -54,6 +54,6 @@ ghdl -a --std=08 ../../../../../../../rtl/vhdl/code/peripheral/ahb3/peripheral_m
 
 ghdl -a --std=08 ../../../../../../../bench/vhdl/code/tests/peripheral/ahb3/peripheral_msi_testbench.vhd
 
-ghdl -m --std=08 peripheral_msi_testbench
-ghdl -r --std=08 peripheral_msi_testbench --ieee-asserts=disable-at-0 --disp-tree=inst > peripheral_msi_testbench.tree
+ghdl -e --std=08 peripheral_msi_testbench
+ghdl -r --std=08 peripheral_msi_testbench --ieee-asserts=disable-at-0 --vcd=peripheral_msi_testbench.vcd --wave=system.ghw --stop-time=1ms
 pause
