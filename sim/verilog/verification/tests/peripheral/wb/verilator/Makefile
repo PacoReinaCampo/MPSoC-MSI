@@ -42,12 +42,17 @@
 ##                                                                               ##
 ###################################################################################
 
-all: build simulate
+all: build
 
 build:
-	verilator -Wno-lint --cc -f system.vc --top-module peripheral_msi_testbench
+	verilator -Wno-lint -Wno-UNOPTFLAT -Wno-COMBDLY --cc -f system.vc --top-module peripheral_msi_testbench
 
 simulate:
+	make -C obj_dir -j -f Vperipheral_msi_testbench.mk Vperipheral_msi_testbench
+	obj_dir/Vperipheral_msi_testbench
+
+test:
+	gtkwave peripheral_msi_testbench.vcd
 
 clean:
 	rm -rf obj_dir
