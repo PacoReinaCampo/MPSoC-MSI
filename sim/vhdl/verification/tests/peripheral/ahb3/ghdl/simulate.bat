@@ -44,15 +44,7 @@
 
 @echo off
 call ../../../../../../../settings64_ghdl.bat
-
-ghdl -a --std=08 ../../../../../../../rtl/vhdl/code/pkg/core/vhdl_pkg.vhd
-ghdl -a --std=08 ../../../../../../../rtl/vhdl/code/pkg/peripheral/ahb3/peripheral_ahb3_pkg.vhd
-
-ghdl -a --std=08 ../../../../../../../rtl/vhdl/code/peripheral/ahb3/peripheral_msi_interface_ahb3.vhd
-ghdl -a --std=08 ../../../../../../../rtl/vhdl/code/peripheral/ahb3/peripheral_msi_slave_port_ahb3.vhd
-ghdl -a --std=08 ../../../../../../../rtl/vhdl/code/peripheral/ahb3/peripheral_msi_master_port_ahb3.vhd
-
-ghdl -a --std=08 ../../../../../../../bench/vhdl/code/tests/peripheral/ahb3/peripheral_msi_testbench.vhd
+sh system.s
 
 ghdl -e --std=08 peripheral_msi_testbench
 ghdl -r --std=08 peripheral_msi_testbench --ieee-asserts=disable-at-0 --vcd=peripheral_msi_testbench.vcd --wave=system.ghw --stop-time=1ms
