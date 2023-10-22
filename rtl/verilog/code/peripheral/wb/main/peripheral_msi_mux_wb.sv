@@ -111,7 +111,9 @@ module peripheral_msi_mux_wb #(
     begin
       ff1 = 0;
       for (i = NUM_SLAVES - 1; i >= 0; i = i - 1) begin
-        if (in[i]) ff1 = i;
+        if (in[i]) begin
+          ff1 = i;
+        end
       end
     end
   endfunction

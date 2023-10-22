@@ -43,14 +43,14 @@
 module peripheral_msi_interface_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
-  parameter MASTERS = 5,   //number of AHB Masters
-  parameter SLAVES  = 5    //number of AHB slaves
+  parameter MASTERS = 5,   // number of AHB Masters
+  parameter SLAVES  = 5    // number of AHB slaves
 ) (
-  //Common signals
+  // Common signals
   input HRESETn,
   input HCLK,
 
-  //Master Ports; AHB masters connect to these
+  // Master Ports; AHB masters connect to these
   // thus these are actually AHB Slave Interfaces
   input [MASTERS-1:0][2:0] mst_priority,
 
@@ -68,7 +68,7 @@ module peripheral_msi_interface_ahb3 #(
   input  [MASTERS-1:0]           mst_HREADY,
   output [MASTERS-1:0]           mst_HRESP,
 
-  //Slave Ports; AHB Slaves connect to these
+  // Slave Ports; AHB Slaves connect to these
   //  thus these are actually AHB Master Interfaces
   input [SLAVES-1:0][PLEN-1:0] slv_addr_mask,
   input [SLAVES-1:0][PLEN-1:0] slv_addr_base,
@@ -83,8 +83,8 @@ module peripheral_msi_interface_ahb3 #(
   output [SLAVES-1:0][     3:0] slv_HPROT,
   output [SLAVES-1:0][     1:0] slv_HTRANS,
   output [SLAVES-1:0]           slv_HMASTLOCK,
-  output [SLAVES-1:0]           slv_HREADYOUT,  //HREADYOUT to slave-decoder; generates HREADY to all connected slaves
-  input  [SLAVES-1:0]           slv_HREADY,     //combinatorial HREADY from all connected slaves
+  output [SLAVES-1:0]           slv_HREADYOUT,  // HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+  input  [SLAVES-1:0]           slv_HREADY,     // combinatorial HREADY from all connected slaves
   input  [SLAVES-1:0]           slv_HRESP
 );
 
@@ -140,7 +140,7 @@ module peripheral_msi_interface_ahb3 #(
   // Module Body
   //
 
-  //Hookup Master Interfaces
+  // Hookup Master Interfaces
   generate
     for (m = 0; m < MASTERS; m = m + 1) begin : gen_master_ports
       peripheral_msi_master_port_ahb3 #(
@@ -152,8 +152,8 @@ module peripheral_msi_interface_ahb3 #(
         .HRESETn(HRESETn),
         .HCLK   (HCLK),
 
-        //AHB Slave Interfaces (receive data from AHB Masters)
-        //AHB Masters conect to these ports
+        // AHB Slave Interfaces (receive data from AHB Masters)
+        // AHB Masters conect to these ports
         .mst_priority (mst_priority[m]),
         .mst_HSEL     (mst_HSEL[m]),
         .mst_HADDR    (mst_HADDR[m]),
@@ -169,8 +169,8 @@ module peripheral_msi_interface_ahb3 #(
         .mst_HREADY   (mst_HREADY[m]),
         .mst_HRESP    (mst_HRESP[m]),
 
-        //AHB Master Interfaces (send data to AHB slaves)
-        //AHB Slaves connect to these ports
+        // AHB Master Interfaces (send data to AHB slaves)
+        // AHB Slaves connect to these ports
         .slvHADDRmask(slv_addr_mask),
         .slvHADDRbase(slv_addr_base),
         .slvpriority (frommstpriority[m]),
@@ -194,9 +194,9 @@ module peripheral_msi_interface_ahb3 #(
     end
   endgenerate
 
-  //wire mangling
+  // wire mangling
 
-  //Master-->Slave
+  // Master-->Slave
   generate
     for (s = 0; s < SLAVES; s = s + 1) begin : slave
       for (m = 0; m < MASTERS; m = m + 1) begin : master
@@ -210,15 +210,15 @@ module peripheral_msi_interface_ahb3 #(
         assign toslvHPROT[s][m]      = frommstHPROT[m];
         assign toslvHTRANS[s][m]     = frommstHTRANS[m];
         assign toslvHMASTLOCK[s][m]  = frommstHMASTLOCK[m];
-        assign toslvHREADY[s][m]     = frommstHREADYOUT[m];  //feed Masters's HREADY signal to slave port
+        assign toslvHREADY[s][m]     = frommstHREADYOUT[m];  // feed Masters's HREADY signal to slave port
         assign toslv_canswitch[s][m] = frommst_canswitch[m];
-      end  //next m
-    end  //next s
+      end  // next m
+    end  // next s
   endgenerate
 
-  //wire mangling
+  // wire mangling
 
-  //Slave-->Master
+  // Slave-->Master
   generate
     for (m = 0; m < MASTERS; m = m + 1) begin : master
       for (s = 0; s < SLAVES; s = s + 1) begin : slave
@@ -226,11 +226,11 @@ module peripheral_msi_interface_ahb3 #(
         assign tomstHRDATA[m][s] = fromslvHRDATA[s];
         assign tomstHREADY[m][s] = fromslvHREADYOUT[s];
         assign tomstHRESP[m][s]  = fromslvHRESP[s];
-      end  //next s
-    end  //next m
+      end  // next s
+    end  // next m
   endgenerate
 
-  //Hookup Slave Interfaces
+  // Hookup Slave Interfaces
   generate
     for (s = 0; s < SLAVES; s = s + 1) begin : gen_slave_ports
       peripheral_msi_slave_port_ahb3 #(
@@ -242,8 +242,8 @@ module peripheral_msi_interface_ahb3 #(
         .HRESETn(HRESETn),
         .HCLK   (HCLK),
 
-        //AHB Slave Interfaces (receive data from AHB Masters)
-        //AHB Masters connect to these ports
+        // AHB Slave Interfaces (receive data from AHB Masters)
+        // AHB Masters connect to these ports
         .mstpriority (toslvpriority[s]),
         .mstHSEL     (toslvHSEL[s]),
         .mstHADDR    (toslvHADDR[s]),
@@ -260,8 +260,8 @@ module peripheral_msi_interface_ahb3 #(
         .mstHRESP    (fromslvHRESP[s]),
 
 
-        //AHB Master Interfaces (send data to AHB slaves)
-        //AHB Slaves connect to these ports
+        // AHB Master Interfaces (send data to AHB slaves)
+        // AHB Slaves connect to these ports
         .slv_HSEL     (slv_HSEL[s]),
         .slv_HADDR    (slv_HADDR[s]),
         .slv_HWDATA   (slv_HWDATA[s]),
@@ -276,7 +276,7 @@ module peripheral_msi_interface_ahb3 #(
         .slv_HREADY   (slv_HREADY[s]),
         .slv_HRESP    (slv_HRESP[s]),
 
-        //Internal signals
+        // Internal signals
         .can_switch    (toslv_canswitch[s]),
         .granted_master(fromslvgrant[s])
       );

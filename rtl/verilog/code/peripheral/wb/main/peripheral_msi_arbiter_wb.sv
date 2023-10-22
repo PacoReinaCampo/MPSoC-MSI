@@ -107,7 +107,7 @@ module peripheral_msi_arbiter_wb #(
     .active   (active)
   );
 
-  //Mux active master
+  // Mux active master
   assign wbs_adr_o = wbm_adr_i[master_sel];
   assign wbs_dat_o = wbm_dat_i[master_sel];
   assign wbs_sel_o = wbm_sel_i[master_sel];

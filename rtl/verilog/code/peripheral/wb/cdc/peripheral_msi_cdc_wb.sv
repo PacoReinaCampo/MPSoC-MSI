@@ -98,13 +98,19 @@ module peripheral_msi_cdc_wb #(
   assign wbm_m2s_en = wbm_cs & ~wbm_busy;
 
   always @(posedge wbm_clk) begin
-    if (wbm_ack_o | wbm_rst) wbm_busy <= 1'b0;
-    else if (wbm_cs) wbm_busy <= 1'b1;
+    if (wbm_ack_o | wbm_rst) begin
+      wbm_busy <= 1'b0;
+    end else if (wbm_cs) begin
+      wbm_busy <= 1'b1;
+    end
   end
 
   always @(posedge wbs_clk) begin
-    if (wbs_ack_i) wbs_cs <= 1'b0;
-    else if (wbs_m2s_en) wbs_cs <= 1'b1;
+    if (wbs_ack_i) begin
+      wbs_cs <= 1'b0;
+    end else if (wbs_m2s_en) begin
+      wbs_cs <= 1'b1;
+    end
   end
 
   assign wbs_cyc_o = wbs_m2s_en | wbs_cs;

@@ -85,14 +85,14 @@ module peripheral_msi_upsizer_wb #(
   //
   import peripheral_wb_pkg::*;
 
-  localparam SELW = DW_IN / 8;  //sel width
+  localparam SELW = DW_IN / 8;  // sel width
 
   localparam DW_OUT = DW_IN * SCALE;
   localparam SW_OUT = SELW * SCALE;
 
-  localparam BUFW = $clog2(DW_IN / 8) - 1;  //Buffer width
+  localparam BUFW = $clog2(DW_IN / 8) - 1;  // Buffer width
 
-  localparam ADR_LSB = BUFW + 1;  //Bit position of the LSB of the buffer address. Lower bits are used for index part
+  localparam ADR_LSB = BUFW + 1;  // Bit position of the LSB of the buffer address. Lower bits are used for index part
 
   localparam [1:0] S_IDLE = 2'b00;
   localparam [1:0] S_READ = 2'b01;
@@ -181,7 +181,9 @@ module peripheral_msi_upsizer_wb #(
   always @(posedge wb_clk_i) begin
     if (wbs_ack_o & !wr) begin
       first_ack <= 1'b1;
-      if (last) first_ack <= 1'b0;
+      if (last) begin
+        first_ack <= 1'b0;
+      end
     end
     write_ack   <= 1'b0;
     wbm_stb_o_r <= wbm_stb_o & !wbm_we_o;
@@ -208,15 +210,17 @@ module peripheral_msi_upsizer_wb #(
             wbm_dat_o[idx_i] <= wbs_dat_i;
             wr_sel[idx_i]    <= wbs_sel_i;
 
-            //FIXME
+            // FIXME
             wbm_dat_o[idx_i] <= {DW_IN{1'b0}};
             wr_sel[!idx_i]   <= {SELW{1'b0}};
 
             write_ack        <= 1'b1 | (!last_in_batch) & !(last & wbs_ack_o);
 
             state            <= S_WRITE;
-          end else begin  //Read request
-            if (wbs_cti_i == 3'b111) rdat_vld <= 1'b0;
+          end else begin  // Read request
+            if (wbs_cti_i == 3'b111) begin
+              rdat_vld <= 1'b0;
+            end
             if (!next_bufhit | !first_ack  /*!wbm_stb_o_r*/) begin
               rdat_vld <= 1'b0;
               state    <= S_READ;
@@ -228,7 +232,7 @@ module peripheral_msi_upsizer_wb #(
       S_READ: begin
         if (wbm_ack_i) begin
           next_radr   <= wb_next_adr(wbs_adr_i, wbs_cti_i, wbs_bte_i, DW_OUT) >> ($clog2(SELW) + BUFW);
-          //next_radr <= next_adr;
+          // next_radr <= next_adr;
           radr        <= adr_i;
           rdat        <= wbm_dat_i;
           rdat_vld    <= !last;
@@ -238,7 +242,7 @@ module peripheral_msi_upsizer_wb #(
       end
 
       S_WRITE: begin
-        //write_ack <= (!last_in_batch | wbm_ack_i) & !(last & wbs_ack_o);
+        // write_ack <= (!last_in_batch | wbm_ack_i) & !(last & wbs_ack_o);
         if (!wr_stb | wbm_ack_i) begin
           write_ack   <= !last & (!last_in_batch | wbm_ack_i);
           wr_adr      <= adr_i << ($clog2(SELW) + BUFW);

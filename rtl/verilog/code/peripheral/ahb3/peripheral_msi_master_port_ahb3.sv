@@ -45,15 +45,15 @@ import peripheral_ahb3_pkg::*;
 module peripheral_msi_master_port_ahb3 #(
   parameter PLEN    = 64,
   parameter XLEN    = 64,
-  parameter MASTERS = 5,   //number of AHB masters
-  parameter SLAVES  = 5    //number of AHB slaves
+  parameter MASTERS = 5,   // number of AHB masters
+  parameter SLAVES  = 5    // number of AHB slaves
 ) (
-  //Common signals
+  // Common signals
   input HRESETn,
   input HCLK,
 
-  //AHB Slave Interfaces (receive data from AHB Masters)
-  //AHB Masters connect to these ports
+  // AHB Slave Interfaces (receive data from AHB Masters)
+  // AHB Masters connect to these ports
   input [2:0] mst_priority,
 
   input             mst_HSEL,
@@ -70,7 +70,7 @@ module peripheral_msi_master_port_ahb3 #(
   input             mst_HREADY,
   output            mst_HRESP,
 
-  //AHB Master Interfaces; send data to AHB slaves
+  // AHB Master Interfaces; send data to AHB slaves
   input  [SLAVES-1:0][PLEN -1:0] slvHADDRmask,
   input  [SLAVES-1:0][PLEN -1:0] slvHADDRbase,
   output [SLAVES-1:0]            slvHSEL,
@@ -87,7 +87,7 @@ module peripheral_msi_master_port_ahb3 #(
   output                         slvHREADYOUT,
   input  [SLAVES-1:0]            slvHRESP,
 
-  //Internal signals
+  // Internal signals
   output reg              can_switch,
   output     [       2:0] slvpriority,
   input      [SLAVES-1:0] master_granted
@@ -147,18 +147,23 @@ module peripheral_msi_master_port_ahb3 #(
   function integer onehot2int;
     input [SLAVES-1:0] onehot;
 
-    for (onehot2int = -1; |onehot; onehot2int++) onehot = onehot >> 1;
-  endfunction  //onehot2int
+    for (onehot2int = -1; |onehot; onehot2int++) begin
+      onehot = onehot >> 1;
+    end
+  endfunction  // onehot2int
 
   //////////////////////////////////////////////////////////////////////////////
   //
   // Module Body
   //
 
-  //Register Address Phase Signals
+  // Register Address Phase Signals
   always @(posedge HCLK, negedge HRESETn) begin
-    if (!HRESETn) regHTRANS <= HTRANS_IDLE;
-    else if (mst_HREADY) regHTRANS <= mst_HSEL ? mst_HTRANS : HTRANS_IDLE;
+    if (!HRESETn) begin
+      regHTRANS <= HTRANS_IDLE;
+    end else if (mst_HREADY) begin
+      regHTRANS <= mst_HSEL ? mst_HTRANS : HTRANS_IDLE;
+    end
   end
 
   always @(posedge HCLK) begin
@@ -174,10 +179,13 @@ module peripheral_msi_master_port_ahb3 #(
     end
   end
 
-  //Generate local HREADY response
+  // Generate local HREADY response
   always @(posedge HCLK, negedge HRESETn) begin
-    if (!HRESETn) local_HREADYOUT <= 1'b1;
-    else if (mst_HREADY) local_HREADYOUT <= (mst_HTRANS == HTRANS_IDLE) | ~mst_HSEL;
+    if (!HRESETn) begin
+      local_HREADYOUT <= 1'b1;
+    end else if (mst_HREADY) begin
+      local_HREADYOUT <= (mst_HTRANS == HTRANS_IDLE) | ~mst_HSEL;
+    end
   end
 
   /*
@@ -194,27 +202,40 @@ module peripheral_msi_master_port_ahb3 #(
    */
 
   always @(posedge HCLK, negedge HRESETn) begin
-    if (!HRESETn) access_state <= NO_ACCESS;
-    else
+    if (!HRESETn) begin
+      access_state <= NO_ACCESS;
+    end else begin
       case (access_state)
-        NO_ACCESS:
-        if (~|current_HSEL && ~|pending_HSEL) access_state <= NO_ACCESS;
-        else if (|(current_HSEL & master_granted)) access_state <= ACCESS_GRANTED;
-        else access_state <= ACCESS_PENDING;
-
-        ACCESS_PENDING: if (|(pending_HSEL & master_granted) && slvHREADY[slave_sel]) access_state <= ACCESS_GRANTED;
-
-        ACCESS_GRANTED:
-        if (mst_HREADY && ~|current_HSEL) access_state <= NO_ACCESS;
-        else if (mst_HREADY && ~|(current_HSEL & master_granted & slvHREADY)) access_state <= ACCESS_PENDING;
+        NO_ACCESS: begin
+          if (~|current_HSEL && ~|pending_HSEL) begin
+            access_state <= NO_ACCESS;
+          end else if (|(current_HSEL & master_granted)) begin
+            access_state <= ACCESS_GRANTED;
+          end else begin
+            access_state <= ACCESS_PENDING;
+          end
+        end
+        ACCESS_PENDING: begin
+          if (|(pending_HSEL & master_granted) && slvHREADY[slave_sel]) begin
+            access_state <= ACCESS_GRANTED;
+          end
+        end
+        ACCESS_GRANTED: begin
+          if (mst_HREADY && ~|current_HSEL) begin
+            access_state <= NO_ACCESS;
+          end else if (mst_HREADY && ~|(current_HSEL & master_granted & slvHREADY)) begin
+            access_state <= ACCESS_PENDING;
+          end
+        end
       endcase
+    end
   end
 
   assign no_access      = access_state == NO_ACCESS;
   assign access_pending = access_state == ACCESS_PENDING;
   assign access_granted = access_state == ACCESS_GRANTED;
 
-  //Generate burst counter
+  // Generate burst counter
   always @(posedge HCLK) begin
     if (mst_HREADY) begin
       if (mst_HTRANS == HTRANS_NONSEQ) begin
@@ -233,7 +254,7 @@ module peripheral_msi_master_port_ahb3 #(
     end
   end
 
-  //Indicate that the slave may switch masters on the NEXT cycle
+  // Indicate that the slave may switch masters on the NEXT cycle
   always @(*) begin
     case (access_state)
       NO_ACCESS:      can_switch = ~|(current_HSEL & master_granted);
@@ -247,7 +268,7 @@ module peripheral_msi_master_port_ahb3 #(
    *
    * Send out connection request to slave-port
    * Slave-port replies by asserting master_gnt
-   * TODO: check for illegal combinations (more than 1 slvHSEL asserted)
+   * TO-DO: check for illegal combinations (more than 1 slvHSEL asserted)
    */
 
   generate
@@ -258,13 +279,16 @@ module peripheral_msi_master_port_ahb3 #(
     end
   endgenerate
 
-  //Check if granted access
+  // Check if granted access
   always @(posedge HCLK, negedge HRESETn) begin
-    if (!HRESETn) slave_sel <= 'h0;
-    else if (mst_HREADY) slave_sel <= onehot2int(slvHSEL);
+    if (!HRESETn) begin
+      slave_sel <= 'h0;
+    end else if (mst_HREADY) begin
+      slave_sel <= onehot2int(slvHSEL);
+    end
   end
 
-  //Outgoing data (to slaves)
+  // Outgoing data (to slaves)
   assign mux_sel       = ~access_pending;
 
   assign slvHADDR      = mux_sel ? mst_HADDR : regHADDR;
@@ -275,11 +299,11 @@ module peripheral_msi_master_port_ahb3 #(
   assign slvHPROT      = mux_sel ? mst_HPROT : regHPROT;
   assign slvHTRANS     = mux_sel ? mst_HTRANS : regHTRANS == HTRANS_SEQ && regHBURST == HBURST_INCR ? HTRANS_NONSEQ : regHTRANS;
   assign slvHMASTLOCK  = mux_sel ? mst_HMASTLOCK : regHMASTLOCK;
-  assign slvHREADYOUT  = mux_sel ? mst_HREADY & |(current_HSEL & slvHREADY) : slvHREADY[slave_sel];  //slave's HREADYOUT is driven by master's HREADY (mst_HREADY -> slv_HREADYOUT)
+  assign slvHREADYOUT  = mux_sel ? mst_HREADY & |(current_HSEL & slvHREADY) : slvHREADY[slave_sel];  // slave's HREADYOUT is driven by master's HREADY (mst_HREADY -> slv_HREADYOUT)
   assign slvpriority   = mux_sel ? mst_priority : regpriority;
 
-  //Incoming data (to masters)
+  // Incoming data (to masters)
   assign mst_HRDATA    = slvHRDATA[slave_sel];
-  assign mst_HREADYOUT = access_granted ? slvHREADY[slave_sel] : local_HREADYOUT;  //master's HREADYOUT is driven by slave's HREADY (slv_HREADY -> mst_HREADYOUT)
+  assign mst_HREADYOUT = access_granted ? slvHREADY[slave_sel] : local_HREADYOUT;  // master's HREADYOUT is driven by slave's HREADY (slv_HREADY -> mst_HREADYOUT)
   assign mst_HRESP     = access_granted ? slvHRESP[slave_sel] : HRESP_OKAY;
 endmodule

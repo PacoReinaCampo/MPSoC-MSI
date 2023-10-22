@@ -71,13 +71,17 @@ module peripheral_msi_arbiter #(
     begin
       ff1 = 0;
       for (i = NUM_PORTS - 1; i >= 0; i = i - 1) begin
-        if (in[i]) ff1 = i;
+        if (in[i]) begin
+          ff1 = i;
+        end
       end
     end
   endfunction
 
 `ifdef VERBOSE
-  initial $display("Bus arbiter with %d units", NUM_PORTS);
+  initial begin
+    $display("Bus arbiter with %d units", NUM_PORTS);
+  end
 `endif
 
   //////////////////////////////////////////////////////////////////////////////
@@ -108,8 +112,9 @@ module peripheral_msi_arbiter #(
   end
 
   always @(posedge clk) begin
-    if (rst) token <= 'b1;
-    else if (next) begin
+    if (rst) begin
+      token <= 'b1;
+    end else if (next) begin
       for (yy = 0; yy < NUM_PORTS; yy = yy + 1) begin : TOKEN
         if (order[yy]) begin
           token <= token_lookahead[yy];

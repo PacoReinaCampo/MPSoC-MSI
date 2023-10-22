@@ -66,20 +66,28 @@ module peripheral_msi_cc561_wb #(
   // Module Body
   //
   always @(posedge aclk) begin
-    if (aen) adata_r <= adata;
+    if (aen) begin
+      adata_r <= adata;
+    end
 
     aen_r <= aen ^ aen_r;
-    if (arst) aen_r <= 1'b0;
+
+    if (arst) begin
+      aen_r <= 1'b0;
+    end
   end
 
   always @(posedge bclk) begin
-    if (bpulse) bdata <= adata_r;  //CDC
+    if (bpulse) begin
+      bdata <= adata_r;  // CDC
+    end
+
     ben <= bpulse;
   end
 
   peripheral_msi_sync2_pgen_wb sync2_pgen (
     .c(bclk),
-    .d(aen_r),   //CDC
+    .d(aen_r),   // CDC
     .p(bpulse),
     .q()
   );

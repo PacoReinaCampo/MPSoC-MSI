@@ -42,9 +42,9 @@
  */
 
 module peripheral_msi_data_resize_wb #(
-  parameter AW  = 32,  //Address width
-  parameter MDW = 32,  //Master Data Width
-  parameter SDW = 8    //Slave Data Width
+  parameter AW  = 32,  // Address width
+  parameter MDW = 32,  // Master Data Width
+  parameter SDW = 8    // Slave Data Width
 ) (
   // WishBone Master Interface
   input  [AW- 1:0] wbm_adr_i,
