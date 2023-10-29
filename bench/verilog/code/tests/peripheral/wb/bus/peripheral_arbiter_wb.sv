@@ -116,7 +116,9 @@ module peripheral_arbiter_wb #(
       wb_rst = 1'b0;
       @(posedge done);
       $display("Average wait times");
-      for (idx = 0; idx < NUM_MASTERS; idx = idx + 1) $display("Master %0d : %f", idx, ack_delay[idx] / num_transactions[idx]);
+      for (idx = 0; idx < NUM_MASTERS; idx = idx + 1) begin
+        $display("Master %0d : %f", idx, ack_delay[idx] / num_transactions[idx]);
+      end
     end
   endtask
 
@@ -142,7 +144,10 @@ module peripheral_arbiter_wb #(
     for (i = 0; i < NUM_MASTERS; i = i + 1) begin : masters
       initial begin
         @(negedge wb_rst);
-        if ($value$plusargs("transactions=%d", TRANSACTIONS)) transactor.set_transactions(TRANSACTIONS);
+        if ($value$plusargs("transactions=%d", TRANSACTIONS)) begin
+          transactor.set_transactions(TRANSACTIONS);
+        end
+
         transactor.display_settings;
         transactor.run();
         transactor.display_stats;

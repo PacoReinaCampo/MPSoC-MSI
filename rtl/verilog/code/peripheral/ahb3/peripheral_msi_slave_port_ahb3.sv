@@ -131,7 +131,11 @@ module peripheral_msi_slave_port_ahb3 #(
   function [2:0] highest_requested_priority(input [MASTERS-1:0] hsel, input [MASTERS-1:0][2:0] priorities);
 
     highest_requested_priority = 0;
-    for (int n = 0; n < MASTERS; n++) if (hsel[n] && priorities[n] > highest_requested_priority) highest_requested_priority = priorities[n];
+    for (int n = 0; n < MASTERS; n++) begin
+      if (hsel[n] && priorities[n] > highest_requested_priority) begin
+        highest_requested_priority = priorities[n];
+      end
+    end
   endfunction  // highest_requested_priority
 
   function [MASTERS-1:0] requesters;
@@ -139,7 +143,9 @@ module peripheral_msi_slave_port_ahb3 #(
     input [MASTERS-1:0][2:0] priorities;
     input [2:0] priority_select;
 
-    for (int n = 0; n < MASTERS; n++) requesters[n] = (priorities[n] == priority_select) & hsel[n];
+    for (int n = 0; n < MASTERS; n++) begin
+      requesters[n] = (priorities[n] == priority_select) & hsel[n];
+    end
   endfunction  // requesters
 
   function [MASTERS-1:0] nxt_master;
@@ -157,7 +163,11 @@ module peripheral_msi_slave_port_ahb3 #(
     offset     = onehot2int(last_master) + 1;
 
     sr         = {pending_masters, pending_masters};
-    for (int n = 0; n < MASTERS; n++) if (sr[n + offset]) return (1 << ((n + offset) % MASTERS));
+    for (int n = 0; n < MASTERS; n++) begin
+      if (sr[n + offset]) begin
+        return (1 << ((n + offset) % MASTERS));
+      end
+    end
   endfunction
 
   //////////////////////////////////////////////////////////////////////////////

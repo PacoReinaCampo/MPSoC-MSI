@@ -93,11 +93,14 @@ module peripheral_cdc_wb #(
   //
   task run;
     begin
-      transactor.bfm_master_wb.reset;
+      transactor.bfm.reset;
       @(posedge wbs_clk) wbs_rst = 1'b0;
       @(posedge wbm_clk) wbm_rst = 1'b0;
 
-      if ($value$plusargs("transactions=%d", TRANSACTIONS)) transactor.set_transactions(TRANSACTIONS);
+      if ($value$plusargs("transactions=%d", TRANSACTIONS)) begin
+        transactor.set_transactions(TRANSACTIONS);
+      end
+
       transactor.display_settings;
       transactor.run();
       transactor.display_stats;

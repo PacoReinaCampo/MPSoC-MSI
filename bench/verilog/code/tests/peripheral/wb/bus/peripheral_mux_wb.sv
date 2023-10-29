@@ -113,7 +113,9 @@ module peripheral_mux_wb #(
     integer idx;
     begin
       wb_rst = 1'b0;
-      if ($value$plusargs("transactions=%d", TRANSACTIONS)) transactor.set_transactions(TRANSACTIONS);
+      if ($value$plusargs("transactions=%d", TRANSACTIONS)) begin
+        transactor.set_transactions(TRANSACTIONS);
+      end
 
       transactor.display_settings;
       transactor.run();
