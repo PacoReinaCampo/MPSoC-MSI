@@ -120,7 +120,7 @@ module peripheral_upsizer_wb (
     .wb_ack_i(wbm_s2m_ack),
     .wb_err_i(wbm_s2m_err),
     .wb_rty_i(wbm_s2m_rty),
-    //Test Control
+    // Test Control
     .done    (done)
   );
 

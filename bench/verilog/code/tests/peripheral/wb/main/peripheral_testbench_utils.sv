@@ -63,7 +63,7 @@ module peripheral_testbench_utils;
   // Module Body
   //
 
-  //Force simulation stop after timeout cycles
+  // Force simulation stop after timeout cycles
   initial begin
     if ($value$plusargs("timeout=%d", timeout)) begin
       #timeout $display("Timeout: Forcing end of simulation");
@@ -71,7 +71,7 @@ module peripheral_testbench_utils;
     end
   end
 
-  //FIXME: Add more options for VCD logging
+  // FIXME: Add more options for VCD logging
 
   initial begin
     if ($test$plusargs("vcd")) begin
@@ -84,7 +84,7 @@ module peripheral_testbench_utils;
     end
   end
 
-  //Heartbeat timer for simulations
+  // Heartbeat timer for simulations
   initial begin
     if ($value$plusargs("heartbeat=%d", heartbeat)) begin
       forever #heartbeat $display("Heartbeat : Time=%0t", $time);

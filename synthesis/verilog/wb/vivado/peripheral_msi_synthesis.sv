@@ -77,7 +77,7 @@ module peripheral_msi_synthesis #(
   // Module Body
   //
 
-  //DUT WB
+  // DUT WB
   peripheral_wb_msi #(
     .SIM  (SIM),
     .DEBUG(DEBUG)

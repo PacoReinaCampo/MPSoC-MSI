@@ -146,7 +146,7 @@ module peripheral_cdc_wb #(
     .wb_ack_i(wbm_s2m_ack),
     .wb_err_i(1'b0),
     .wb_rty_i(1'b0),
-    //Test Control
+    // Test Control
     .done    ()
   );
 

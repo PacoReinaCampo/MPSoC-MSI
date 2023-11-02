@@ -166,7 +166,7 @@ module peripheral_mux_wb #(
     .wb_ack_i(wb_s2m_ack),
     .wb_err_i(wb_s2m_err),
     .wb_rty_i(wb_s2m_rty),
-    //Test Control
+    // Test Control
     .done    ()
   );
 

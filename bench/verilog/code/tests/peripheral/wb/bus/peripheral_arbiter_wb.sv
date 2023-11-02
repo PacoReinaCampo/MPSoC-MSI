@@ -172,7 +172,7 @@ module peripheral_arbiter_wb #(
         .wb_ack_i(wbm_s2m_ack[i]),
         .wb_err_i(wbm_s2m_err[i]),
         .wb_rty_i(wbm_s2m_rty[i]),
-        //Test Control
+        // Test Control
         .done    (done_int[i])
       );
     end  // block: slaves

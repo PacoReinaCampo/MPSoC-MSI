@@ -57,11 +57,11 @@ module peripheral_msi_testbench;
   // Variables
   //
 
-  //Common signals
+  // Common signals
   wire                                     HRESETn;
   wire                                     HCLK;
 
-  //AHB3 signals
+  // AHB3 signals
   wire [MASTERS-1:0]                       mst_HSEL;
   wire [MASTERS-1:0][ PLEN           -1:0] mst_HADDR;
   wire [MASTERS-1:0][ XLEN           -1:0] mst_HWDATA;
@@ -94,19 +94,19 @@ module peripheral_msi_testbench;
   // Module Body
   //
 
-  //DUT AHB3
+  // DUT AHB3
   peripheral_msi_interface_ahb3 #(
     .PLEN   (PLEN),
     .XLEN   (XLEN),
     .MASTERS(MASTERS),
     .SLAVES (SLAVES)
   ) peripheral_interface_ahb3 (
-    //Common signals
+    // Common signals
     .HRESETn(HRESETn),
     .HCLK   (HCLK),
 
-    //Master Ports; AHB masters connect to these
-    //thus these are actually AHB Slave Interfaces
+    // Master Ports; AHB masters connect to these
+    // thus these are actually AHB Slave Interfaces
     .mst_priority(),
 
     .mst_HSEL     (mst_HSEL),
@@ -123,8 +123,8 @@ module peripheral_msi_testbench;
     .mst_HREADY   (mst_HREADY),
     .mst_HRESP    (mst_HRESP),
 
-    //Slave Ports; AHB Slaves connect to these
-    //thus these are actually AHB Master Interfaces
+    // Slave Ports; AHB Slaves connect to these
+    // thus these are actually AHB Master Interfaces
     .slv_addr_mask(),
     .slv_addr_base(),
 

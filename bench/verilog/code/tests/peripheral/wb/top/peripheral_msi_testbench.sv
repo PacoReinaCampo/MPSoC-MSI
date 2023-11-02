@@ -47,11 +47,11 @@ module peripheral_msi_testbench;
   // Variables
   //
 
-  //Common signals
+  // Common signals
   wire        clk;
   wire        rst;
 
-  //WB signals
+  // WB signals
   wire [31:0] wb_or1k_d_adr_i;
   wire [31:0] wb_or1k_d_dat_i;
   wire [ 3:0] wb_or1k_d_sel_i;
@@ -118,7 +118,7 @@ module peripheral_msi_testbench;
   // Module Body
   //
 
-  //DUT WB
+  // DUT WB
   peripheral_msi_interface_wb wb_interface0 (
     .wb_clk_i(clk),
     .wb_rst_i(rst),
