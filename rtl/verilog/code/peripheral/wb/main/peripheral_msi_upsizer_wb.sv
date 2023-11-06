@@ -269,7 +269,9 @@ module peripheral_msi_upsizer_wb #(
           state     <= S_IDLE;
         end
       end
-      default: state <= S_IDLE;
+      default: begin
+        state <= S_IDLE;
+      end
     endcase
     if (wb_rst_i) begin
       state     <= S_IDLE;
