@@ -14,31 +14,29 @@
 //              AMBA3 AHB-Lite Bus Interface                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-
-/* Copyright (c) 2018-2019 by the author(s)
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * =============================================================================
- * Author(s):
- *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
- */
+// Copyright (c) 2018-2019 by the author(s)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+////////////////////////////////////////////////////////////////////////////////
+// Author(s):
+//   Paco Reina Campo <pacoreinacampo@queenfield.tech>
 
 module peripheral_msi_slave_port_ahb3 #(
   parameter PLEN    = 64,
@@ -170,11 +168,9 @@ module peripheral_msi_slave_port_ahb3 #(
   // Module Body
   //////////////////////////////////////////////////////////////////////////////
 
-  /*
-   * Select which master to service
-   * 1. Priority
-   * 2. Round-Robin
-   */
+  // Select which master to service
+  // 1. Priority
+  // 2. Round-Robin
 
   // get highest priority from selected masters
   assign requested_priority_lvl = highest_requested_priority(mstHSEL, mstpriority);
@@ -234,14 +230,12 @@ module peripheral_msi_slave_port_ahb3 #(
     end
   end
 
-  /*
-   * If first granted access from slave-port and HTRANS = SEQ, then change to NONSEQ
-   * as this is most likely a burst going over a slave boundary
-   * If it's not, then this was a bad access to start with and we're in a mess anyways
-   *
-   * Do NOT switch when HMASTLOCK is asserted
-   * It is allowed to switch in the middle of a burst ... but that will get ugly pretty quick
-   */
+  // If first granted access from slave-port and HTRANS = SEQ, then change to NONSEQ
+  // as this is most likely a burst going over a slave boundary
+  // If it's not, then this was a bad access to start with and we're in a mess anyways
+  //
+  // Do NOT switch when HMASTLOCK is asserted
+  // It is allowed to switch in the middle of a burst ... but that will get ugly pretty quick
 
   assign slv_HSEL      = mstHSEL[granted_master_idx];
   assign slv_HADDR     = mstHADDR[granted_master_idx];

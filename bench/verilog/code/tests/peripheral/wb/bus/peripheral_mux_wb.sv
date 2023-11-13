@@ -14,32 +14,30 @@
 //              Wishbone Bus Interface                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-
-/* Copyright (c) 2018-2019 by the author(s)
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * =============================================================================
- * Author(s):
- *   Olof Kindgren <olof.kindgren@gmail.com>
- *   Paco Reina Campo <pacoreinacampo@queenfield.tech>
- */
+// Copyright (c) 2018-2019 by the author(s)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+////////////////////////////////////////////////////////////////////////////////
+// Author(s):
+//   Olof Kindgren <olof.kindgren@gmail.com>
+//   Paco Reina Campo <pacoreinacampo@queenfield.tech>
 
 `default_nettype none
 
@@ -58,9 +56,9 @@ module peripheral_mux_wb #(
   localparam SEGMENT_SIZE = 32'h100;
   localparam MEMORY_SIZE_BITS = 8;
 
-  /*TODO: Find a way to generate MATCH_ADDR and MATCH_MASK based on memory
-          size and number of slaves. Missing support for constant
-          user functions in Icarus Verilog is the blocker for this*/
+  // TODO: Find a way to generate MATCH_ADDR and MATCH_MASK based on memory
+  //       size and number of slaves. Missing support for constant
+  //       user functions in Icarus Verilog is the blocker for this
   localparam [DW*NUM_SLAVES-1:0] MATCH_ADDR = {32'h00000300, 32'h00000200, 32'h00000100, 32'h00000000};
   localparam [DW*NUM_SLAVES-1:0] MATCH_MASK = {NUM_SLAVES{32'hffffff00}};
 
