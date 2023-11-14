@@ -1,6 +1,3 @@
--- Converted from core/peripheral_msi_mux_wb.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --

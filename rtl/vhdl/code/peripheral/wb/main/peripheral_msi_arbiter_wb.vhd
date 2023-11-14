@@ -1,6 +1,3 @@
--- Converted from core/peripheral_msi_arbiter_wb.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -146,7 +143,7 @@ begin
 
   master_selection <= to_integer(unsigned(selection));
 
-  --Mux active master
+  -- Mux active master
   wbs_adr_o <= wbm_adr_i(0);
   wbs_dat_o <= wbm_dat_i(0);
   wbs_sel_o <= wbm_sel_i(0);

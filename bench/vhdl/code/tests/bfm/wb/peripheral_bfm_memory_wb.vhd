@@ -1,6 +1,3 @@
--- Converted from core/peripheral_msi_wb_bfm_memory.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -50,7 +47,7 @@ use ieee.math_real.all;
 
 entity peripheral_msi_bfm_memory_wb is
   generic (
-    --Wishbone parameters
+    -- Wishbone parameters
     DW : integer := 32;
     AW : integer := 32;
 
@@ -115,7 +112,7 @@ architecture rtl of peripheral_msi_bfm_memory_wb is
   -- Variables
   ------------------------------------------------------------------------------
 
-  --Counters for read and write accesses
+  -- Counters for read and write accesses
   signal reads  : integer;
   signal writes : integer;
 
@@ -177,13 +174,13 @@ architecture rtl of peripheral_msi_bfm_memory_wb is
       end if;
     end if;
 
-    --Catch start of next cycle
+    -- Catch start of next cycle
     if (wb_cyc_i = '1') then
       wait until rising_edge(wb_cyc_i);
     end if;
     wait until rising_edge(wb_clk_i);
 
-    --Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
+    -- Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
     while (wb_cyc_i /= '1') loop
       wait until rising_edge(wb_clk_i);
     end loop;
@@ -229,7 +226,7 @@ architecture rtl of peripheral_msi_bfm_memory_wb is
 
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
-    wb_rty_o <= '0' after TP;           --TODO : rty not supported
+    wb_rty_o <= '0' after TP;           -- TODO : rty not supported
 
     if (err = '1') then
       if (DEBUG = '1') then
@@ -398,7 +395,7 @@ begin
       reads <= reads+1;
     end if;
     while (has_next = '1') loop
-      --Set error on out of range accesses
+      -- Set error on out of range accesses
       if (unsigned(address(31 downto ADR_LSB)) > to_unsigned(MEM_WORDS, 31-ADR_LSB+1)) then
         report "Error : Attempt to access " & integer'image(to_integer(unsigned(address))) & ", which is outside of memory";
 
@@ -453,7 +450,7 @@ begin
           report "RAM Read " & integer'image(to_integer(unsigned(address))) & " = " & integer'image(to_integer(unsigned(data))) & integer'image(to_integer(unsigned(mask)));
         end if;
 
-        ----delay <= rand_uniform(seed, RD_MIN_DELAY, RD_MAX_DELAY);
+        ---- delay <= rand_uniform(seed, RD_MIN_DELAY, RD_MAX_DELAY);
 
         for repeat in 1 to delay loop
           wait until rising_edge(wb_clk_i);

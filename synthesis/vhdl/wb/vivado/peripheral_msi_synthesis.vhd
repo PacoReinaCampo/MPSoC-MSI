@@ -1,6 +1,3 @@
--- Converted from bench/verilog/regression/peripheral_msi_synthesis.sv
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -41,7 +38,6 @@
 --------------------------------------------------------------------------------
 -- Author(s):
 --   Paco Reina Campo <pacoreinacampo@queenfield.tech>
---
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -127,7 +123,7 @@ begin
   -- Module Body
   ------------------------------------------------------------------------------
 
-  --DUT WB
+  -- DUT WB
   wb_msi : peripheral_wb_msi
     generic map (
       SIM   => SIM,

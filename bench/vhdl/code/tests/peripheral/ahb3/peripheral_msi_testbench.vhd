@@ -1,6 +1,3 @@
--- Converted from bench/verilog/regression/peripheral_msi_testbench.sv
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -66,11 +63,11 @@ architecture rtl of peripheral_msi_testbench is
       SLAVES  : integer := 5
       );
     port (
-      --Common signals
+      -- Common signals
       HRESETn : in std_logic;
       HCLK    : in std_logic;
 
-      --Master Ports; AHB masters connect to these
+      -- Master Ports; AHB masters connect to these
       -- thus these are actually AHB Slave Interfaces
       mst_priority : in std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
 
@@ -88,7 +85,7 @@ architecture rtl of peripheral_msi_testbench is
       mst_HREADY    : in  std_logic_vector(MASTERS-1 downto 0);
       mst_HRESP     : out std_logic_vector(MASTERS-1 downto 0);
 
-      --Slave Ports; AHB Slaves connect to these
+      -- Slave Ports; AHB Slaves connect to these
       --  thus these are actually AHB Master Interfaces
       slv_addr_mask : in std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
       slv_addr_base : in std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
@@ -103,8 +100,8 @@ architecture rtl of peripheral_msi_testbench is
       slv_HPROT     : out std_logic_matrix(SLAVES-1 downto 0)(3 downto 0);
       slv_HTRANS    : out std_logic_matrix(SLAVES-1 downto 0)(1 downto 0);
       slv_HMASTLOCK : out std_logic_vector(SLAVES-1 downto 0);
-      slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
-      slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  --combinatorial HREADY from all connected slaves
+      slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  -- HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+      slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  -- combinatorial HREADY from all connected slaves
       slv_HRESP     : in  std_logic_vector(SLAVES-1 downto 0)
       );
   end component;
@@ -123,11 +120,11 @@ architecture rtl of peripheral_msi_testbench is
   -- Variables
   ------------------------------------------------------------------------------
 
-  --Common signals
+  -- Common signals
   signal HRESETn : std_logic;
   signal HCLK    : std_logic;
 
-  --AHB3 signals
+  -- AHB3 signals
   signal mst_priority : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
 
   signal mst_HSEL      : std_logic_vector(MASTERS-1 downto 0);
@@ -164,7 +161,7 @@ begin
   -- Module Body
   ------------------------------------------------------------------------------
 
-  --DUT AHB3
+  -- DUT AHB3
   peripheral_interface_ahb3 : peripheral_msi_interface_ahb3
     generic map (
       PLEN    => PLEN,
@@ -173,12 +170,12 @@ begin
       SLAVES  => SLAVES
       )
     port map (
-      --Common signals
+      -- Common signals
       HRESETn => HRESETn,
       HCLK    => HCLK,
 
-      --Master Ports; AHB masters connect to these
-      --thus these are actually AHB Slave Interfaces
+      -- Master Ports; AHB masters connect to these
+      -- thus these are actually AHB Slave Interfaces
       mst_priority => mst_priority,
 
       mst_HSEL      => mst_HSEL,
@@ -195,8 +192,8 @@ begin
       mst_HREADY    => mst_HREADY,
       mst_HRESP     => mst_HRESP,
 
-      --Slave Ports; AHB Slaves connect to these
-      --thus these are actually AHB Master Interfaces
+      -- Slave Ports; AHB Slaves connect to these
+      -- thus these are actually AHB Master Interfaces
       slv_addr_mask => slv_addr_mask,
       slv_addr_base => slv_addr_base,
 

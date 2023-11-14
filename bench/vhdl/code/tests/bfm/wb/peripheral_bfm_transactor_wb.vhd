@@ -1,6 +1,3 @@
--- Converted from peripheral_msi_wb_bfm_transactor.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -158,7 +155,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     ) return std_logic_vector is
     variable gen_adr_return : std_logic_vector (AW-1 downto 0);
   begin
-    --gen_adr_return <= (low+(((null)(SEED)) mod (high-low))) and (concatenate(AW-ADR_LSB, '1') & concatenate(ADR_LSB, '0'));
+    -- gen_adr_return <= (low+(((null)(SEED)) mod (high-low))) and (concatenate(AW-ADR_LSB, '1') & concatenate(ADR_LSB, '0'));
     return gen_adr_return;
   end gen_adr;
 
@@ -177,7 +174,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     return gen_cycle_type_return;
   end gen_cycle_type;
 
-  --Return a 2*AW array with the highest and lowest accessed addresses
+  -- Return a 2*AW array with the highest and lowest accessed addresses
   --  based on starting address and burst type
   --  TODO: Account for short wrap bursts. Fix for 8-bit mode
   function adr_range (
@@ -186,7 +183,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     bte_i : std_logic_vector(1 downto 0);
     len_i : std_logic_vector(integer(log2(real(MAX_BURST_LEN+1))) downto 0)
     ) return std_logic_vector is
-    constant BPW : integer := DW/8;     --Bytes per word
+    constant BPW : integer := DW/8;     -- Bytes per word
 
     variable adr      : std_logic_vector(AW-1 downto 0);
     variable adr_high : std_logic_vector(AW-1 downto 0);
@@ -252,12 +249,12 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     -- Repeat check for MEM_LOW/MEM_HIGH bounds until satisfied
     while ((adr_high > adr_max_i) or (adr_low < adr_min_i) or (adr_high = adr_low)) loop
       address := gen_adr(to_integer(unsigned(adr_min_i)), to_integer(unsigned(adr_max_i)));
-      ----cycle_type <= (null)(((null)(SEED)) mod 100);
+      ---- cycle_type <= (null)(((null)(SEED)) mod 100);
 
-      ----burst_type <= (((null)(SEED)) mod 4)
+      ---- burst_type <= (((null)(SEED)) mod 4)
       ----              when (cycle_type = CTI_INC_BURST) else 0;
 
-      ----burst_length <= 1
+      ---- burst_length <= 1
       ----                when (cycle_type = CTI_CLASSIC) else (((null)(SEED)) mod MAX_BURST_LEN)+1;
 
       adr_range_return := adr_range(address, cycle_type, burst_type, burst_length);
@@ -273,8 +270,8 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
   -- Procedures
   --
 
-  --Gather transaction statistics
-  --TODO: Record shortest/longest bursts.
+  -- Gather transaction statistics
+  -- TODO: Record shortest/longest bursts.
   procedure update_stats (
     signal cti : in std_logic_vector(2 downto 0);
     signal bte : in std_logic_vector(1 downto 0);
@@ -390,7 +387,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
   begin
     -- Fill write data array
     for word in 0 to to_integer(unsigned(burst_length))-1 loop
-    ----bfm.write_data(word) <= random;
+    ---- bfm.write_data(word) <= random;
     end loop;
   end fill_wdata_array;
 
@@ -450,7 +447,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
     if (TRANSACTIONS < 1) then
       report integer'image(TRANSACTIONS) & " transactions requested. Number of transactions must be set to > 0";
     end if;
-    ----bfm.reset;
+    ---- bfm.reset;
     done <= '0';
     err  <= '0';
 
@@ -464,13 +461,13 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
       end if;
       -- Generate the random value for the number of wait states. This will
       -- be used for all of this transaction
-      ----bfm.wait_states <= ((null)(SEED)) mod (MAX_WAIT_STATES+1);
+      ---- bfm.wait_states <= ((null)(SEED)) mod (MAX_WAIT_STATES+1);
       if (VERBOSE > 2) then
         report "Number of Wait States for Transaction " & integer'image(transaction) & " is " & integer'image(to_integer(unsigned(wait_states)));
       end if;
-      --If running in segment mode, cap mem_high/mem_low to a segment
+      -- If running in segment mode, cap mem_high/mem_low to a segment
       if (NUM_SEGMENTS > 0) then
-        ----segment <= ((null)(SEED)) mod NUM_SEGMENTS;
+        ---- segment <= ((null)(SEED)) mod NUM_SEGMENTS;
         mem_lo := MEM_LOW+segment*SEGMENT_SIZE;
         mem_hi := MEM_LOW+(segment+1)*SEGMENT_SIZE-1;
       else
@@ -511,7 +508,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
       -- Start subtransaction loop.
       for subtransaction in 1 to SUBTRANSACTIONS loop
         -- Transaction Type: 0=Read, 1=Write
-        ----st_type                                               <= ((null)(SEED)) mod 2;
+        ---- st_type                                               <= ((null)(SEED)) mod 2;
         ----(st_address & cycle_type & burst_type & burst_length) <= (null)(t_adr_low, t_adr_high);
         ----(null)(st_address, cycle_type, burst_type, burst_length, st_type);
 
@@ -536,7 +533,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
         report "Transaction %0d Completed Successfully" & integer'image(transaction);
       end if;
     -- Clear Buffer Data before next transaction
-    ----bfm.clear_buffer_data;
+    ---- bfm.clear_buffer_data;
     end loop;
     done <= '1';
   end run;

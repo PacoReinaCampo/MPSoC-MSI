@@ -1,6 +1,3 @@
--- Converted from peripheral_msi_bfm_master_wb.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -118,7 +115,7 @@ architecture rtl of peripheral_msi_bfm_master_wb is
   -- Procedures
   --
 
-  --Low level tasks
+  -- Low level tasks
   procedure init_p (
     signal wb_sel_o : out std_logic_vector(DW/8-1 downto 0);
     signal wb_we_o  : out std_logic;
@@ -200,7 +197,7 @@ architecture rtl of peripheral_msi_bfm_master_wb is
 
     wb_adr_o <= addr   after TP;
     wb_dat_o <= dat_op after TP;
-    wb_stb_o <= '0'    after TP;        --FIXME: Add wait states
+    wb_stb_o <= '0'    after TP;        -- FIXME: Add wait states
 
     if ((index = to_integer(unsigned(burst_length))-1) and (cycle_type /= CTI_CLASSIC)) then
       wb_cti_o <= "111" after TP;
@@ -252,7 +249,7 @@ architecture rtl of peripheral_msi_bfm_master_wb is
 
     if (VERBOSE > 2) then
       report "Comparing Read Data for iteration" & integer'image(iteration) & " at address: " & integer'image(to_integer(unsigned(addr)));
-    ----report "Read Data: " & integer'image(to_integer(unsigned(read_data))) & ", buffer data: " & integer'image(to_integer(unsigned(buffer_data(to_integer(unsigned(buffer_addr)))))) & ", buffer address: " & integer'image(to_integer(unsigned(to_integer(unsigned(buffer_addr)))));
+    ---- report "Read Data: " & integer'image(to_integer(unsigned(read_data))) & ", buffer data: " & integer'image(to_integer(unsigned(buffer_data(to_integer(unsigned(buffer_addr)))))) & ", buffer address: " & integer'image(to_integer(unsigned(to_integer(unsigned(buffer_addr)))));
     elsif (VERBOSE > 1) then
       report "Comparing Read Data for iteration" & integer'image(iteration) & " at address: " & integer'image(to_integer(unsigned(addr)));
     end if;
@@ -261,7 +258,7 @@ architecture rtl of peripheral_msi_bfm_master_wb is
       report "Read data mismatch during iteration" & integer'image(iteration) & " at address " & integer'image(to_integer(unsigned(addr)));
       report "Expected " & integer'image(to_integer(unsigned(buffer_data(to_integer(unsigned(buffer_addr))))));
       report "Got " & integer'image(to_integer(unsigned(read_data)));
-    --exit after 3 ns;
+    -- exit after 3 ns;
     elsif (VERBOSE > 1) then
       report "Data Matched";
     end if;
@@ -433,9 +430,9 @@ architecture rtl of peripheral_msi_bfm_master_wb is
       index           := index+1;
     end loop;
 
-    ----clear_write_data (
-    ----write_data => write_data,
-    ----word       => word
+    ---- clear_write_data (
+    ---- write_data => write_data,
+    ---- word       => word
     ----);
 
     insert_wait_states (
@@ -509,12 +506,12 @@ architecture rtl of peripheral_msi_bfm_master_wb is
         wb_cti_o => wb_cti_o
         );
 
-      ----data_compare (
-      ----addr      => addr,
-      ----read_data => data,
-      ----iteration => index,
+      ---- data_compare (
+      ---- addr      => addr,
+      ---- read_data => data,
+      ---- iteration => index,
 
-      ----buffer_addr => buffer_addr
+      ---- buffer_addr => buffer_addr
       ----);
 
       addr            := wb_next_adr(addr, cycle_type, burst_type, DW);

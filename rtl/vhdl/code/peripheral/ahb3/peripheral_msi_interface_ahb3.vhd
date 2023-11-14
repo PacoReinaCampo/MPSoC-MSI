@@ -1,6 +1,3 @@
--- Converted from rtl/vhdl/peripheral_msi_interface_ahb3.sv
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -57,11 +54,11 @@ entity peripheral_msi_interface_ahb3 is
     SLAVES  : integer := 5
     );
   port (
-    --Common signals
+    -- Common signals
     HRESETn : in std_logic;
     HCLK    : in std_logic;
 
-    --Master Ports; AHB masters connect to these
+    -- Master Ports; AHB masters connect to these
     -- thus these are actually AHB Slave Interfaces
     mst_priority : in std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
 
@@ -79,7 +76,7 @@ entity peripheral_msi_interface_ahb3 is
     mst_HREADY    : in  std_logic_vector(MASTERS-1 downto 0);
     mst_HRESP     : out std_logic_vector(MASTERS-1 downto 0);
 
-    --Slave Ports; AHB Slaves connect to these
+    -- Slave Ports; AHB Slaves connect to these
     --  thus these are actually AHB Master Interfaces
     slv_addr_mask : in std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
     slv_addr_base : in std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
@@ -94,8 +91,8 @@ entity peripheral_msi_interface_ahb3 is
     slv_HPROT     : out std_logic_matrix(SLAVES-1 downto 0)(3 downto 0);
     slv_HTRANS    : out std_logic_matrix(SLAVES-1 downto 0)(1 downto 0);
     slv_HMASTLOCK : out std_logic_vector(SLAVES-1 downto 0);
-    slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  --HREADYOUT to slave-decoder; generates HREADY to all connected slaves
-    slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  --combinatorial HREADY from all connected slaves
+    slv_HREADYOUT : out std_logic_vector(SLAVES-1 downto 0);  -- HREADYOUT to slave-decoder; generates HREADY to all connected slaves
+    slv_HREADY    : in  std_logic_vector(SLAVES-1 downto 0);  -- combinatorial HREADY from all connected slaves
     slv_HRESP     : in  std_logic_vector(SLAVES-1 downto 0)
     );
 end peripheral_msi_interface_ahb3;
@@ -114,12 +111,12 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       SLAVES  : integer := 5
       );
     port (
-      --Common signals
+      -- Common signals
       HCLK    : in std_logic;
       HRESETn : in std_logic;
 
-      --AHB Slave Interfaces (receive data from AHB Masters)
-      --AHB Masters connect to these ports
+      -- AHB Slave Interfaces (receive data from AHB Masters)
+      -- AHB Masters connect to these ports
       mst_priority : in std_logic_vector(2 downto 0);
 
       mst_HSEL      : in  std_logic;
@@ -136,7 +133,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       mst_HREADY    : in  std_logic;
       mst_HRESP     : out std_logic;
 
-      --AHB Master Interfaces; send data to AHB slaves
+      -- AHB Master Interfaces; send data to AHB slaves
       slvHADDRmask : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
       slvHADDRbase : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
       slvHSEL      : out std_logic_vector(SLAVES-1 downto 0);
@@ -153,7 +150,7 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       slvHREADYOUT : out std_logic;
       slvHRESP     : in  std_logic_vector(SLAVES-1 downto 0);
 
-      --Internal signals
+      -- Internal signals
       can_switch     : out std_logic;
       slvpriority    : out std_logic_vector(2 downto 0);
       master_granted : in  std_logic_vector(SLAVES-1 downto 0)
@@ -171,8 +168,8 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       HCLK    : in std_logic;
       HRESETn : in std_logic;
 
-      --AHB Slave Interfaces (receive data from AHB Masters)
-      --AHB Masters conect to these ports
+      -- AHB Slave Interfaces (receive data from AHB Masters)
+      -- AHB Masters conect to these ports
       mstpriority  : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
       mstHSEL      : in  std_logic_vector(MASTERS-1 downto 0);
       mstHADDR     : in  std_logic_matrix(MASTERS-1 downto 0)(PLEN-1 downto 0);
@@ -184,12 +181,12 @@ architecture rtl of peripheral_msi_interface_ahb3 is
       mstHPROT     : in  std_logic_matrix(MASTERS-1 downto 0)(3 downto 0);
       mstHTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
       mstHMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
-      mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  --HREADY input from master-bus
-      mstHREADYOUT : out std_logic;     --HREADYOUT output to master-bus
+      mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  -- HREADY input from master-bus
+      mstHREADYOUT : out std_logic;     -- HREADYOUT output to master-bus
       mstHRESP     : out std_logic;
 
-      --AHB Master Interfaces (send data to AHB slaves)
-      --AHB Slaves connect to these ports
+      -- AHB Master Interfaces (send data to AHB slaves)
+      -- AHB Slaves connect to these ports
       slv_HSEL      : out std_logic;
       slv_HADDR     : out std_logic_vector(PLEN-1 downto 0);
       slv_HWDATA    : out std_logic_vector(PLEN-1 downto 0);
@@ -255,7 +252,7 @@ begin
   -- Module Body
   ------------------------------------------------------------------------------
 
-  --Hookup Master Interfaces
+  -- Hookup Master Interfaces
   generating_0 : for m in 0 to MASTERS - 1 generate
     master_port : peripheral_msi_master_port_ahb3
       generic map (
@@ -268,8 +265,8 @@ begin
         HRESETn => HRESETn,
         HCLK    => HCLK,
 
-        --AHB Slave Interfaces (receive data from AHB Masters)
-        --AHB Masters conect to these ports
+        -- AHB Slave Interfaces (receive data from AHB Masters)
+        -- AHB Masters conect to these ports
         mst_priority  => mst_priority(m),
         mst_HSEL      => mst_HSEL(m),
         mst_HADDR     => mst_HADDR(m),
@@ -285,8 +282,8 @@ begin
         mst_HREADY    => mst_HREADY(m),
         mst_HRESP     => mst_HRESP(m),
 
-        --AHB Master Interfaces (send data to AHB slaves)
-        --AHB Slaves connect to these ports
+        -- AHB Master Interfaces (send data to AHB slaves)
+        -- AHB Slaves connect to these ports
         slvHADDRmask => slv_addr_mask,
         slvHADDRbase => slv_addr_base,
         slvpriority  => frommstpriority(m),
@@ -309,9 +306,9 @@ begin
         );
   end generate;
 
-  --wire mangling
+  -- wire mangling
 
-  --Master-->Slave
+  -- Master-->Slave
   generating_1 : for s in 0 to SLAVES - 1 generate
     generating_2 : for m in 0 to MASTERS - 1 generate
       toslvpriority(s)(m)   <= frommstpriority(m);
@@ -324,24 +321,24 @@ begin
       toslvHPROT(s)(m)      <= frommstHPROT(m);
       toslvHTRANS(s)(m)     <= frommstHTRANS(m);
       toslvHMASTLOCK(s)(m)  <= frommstHMASTLOCK(m);
-      toslvHREADY(s)(m)     <= frommstHREADYOUT(m);  --feed Masters's HREADY signal to slave port
+      toslvHREADY(s)(m)     <= frommstHREADYOUT(m);  -- feed Masters's HREADY signal to slave port
       toslv_canswitch(s)(m) <= frommst_canswitch(m);
-    end generate;  --next m
-  end generate;  --next s
+    end generate;  -- next m
+  end generate;  -- next s
 
-  --wire mangling
+  -- wire mangling
 
-  --Slave-->Master
+  -- Slave-->Master
   generating_3 : for m in 0 to MASTERS - 1 generate
     generating_4 : for s in 0 to SLAVES - 1 generate
       tomstgrant(m)(s)  <= fromslvgrant(s)(m);
       tomstHRDATA(m)(s) <= fromslvHRDATA(s);
       tomstHREADY(m)(s) <= fromslvHREADYOUT(s);
       tomstHRESP(m)(s)  <= fromslvHRESP(s);
-    end generate;  --next m
-  end generate;  --next s
+    end generate;  -- next m
+  end generate;  -- next s
 
-  --Hookup Slave Interfaces
+  -- Hookup Slave Interfaces
   generating_5 : for s in 0 to SLAVES - 1 generate
     slave_port : peripheral_msi_slave_port_ahb3
       generic map (
@@ -354,8 +351,8 @@ begin
         HRESETn => HRESETn,
         HCLK    => HCLK,
 
-        --AHB Slave Interfaces (receive data from AHB Masters)
-        --AHB Masters connect to these ports
+        -- AHB Slave Interfaces (receive data from AHB Masters)
+        -- AHB Masters connect to these ports
         mstpriority  => toslvpriority(s),
         mstHSEL      => toslvHSEL(s),
         mstHADDR     => toslvHADDR(s),
@@ -371,8 +368,8 @@ begin
         mstHREADYOUT => fromslvHREADYOUT(s),
         mstHRESP     => fromslvHRESP(s),
 
-        --AHB Master Interfaces (send data to AHB slaves)
-        --AHB Slaves connect to these ports
+        -- AHB Master Interfaces (send data to AHB slaves)
+        -- AHB Slaves connect to these ports
         slv_HSEL      => slv_HSEL(s),
         slv_HADDR     => slv_HADDR(s),
         slv_HWDATA    => slv_HWDATA(s),
@@ -387,7 +384,7 @@ begin
         slv_HREADY    => slv_HREADY(s),
         slv_HRESP     => slv_HRESP(s),
 
-        --Internal signals
+        -- Internal signals
         can_switch     => toslv_canswitch(s),
         granted_master => fromslvgrant(s)
         );

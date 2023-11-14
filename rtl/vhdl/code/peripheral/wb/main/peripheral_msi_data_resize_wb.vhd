@@ -1,6 +1,3 @@
--- Converted from core/peripheral_msi_data_resize_wb.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -49,12 +46,12 @@ use ieee.numeric_std.all;
 
 entity peripheral_msi_data_resize_wb is
   generic (
-    AW  : integer := 32;                --Address width
-    MDW : integer := 32;                --Master Data Width
-    SDW : integer := 8                  --Slave Data Width
+    AW  : integer := 32;                -- Address width
+    MDW : integer := 32;                -- Master Data Width
+    SDW : integer := 8                  -- Slave Data Width
     );
   port (
-    --Wishbone Master interface
+    -- Wishbone Master interface
     wbm_adr_i : in  std_logic_vector(AW-1 downto 0);
     wbm_dat_i : in  std_logic_vector(MDW-1 downto 0);
     wbm_sel_i : in  std_logic_vector(3 downto 0);

@@ -1,6 +1,3 @@
--- Converted from bench/verilog/regression/peripheral_msi_testbench.sv
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -127,11 +124,11 @@ architecture rtl of peripheral_msi_testbench is
   -- Variables
   ------------------------------------------------------------------------------
 
-  --Common signals
+  -- Common signals
   signal clk : std_logic;
   signal rst : std_logic;
 
-  --WB signals
+  -- WB signals
   signal wb_or1k_d_adr_i : std_logic_vector(31 downto 0);
   signal wb_or1k_d_dat_i : std_logic_vector(31 downto 0);
   signal wb_or1k_d_sel_i : std_logic_vector(3 downto 0);
@@ -198,7 +195,7 @@ begin
   -- Module Body
   ------------------------------------------------------------------------------
 
-  --DUT WB
+  -- DUT WB
   msi_wb_interface : peripheral_msi_interface_wb
     port map (
       wb_clk_i => clk,

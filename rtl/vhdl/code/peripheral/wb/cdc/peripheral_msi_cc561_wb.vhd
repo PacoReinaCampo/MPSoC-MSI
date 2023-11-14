@@ -1,6 +1,3 @@
--- Converted from cdc_utils/peripheral_msi_cc561_wb.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -107,7 +104,7 @@ begin
   begin
     if (rising_edge(bclk)) then
       if (bpulse) then
-        bdata <= adata_r;               --CDC
+        bdata <= adata_r;               -- CDC
       end if;
       ben <= bpulse;
     end if;
@@ -116,7 +113,7 @@ begin
   sync2_pgen : peripheral_msi_sync2_pgen_wb
     port map (
       c => bclk,
-      d => aen_r,                       --CDC
+      d => aen_r,                       -- CDC
       p => bpulse,
       q => open
       );

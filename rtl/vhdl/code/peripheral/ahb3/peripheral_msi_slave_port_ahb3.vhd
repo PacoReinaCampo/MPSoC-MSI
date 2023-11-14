@@ -1,6 +1,3 @@
--- Converted from rtl/vhdl/peripheral_msi_slave_port_ahb3.sv
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -61,8 +58,8 @@ entity peripheral_msi_slave_port_ahb3 is
     HCLK    : in std_logic;
     HRESETn : in std_logic;
 
-    --AHB Slave Interfaces (receive data from AHB Masters)
-    --AHB Masters conect to these ports
+    -- AHB Slave Interfaces (receive data from AHB Masters)
+    -- AHB Masters conect to these ports
     mstpriority  : in  std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
     mstHSEL      : in  std_logic_vector(MASTERS-1 downto 0);
     mstHADDR     : in  std_logic_matrix(MASTERS-1 downto 0)(PLEN-1 downto 0);
@@ -74,12 +71,12 @@ entity peripheral_msi_slave_port_ahb3 is
     mstHPROT     : in  std_logic_matrix(MASTERS-1 downto 0)(3 downto 0);
     mstHTRANS    : in  std_logic_matrix(MASTERS-1 downto 0)(1 downto 0);
     mstHMASTLOCK : in  std_logic_vector(MASTERS-1 downto 0);
-    mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  --HREADY input from master-bus
-    mstHREADYOUT : out std_logic;       --HREADYOUT output to master-bus
+    mstHREADY    : in  std_logic_vector(MASTERS-1 downto 0);  -- HREADY input from master-bus
+    mstHREADYOUT : out std_logic;       -- HREADYOUT output to master-bus
     mstHRESP     : out std_logic;
 
-    --AHB Master Interfaces (send data to AHB slaves)
-    --AHB Slaves connect to these ports
+    -- AHB Master Interfaces (send data to AHB slaves)
+    -- AHB Slaves connect to these ports
     slv_HSEL      : out std_logic;
     slv_HADDR     : out std_logic_vector(PLEN-1 downto 0);
     slv_HWDATA    : out std_logic_vector(PLEN-1 downto 0);
@@ -108,17 +105,17 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
   ------------------------------------------------------------------------------
   -- Variables
   ------------------------------------------------------------------------------
-  signal requested_priority_lvl : std_logic_vector(2 downto 0);  --requested priority level
-  signal priority_masters       : std_logic_vector(MASTERS-1 downto 0);  --all masters at this priority level
+  signal requested_priority_lvl : std_logic_vector(2 downto 0);  -- requested priority level
+  signal priority_masters       : std_logic_vector(MASTERS-1 downto 0);  -- all masters at this priority level
 
-  signal pending_master       : std_logic_vector(MASTERS-1 downto 0);  --next master waiting to be served
-  signal last_granted_master  : std_logic_vector(MASTERS-1 downto 0);  --for requested priority level
-  signal last_granted_masters : std_logic_matrix(2 downto 0)(MASTERS-1 downto 0);  --per priority level, for round-robin
+  signal pending_master       : std_logic_vector(MASTERS-1 downto 0);  -- next master waiting to be served
+  signal last_granted_master  : std_logic_vector(MASTERS-1 downto 0);  -- for requested priority level
+  signal last_granted_masters : std_logic_matrix(2 downto 0)(MASTERS-1 downto 0);  -- per priority level, for round-robin
 
-  signal granted_master_idx     : std_logic_vector(MASTER_BITS-1 downto 0);  --granted master as index
-  signal granted_master_idx_dly : std_logic_vector(MASTER_BITS-1 downto 0);  --deleayed granted master index (for HWDATA)
+  signal granted_master_idx     : std_logic_vector(MASTER_BITS-1 downto 0);  -- granted master as index
+  signal granted_master_idx_dly : std_logic_vector(MASTER_BITS-1 downto 0);  -- deleayed granted master index (for HWDATA)
 
-  signal can_switch_master : std_logic;  --Slave may switch to a new master
+  signal can_switch_master : std_logic;  -- Slave may switch to a new master
 
   signal granted_master_sgn : std_logic_vector(MASTERS-1 downto 0);
 
@@ -141,7 +138,7 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
       onehot_return     := std_logic_vector(unsigned(onehot_return) srl 1);
     end loop;
     return onehot2int_return;
-  end onehot2int;  --onehot2int
+  end onehot2int;  -- onehot2int
 
   function highest_requested_priority (
     hsel       : std_logic_vector(MASTERS-1 downto 0);
@@ -156,7 +153,7 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
       end if;
     end loop;
     return highest_requested_priority_return;
-  end highest_requested_priority;  --highest_requested_priority
+  end highest_requested_priority;  -- highest_requested_priority
 
   function requesters (
     hsel            : std_logic_vector(MASTERS-1 downto 0);
@@ -170,21 +167,21 @@ architecture rtl of peripheral_msi_slave_port_ahb3 is
       requesters_return(n) := to_stdlogic(priorities(n) = priority_select) and hsel(n);
     end loop;
     return requesters_return;
-  end requesters;  --requesters
+  end requesters;  -- requesters
 
   function nxt_master (
-    pending_masters : std_logic_vector(MASTERS-1 downto 0);  --pending masters for the requesed priority level
-    last_master     : std_logic_vector(MASTERS-1 downto 0);  --last granted master for the priority level
-    current_master  : std_logic_vector(MASTERS-1 downto 0)  --current granted master (indpendent of priority level)
+    pending_masters : std_logic_vector(MASTERS-1 downto 0);  -- pending masters for the requesed priority level
+    last_master     : std_logic_vector(MASTERS-1 downto 0);  -- last granted master for the priority level
+    current_master  : std_logic_vector(MASTERS-1 downto 0)  -- current granted master (indpendent of priority level)
     ) return std_logic_vector is
     variable offset            : integer;
     variable sr                : std_logic_vector(MASTERS*2-1 downto 0);
     variable nxt_master_return : std_logic_vector (MASTERS-1 downto 0);
   begin
-    --default value, don't switch if not needed
+    -- default value, don't switch if not needed
     nxt_master_return := current_master;
 
-    --implement round-robin
+    -- implement round-robin
     offset := onehot2int(last_master)+1;
 
     sr := (pending_masters & pending_masters);
@@ -205,28 +202,28 @@ begin
   --  * 1. Priority
   --  * 2. Round-Robin
 
-  --get highest priority from selected masters
+  -- get highest priority from selected masters
   requested_priority_lvl <= highest_requested_priority(mstHSEL, mstpriority);
 
-  --get pending masters for the highest priority requested
+  -- get pending masters for the highest priority requested
   priority_masters <= requesters(mstHSEL, mstpriority, requested_priority_lvl);
 
-  --get last granted master for the priority requested
+  -- get last granted master for the priority requested
   last_granted_master <= last_granted_masters(to_integer(unsigned(requested_priority_lvl)));
 
-  --get next master to serve
+  -- get next master to serve
   pending_master <= nxt_master(priority_masters, last_granted_master, granted_master_sgn);
 
-  --Master port signals when it can be switched
+  -- Master port signals when it can be switched
   can_switch_master <= can_switch(to_integer(unsigned(granted_master_idx)));
 
-  --select new master
+  -- select new master
   processing_0 : process (HCLK, HRESETn)
   begin
     if (HRESETn = '0') then
       granted_master_sgn <= std_logic_vector(to_unsigned(1, MASTERS));
     elsif (rising_edge(HCLK)) then
-      --else if (!slv_HSEL    ) granted_master <= pending_master;
+      -- else if (!slv_HSEL    ) granted_master <= pending_master;
       if (slv_HREADY = '1') then
         if (can_switch_master = '1') then
           granted_master_sgn <= pending_master;
@@ -237,13 +234,13 @@ begin
 
   granted_master <= granted_master_sgn;
 
-  --store current master (for this priority level)
+  -- store current master (for this priority level)
   processing_1 : process (HCLK, HRESETn)
   begin
     if (HRESETn = '0') then
       last_granted_masters(to_integer(unsigned(requested_priority_lvl))) <= std_logic_vector(to_unsigned(1, MASTERS));
     elsif (rising_edge(HCLK)) then
-      --else if (!slv_HSEL    ) last_granted_masters[requested_priority_lvl] <= pending_master;
+      -- else if (!slv_HSEL    ) last_granted_masters[requested_priority_lvl] <= pending_master;
       if (slv_HREADY = '1') then
         if (can_switch_master = '1') then
           last_granted_masters(to_integer(unsigned(requested_priority_lvl))) <= pending_master;
@@ -252,14 +249,14 @@ begin
     end if;
   end process;
 
-  --Get signals from current requester
+  -- Get signals from current requester
   processing_2 : process (HCLK, HRESETn)
     variable current_requester : std_logic_vector(MASTERS-1 downto 0);
   begin
     if (HRESETn = '0') then
       granted_master_idx <= (others => '0');
     elsif (rising_edge(HCLK)) then
-      --else if (!slv_HSEL) granted_master_idx <= onehot2int( pending_master );
+      -- else if (!slv_HSEL) granted_master_idx <= onehot2int( pending_master );
       if (slv_HREADY = '1') then
         granted_master_idx <= std_logic_vector(to_unsigned(onehot2int(current_requester), MASTER_BITS));
         if (can_switch_master = '1') then
@@ -295,10 +292,10 @@ begin
   slv_HBURST    <= mstHBURST(to_integer(unsigned(granted_master_idx)));
   slv_HPROT     <= mstHPROT(to_integer(unsigned(granted_master_idx)));
   slv_HTRANS    <= mstHTRANS(to_integer(unsigned(granted_master_idx)));
-  slv_HREADYOUT <= mstHREADY(to_integer(unsigned(granted_master_idx)));  --Slave Ports HREADYOUT connects to Master Port's HREADY
+  slv_HREADYOUT <= mstHREADY(to_integer(unsigned(granted_master_idx)));  -- Slave Ports HREADYOUT connects to Master Port's HREADY
   slv_HMASTLOCK <= mstHMASTLOCK(to_integer(unsigned(granted_master_idx)));
 
   mstHRDATA    <= slv_HRDATA;
-  mstHREADYOUT <= slv_HREADY;  --Master Port's HREADYOUT is driven by Slave Port's (local) HREADY signal
+  mstHREADYOUT <= slv_HREADY;  -- Master Port's HREADYOUT is driven by Slave Port's (local) HREADY signal
   mstHRESP     <= slv_HRESP;
 end rtl;

@@ -1,6 +1,3 @@
--- Converted from core/peripheral_msi_bfm_slave_wb.v
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -145,13 +142,13 @@ architecture rtl of peripheral_msi_bfm_slave_wb is
       end if;
     end if;
 
-    --Catch start of next cycle
+    -- Catch start of next cycle
     if (wb_cyc_i = '1') then
       wait until rising_edge(wb_cyc_i);
     end if;
     wait until rising_edge(wb_clk_i);
 
-    --Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
+    -- Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
     while (wb_cyc_i /= '1') loop
       wait until rising_edge(wb_clk_i);
     end loop;
@@ -197,7 +194,7 @@ architecture rtl of peripheral_msi_bfm_slave_wb is
 
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
-    wb_rty_o <= '0' after TP;           --TODO : rty not supported
+    wb_rty_o <= '0' after TP;           -- TODO : rty not supported
 
     if (err = '1') then
       if (DEBUG = '1') then

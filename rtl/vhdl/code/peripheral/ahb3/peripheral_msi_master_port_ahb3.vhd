@@ -1,6 +1,3 @@
--- Converted from rtl/vhdl/peripheral_msi_master_port_ahb3.sv
--- by verilog2vhdl - QueenField
-
 --------------------------------------------------------------------------------
 --                                            __ _      _     _               --
 --                                           / _(_)    | |   | |              --
@@ -58,12 +55,12 @@ entity peripheral_msi_master_port_ahb3 is
     SLAVES  : integer := 5
     );
   port (
-    --Common signals
+    -- Common signals
     HCLK    : in std_logic;
     HRESETn : in std_logic;
 
-    --AHB Slave Interfaces (receive data from AHB Masters)
-    --AHB Masters connect to these ports
+    -- AHB Slave Interfaces (receive data from AHB Masters)
+    -- AHB Masters connect to these ports
     mst_priority : in std_logic_vector(2 downto 0);
 
     mst_HSEL      : in  std_logic;
@@ -80,7 +77,7 @@ entity peripheral_msi_master_port_ahb3 is
     mst_HREADY    : in  std_logic;
     mst_HRESP     : out std_logic;
 
-    --AHB Master Interfaces; send data to AHB slaves
+    -- AHB Master Interfaces; send data to AHB slaves
     slvHADDRmask : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
     slvHADDRbase : in  std_logic_matrix(SLAVES-1 downto 0)(PLEN-1 downto 0);
     slvHSEL      : out std_logic_vector(SLAVES-1 downto 0);
@@ -97,7 +94,7 @@ entity peripheral_msi_master_port_ahb3 is
     slvHREADYOUT : out std_logic;
     slvHRESP     : in  std_logic_vector(SLAVES-1 downto 0);
 
-    --Internal signals
+    -- Internal signals
     can_switch     : out std_logic;
     slvpriority    : out std_logic_vector(2 downto 0);
     master_granted : in  std_logic_vector(SLAVES-1 downto 0)
@@ -166,14 +163,14 @@ architecture rtl of peripheral_msi_master_port_ahb3 is
       onehot_return     := std_logic_vector(unsigned(onehot_return) srl 1);
     end loop;
     return onehot2int_return;
-  end onehot2int;  --onehot2int
+  end onehot2int;  -- onehot2int
 
 begin
   ------------------------------------------------------------------------------
   -- Module Body
   ------------------------------------------------------------------------------
 
-  --Register Address Phase Signals
+  -- Register Address Phase Signals
   processing_0 : process (HCLK, HRESETn)
   begin
     if (HRESETn = '0') then
@@ -205,7 +202,7 @@ begin
     end if;
   end process;
 
-  --Generate local HREADY response
+  -- Generate local HREADY response
   processing_2 : process (HCLK, HRESETn)
   begin
     if (HRESETn = '0') then
@@ -262,7 +259,7 @@ begin
   access_pending_s <= to_stdlogic(access_state = ACCESS_PENDING);
   access_granted_s <= to_stdlogic(access_state = ACCESS_GRANTED);
 
-  --Generate burst counter
+  -- Generate burst counter
   processing_4 : process (HCLK)
   begin
     if (rising_edge(HCLK)) then
@@ -291,7 +288,7 @@ begin
     end if;
   end process;
 
-  --Indicate that the slave may switch masters on the NEXT cycle
+  -- Indicate that the slave may switch masters on the NEXT cycle
   processing_5 : process (access_state)
   begin
     case (access_state) is
@@ -321,7 +318,7 @@ begin
 
   slvHSEL <= slvHSEL_sgn;
 
-  --Check if granted access
+  -- Check if granted access
   processing_6 : process (HCLK, HRESETn)
   begin
     if (HRESETn = '0') then
@@ -333,7 +330,7 @@ begin
     end if;
   end process;
 
-  --Outgoing data (to slaves)
+  -- Outgoing data (to slaves)
   mux_sel <= not access_pending_s;
 
   slvHADDR <= mst_HADDR
@@ -354,14 +351,14 @@ begin
   slvHMASTLOCK <= mst_HMASTLOCK
                   when mux_sel = '1' else regHMASTLOCK;
   slvHREADYOUT <= mst_HREADY and reduce_or(current_HSEL and slvHREADY)
-                  when mux_sel = '1' else slvHREADY(to_integer(unsigned(slave_sel)));  --slave's HREADYOUT is driven by master's HREADY (mst_HREADY -> slv_HREADYOUT)
+                  when mux_sel = '1' else slvHREADY(to_integer(unsigned(slave_sel)));  -- slave's HREADYOUT is driven by master's HREADY (mst_HREADY -> slv_HREADYOUT)
   slvpriority <= mst_priority
                  when mux_sel = '1' else regpriority;
 
-  --Incoming data (to masters)
+  -- Incoming data (to masters)
   mst_HRDATA    <= slvHRDATA(to_integer(unsigned(slave_sel)));
   mst_HREADYOUT <= slvHREADY(to_integer(unsigned(slave_sel)))
-                   when access_granted_s = '1' else local_HREADYOUT;  --master's HREADYOUT is driven by slave's HREADY (slv_HREADY -> mst_HREADYOUT)
+                   when access_granted_s = '1' else local_HREADYOUT;  -- master's HREADYOUT is driven by slave's HREADY (slv_HREADY -> mst_HREADYOUT)
   mst_HRESP <= slvHRESP(to_integer(unsigned(slave_sel)))
                when access_granted_s = '1' else HRESP_OKAY;
 end rtl;
