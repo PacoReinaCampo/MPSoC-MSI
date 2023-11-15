@@ -111,7 +111,6 @@ module peripheral_msi_interface_ahb3 #(
   logic [MASTERS-1:0][SLAVES -1:0]           tomstHRESP;
   logic [MASTERS-1:0][SLAVES -1:0]           tomstgrant;
 
-
   logic [SLAVES -1:0][MASTERS-1:0][     2:0] toslvpriority;
   logic [SLAVES -1:0][MASTERS-1:0]           toslvHSEL;
   logic [SLAVES -1:0][MASTERS-1:0][PLEN-1:0] toslvHADDR;
@@ -253,7 +252,6 @@ module peripheral_msi_interface_ahb3 #(
         .mstHREADY   (toslvHREADY[s]),
         .mstHREADYOUT(fromslvHREADYOUT[s]),
         .mstHRESP    (fromslvHRESP[s]),
-
 
         // AHB Master Interfaces (send data to AHB slaves)
         // AHB Slaves connect to these ports
