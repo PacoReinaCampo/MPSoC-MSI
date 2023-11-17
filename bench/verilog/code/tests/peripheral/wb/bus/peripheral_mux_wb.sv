@@ -56,7 +56,7 @@ module peripheral_mux_wb #(
   localparam SEGMENT_SIZE = 32'h100;
   localparam MEMORY_SIZE_BITS = 8;
 
-  // TODO: Find a way to generate MATCH_ADDR and MATCH_MASK based on memory
+  // TO-DO: Find a way to generate MATCH_ADDR and MATCH_MASK based on memory
   //       size and number of slaves. Missing support for constant
   //       user functions in Icarus Verilog is the blocker for this
   localparam [DW*NUM_SLAVES-1:0] MATCH_ADDR = {32'h00000300, 32'h00000200, 32'h00000100, 32'h00000000};

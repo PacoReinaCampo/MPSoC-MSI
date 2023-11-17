@@ -119,7 +119,9 @@ module peripheral_msi_slave_port_ahb3 #(
   function integer onehot2int;
     input [SLAVES-1:0] onehot;
 
-    for (onehot2int = -1; |onehot; onehot2int++) onehot = onehot >> 1;
+    for (onehot2int = -1; |onehot; onehot2int++) begin
+      onehot = onehot >> 1;
+    end
   endfunction  // onehot2int
 
   function [2:0] highest_requested_priority(input [MASTERS-1:0] hsel, input [MASTERS-1:0][2:0] priorities);

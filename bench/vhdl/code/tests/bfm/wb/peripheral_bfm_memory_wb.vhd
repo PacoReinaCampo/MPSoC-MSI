@@ -226,7 +226,7 @@ architecture rtl of peripheral_msi_bfm_memory_wb is
 
     wb_ack_o <= '0' after TP;
     wb_err_o <= '0' after TP;
-    wb_rty_o <= '0' after TP;           -- TODO : rty not supported
+    wb_rty_o <= '0' after TP;           -- TO-DO: rty not supported
 
     if (err = '1') then
       if (DEBUG = '1') then

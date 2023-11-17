@@ -271,7 +271,7 @@ architecture rtl of peripheral_msi_bfm_transactor_wb is
   --
 
   -- Gather transaction statistics
-  -- TODO: Record shortest/longest bursts.
+  -- TO-DO: Record shortest/longest bursts.
   procedure update_stats (
     signal cti : in std_logic_vector(2 downto 0);
     signal bte : in std_logic_vector(1 downto 0);

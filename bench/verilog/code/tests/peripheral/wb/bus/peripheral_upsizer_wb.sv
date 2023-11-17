@@ -133,7 +133,8 @@ module peripheral_upsizer_wb (
   ) dut (
     .wb_clk_i (wb_clk_i),
     .wb_rst_i (wb_rst_i),
-    // Master Interface
+
+    //Wishbone  Master Interface
     .wbs_adr_i(wbm_m2s_adr),
     .wbs_dat_i(wbm_m2s_dat),
     .wbs_sel_i(wbm_m2s_sel),
@@ -146,6 +147,7 @@ module peripheral_upsizer_wb (
     .wbs_ack_o(wbm_s2m_ack),
     .wbs_err_o(wbm_s2m_err),
     .wbs_rty_o(wbm_s2m_rty),
+
     // Wishbone Slave interface
     .wbm_adr_o(wbs_m2s_adr),
     .wbm_dat_o(wbs_m2s_dat),
