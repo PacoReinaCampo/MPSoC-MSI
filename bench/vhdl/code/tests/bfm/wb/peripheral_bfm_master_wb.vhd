@@ -197,7 +197,7 @@ architecture rtl of peripheral_msi_bfm_master_wb is
 
     wb_adr_o <= addr   after TP;
     wb_dat_o <= dat_op after TP;
-    wb_stb_o <= '0'    after TP;        -- FIXME: Add wait states
+    wb_stb_o <= '0'    after TP;        -- FIX-ME: Add wait states
 
     if ((index = to_integer(unsigned(burst_length))-1) and (cycle_type /= CTI_CLASSIC)) then
       wb_cti_o <= "111" after TP;
