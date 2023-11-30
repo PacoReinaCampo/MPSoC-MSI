@@ -75,6 +75,7 @@ module peripheral_msi_data_resize_wb #(
   //////////////////////////////////////////////////////////////////////////////
   // Module Body
   //////////////////////////////////////////////////////////////////////////////
+
   assign wbs_adr_o[AW-1:2] = wbm_adr_i[AW-1:2];
   assign wbs_adr_o[1:0]    = wbm_sel_i[3] ? 2'd0 : wbm_sel_i[2] ? 2'd1 : wbm_sel_i[1] ? 2'd2 : 2'd3;
 
