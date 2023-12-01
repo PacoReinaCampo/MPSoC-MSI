@@ -143,7 +143,7 @@ module peripheral_msi_upsizer_wb #(
   wire [      AW-1:0]              rd_adr;
 
   //////////////////////////////////////////////////////////////////////////////
-  // Module Body
+  // Body
   //////////////////////////////////////////////////////////////////////////////
 
   assign next_adr       = wb_next_adr(wbs_adr_i, wbs_cti_i, wbs_bte_i, DW_IN) >> ($clog2(SELW) + BUFW);
