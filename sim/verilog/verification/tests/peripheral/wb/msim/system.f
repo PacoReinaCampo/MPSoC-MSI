@@ -51,7 +51,7 @@
 
 ../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_msi_testbench.sv
 ../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_tap_generator.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_testbench_utils.sv
+../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_utils_testbench.sv
 ../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_arbiter_wb.sv
 ../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_cdc_wb.sv
 ../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_mux_wb.sv

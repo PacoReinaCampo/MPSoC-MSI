@@ -39,7 +39,7 @@
 //   Olof Kindgren <olof.kindgren@gmail.com>
 //   Paco Reina Campo <pacoreinacampo@queenfield.tech>
 
-module peripheral_testbench_utils;
+module peripheral_utils_testbench;
   //////////////////////////////////////////////////////////////////////////////
   // Constants
   //////////////////////////////////////////////////////////////////////////////
@@ -87,4 +87,4 @@ module peripheral_testbench_utils;
       forever #heartbeat $display("Heartbeat : Time=%0t", $time);
     end
   end
-endmodule  // peripheral_testbench_utils
+endmodule  // peripheral_utils_testbench
