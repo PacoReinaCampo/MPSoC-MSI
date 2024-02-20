@@ -44,18 +44,18 @@
 
 ../../../../../../../rtl/verilog/code/pkg/peripheral/wb/peripheral_wb_pkg.sv
 
-../../../../../../../bench/verilog/code/tests/bfm/wb/peripheral_bfm_master_wb.sv
-../../../../../../../bench/verilog/code/tests/bfm/wb/peripheral_bfm_memory_wb.sv
-../../../../../../../bench/verilog/code/tests/bfm/wb/peripheral_bfm_slave_wb.sv
-../../../../../../../bench/verilog/code/tests/bfm/wb/peripheral_bfm_transactor_wb.sv
+../../../../../../../verification/tasks/library/bfm/wb/peripheral_bfm_master_wb.sv
+../../../../../../../verification/tasks/library/bfm/wb/peripheral_bfm_memory_wb.sv
+../../../../../../../verification/tasks/library/bfm/wb/peripheral_bfm_slave_wb.sv
+../../../../../../../verification/tasks/library/bfm/wb/peripheral_bfm_transactor_wb.sv
 
-../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_msi_testbench.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_tap_generator.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/main/peripheral_utils_testbench.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_arbiter_wb.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_cdc_wb.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_mux_wb.sv
-../../../../../../../bench/verilog/code/tests/peripheral/wb/bus/peripheral_upsizer_wb.sv
+../../../../../../../verification/tasks/library/peripheral/wb/main/peripheral_msi_testbench.sv
+../../../../../../../verification/tasks/library/peripheral/wb/main/peripheral_tap_generator.sv
+../../../../../../../verification/tasks/library/peripheral/wb/main/peripheral_utils_testbench.sv
+../../../../../../../verification/tasks/library/peripheral/wb/bus/peripheral_arbiter_wb.sv
+../../../../../../../verification/tasks/library/peripheral/wb/bus/peripheral_cdc_wb.sv
+../../../../../../../verification/tasks/library/peripheral/wb/bus/peripheral_mux_wb.sv
+../../../../../../../verification/tasks/library/peripheral/wb/bus/peripheral_upsizer_wb.sv
 
 ../../../../../../../rtl/verilog/code/peripheral/wb/arbiter/peripheral_msi_arbiter.sv
 ../../../../../../../rtl/verilog/code/peripheral/wb/cdc/peripheral_msi_cc561_wb.sv

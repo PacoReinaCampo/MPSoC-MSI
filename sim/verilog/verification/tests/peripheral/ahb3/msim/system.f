@@ -48,6 +48,6 @@
 ../../../../../../../rtl/verilog/code/peripheral/ahb3/peripheral_msi_master_port_ahb3.sv
 ../../../../../../../rtl/verilog/code/peripheral/ahb3/peripheral_msi_slave_port_ahb3.sv
 
-../../../../../../../bench/verilog/code/tests/peripheral/ahb3/peripheral_bfm_ahb3.sv
-../../../../../../../bench/verilog/code/tests/peripheral/ahb3/peripheral_bfm_master_ahb3.sv
-../../../../../../../bench/verilog/code/tests/peripheral/ahb3/peripheral_msi_testbench.sv
+../../../../../../../verification/tasks/library/peripheral/ahb3/peripheral_bfm_ahb3.sv
+../../../../../../../verification/tasks/library/peripheral/ahb3/peripheral_bfm_master_ahb3.sv
+../../../../../../../verification/tasks/library/peripheral/ahb3/peripheral_msi_testbench.sv

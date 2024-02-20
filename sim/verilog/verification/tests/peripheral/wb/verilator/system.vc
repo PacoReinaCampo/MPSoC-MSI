@@ -44,7 +44,7 @@
 
 ../../../../../../../rtl/verilog/code/pkg/peripheral/wb/peripheral_wb_pkg.vhd
 
-../../../../../../../bench/verilog/code/tests/peripheral/wb/peripheral_msi_testbench.sv
+../../../../../../../verification/tasks/library/peripheral/wb/peripheral_msi_testbench.sv
 
 ../../../../../../../rtl/verilog/code/peripheral/wb/arbiter/peripheral_msi_arbiter.sv
 ../../../../../../../rtl/verilog/code/peripheral/wb/cdc/peripheral_msi_cc561_wb.sv
