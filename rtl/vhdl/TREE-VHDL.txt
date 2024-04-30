@@ -4,6 +4,22 @@ code
 │   │   ├── peripheral_msi_interface_ahb3.vhd
 │   │   ├── peripheral_msi_master_port_ahb3.vhd
 │   │   └── peripheral_msi_slave_port_ahb3.vhd
+│   ├── apb4
+│   │   ├── peripheral_msi_interface_ahb3.vhd
+│   │   ├── peripheral_msi_master_port_ahb3.vhd
+│   │   └── peripheral_msi_slave_port_ahb3.vhd
+│   ├── axi4
+│   │   ├── peripheral_msi_interface_ahb3.vhd
+│   │   ├── peripheral_msi_master_port_ahb3.vhd
+│   │   └── peripheral_msi_slave_port_ahb3.vhd
+│   ├── bb
+│   │   ├── peripheral_msi_interface_ahb3.vhd
+│   │   ├── peripheral_msi_master_port_ahb3.vhd
+│   │   └── peripheral_msi_slave_port_ahb3.vhd
+│   ├── biu
+│   │   ├── peripheral_msi_interface_ahb3.vhd
+│   │   ├── peripheral_msi_master_port_ahb3.vhd
+│   │   └── peripheral_msi_slave_port_ahb3.vhd
 │   └── wb
 │       ├── arbiter
 │       │   └── peripheral_msi_arbiter.vhd
@@ -22,9 +38,15 @@ code
     └── peripheral
         ├── ahb3
         │   └── peripheral_ahb3_pkg.vhd
+        ├── apb4
+        │   └── peripheral_ahb3_pkg.vhd
         ├── axi4
         │   └── peripheral_axi4_pkg.vhd
+        ├── bb
+        │   └── peripheral_ahb3_pkg.vhd
+        ├── biu
+        │   └── peripheral_ahb3_pkg.vhd
         └── wb
             └── peripheral_wb_pkg.vhd
 
-12 directories, 15 files
+19 directories, 30 files
