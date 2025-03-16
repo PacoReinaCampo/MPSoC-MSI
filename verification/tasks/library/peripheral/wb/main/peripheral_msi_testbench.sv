@@ -44,7 +44,7 @@ module peripheral_msi_testbench;
   // Body
   //////////////////////////////////////////////////////////////////////////////
 
-  peripheral_testbench_utils testbench_utils ();
+  peripheral_utils_testbench testbench_utils ();
   peripheral_tap_generator #("wb_msi_tb.tap", 3) vtg ();
 
   peripheral_mux_wb #(.AUTORUN(0)) peripheral_mux_wb ();
