@@ -1,9 +1,9 @@
 code
 ├── peripheral
-│   ├── ahb3
-│   │   ├── peripheral_msi_interface_ahb3.vhd
-│   │   ├── peripheral_msi_master_port_ahb3.vhd
-│   │   └── peripheral_msi_slave_port_ahb3.vhd
+│   ├── ahb4
+│   │   ├── peripheral_msi_interface_ahb4.vhd
+│   │   ├── peripheral_msi_master_port_ahb4.vhd
+│   │   └── peripheral_msi_slave_port_ahb4.vhd
 │   ├── apb4
 │   │   ├── peripheral_msi_interface_apb4.vhd
 │   │   ├── peripheral_msi_master_port_apb4.vhd
@@ -36,8 +36,8 @@ code
     ├── core
     │   └── vhdl_pkg.vhd
     └── peripheral
-        ├── ahb3
-        │   └── peripheral_ahb3_pkg.vhd
+        ├── ahb4
+        │   └── peripheral_ahb4_pkg.vhd
         ├── apb4
         │   └── peripheral_apb4_pkg.vhd
         ├── axi4

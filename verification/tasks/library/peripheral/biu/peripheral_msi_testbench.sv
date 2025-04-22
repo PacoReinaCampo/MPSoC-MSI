@@ -58,7 +58,7 @@ module peripheral_msi_testbench;
   wire                                     HRESETn;
   wire                                     HCLK;
 
-  // AHB3 signals
+  // AHB4 signals
   wire [MASTERS-1:0]                       mst_HSEL;
   wire [MASTERS-1:0][ PLEN           -1:0] mst_HADDR;
   wire [MASTERS-1:0][ XLEN           -1:0] mst_HWDATA;
@@ -90,13 +90,13 @@ module peripheral_msi_testbench;
   // Body
   //////////////////////////////////////////////////////////////////////////////
 
-  // DUT AHB3
-  peripheral_msi_interface_ahb3 #(
+  // DUT AHB4
+  peripheral_msi_interface_ahb4 #(
     .PLEN   (PLEN),
     .XLEN   (XLEN),
     .MASTERS(MASTERS),
     .SLAVES (SLAVES)
-  ) peripheral_interface_ahb3 (
+  ) peripheral_interface_ahb4 (
     // Common signals
     .HRESETn(HRESETn),
     .HCLK   (HCLK),

@@ -44,7 +44,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.vhdl_pkg.all;
-use work.peripheral_ahb3_pkg.all;
+use work.peripheral_ahb4_pkg.all;
 
 entity peripheral_msi_testbench is
 end peripheral_msi_testbench;
@@ -55,7 +55,7 @@ architecture rtl of peripheral_msi_testbench is
   -- Components
   ------------------------------------------------------------------------------
 
-  component peripheral_msi_interface_ahb3
+  component peripheral_msi_interface_ahb4
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -124,7 +124,7 @@ architecture rtl of peripheral_msi_testbench is
   signal HRESETn : std_logic;
   signal HCLK    : std_logic;
 
-  -- AHB3 signals
+  -- AHB4 signals
   signal mst_priority : std_logic_matrix(MASTERS-1 downto 0)(2 downto 0);
 
   signal mst_HSEL      : std_logic_vector(MASTERS-1 downto 0);
@@ -161,8 +161,8 @@ begin
   -- Module Body
   ------------------------------------------------------------------------------
 
-  -- DUT AHB3
-  peripheral_interface_ahb3 : peripheral_msi_interface_ahb3
+  -- DUT AHB4
+  peripheral_interface_ahb4 : peripheral_msi_interface_ahb4
     generic map (
       PLEN    => PLEN,
       XLEN    => XLEN,
