@@ -91,12 +91,12 @@ module peripheral_msi_testbench;
   //////////////////////////////////////////////////////////////////////////////
 
   // DUT AHB4
-  peripheral_msi_interface_ahb4 #(
+  peripheral_msi_interface_tl #(
     .PLEN   (PLEN),
     .XLEN   (XLEN),
     .MASTERS(MASTERS),
     .SLAVES (SLAVES)
-  ) peripheral_interface_ahb4 (
+  ) peripheral_interface_tl (
     // Common signals
     .HRESETn(HRESETn),
     .HCLK   (HCLK),

@@ -44,7 +44,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.vhdl_pkg.all;
-use work.peripheral_ahb4_pkg.all;
+use work.peripheral_tl_pkg.all;
 
 entity peripheral_msi_testbench is
 end peripheral_msi_testbench;
@@ -55,7 +55,7 @@ architecture rtl of peripheral_msi_testbench is
   -- Components
   ------------------------------------------------------------------------------
 
-  component peripheral_msi_interface_ahb4
+  component peripheral_msi_interface_tl
     generic (
       PLEN    : integer := 64;
       XLEN    : integer := 64;
@@ -162,7 +162,7 @@ begin
   ------------------------------------------------------------------------------
 
   -- DUT AHB4
-  peripheral_interface_ahb4 : peripheral_msi_interface_ahb4
+  peripheral_interface_tl : peripheral_msi_interface_tl
     generic map (
       PLEN    => PLEN,
       XLEN    => XLEN,
